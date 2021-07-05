@@ -119,7 +119,7 @@
 <td align="center">(⌘+3)</td>
 </tr>
 </tbody></table>
-<h1 id="H1标题"><a href="#H1标题" class="headerlink" title="H1标题"></a>H1标题</h1><h2 id="H2标题"><a href="#H2标题" class="headerlink" title="H2标题"></a>H2标题</h2><h3 id="H3标题"><a href="#H3标题" class="headerlink" title="H3标题"></a>H3标题</h3><p>H4~H6再往后同理但是基本不会用到</p>
+<h1 id="H1标题"><a href="#H1标题" class="headerlink" title="H1标题"></a>H1标题</h1><h2 id="H2标题"><a href="#H2标题" class="headerlink" title="H2标题"></a>H2标题</h2><h3 id="H3标题"><a href="#H3标题" class="headerlink" title="H3标题"></a>H3标题</h3><p>H4~H6再往后同理但是基本不会用到(目录)</p>
 <h2 id="字体篇"><a href="#字体篇" class="headerlink" title="字体篇"></a>字体篇</h2><table>
 <thead>
 <tr>
@@ -139,9 +139,19 @@
 <td align="center">(⌘+B)</td>
 </tr>
 <tr>
+<td align="center"><em><strong>斜粗体</strong></em></td>
+<td align="center">***斜粗体***</td>
+<td align="center">(⌘+B)</td>
+</tr>
+<tr>
 <td align="center"><a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E9%93%BE%E6%8E%A5/2665501">链接</a></td>
 <td align="center">[链接](网址)</td>
 <td align="center">(⇧+⌘+K)</td>
+</tr>
+<tr>
+<td align="center">图片</td>
+<td align="center">![名称](地址)</td>
+<td align="center">(⇧+⌘+I)</td>
 </tr>
 </tbody></table>
 <h2 id="代码块篇"><a href="#代码块篇" class="headerlink" title="代码块篇"></a>代码块篇</h2><table>
@@ -153,6 +163,11 @@
 </tr>
 </thead>
 <tbody><tr>
+<td align="center">注释</td>
+<td align="center">&lt;!--注释--&gt;</td>
+<td align="center">(⌘+/)</td>
+</tr>
+<tr>
 <td align="center">引用</td>
 <td align="center">&gt; 引用</td>
 <td align="center">(⇧+⌘+B)</td>
@@ -164,14 +179,72 @@
 </tr>
 <tr>
 <td align="center">代码块</td>
-<td align="center">```H3标题```</td>
-<td align="center">(⌘+3)</td>
+<td align="center">```代码块```</td>
+<td align="center">无</td>
+</tr>
+<tr>
+<td align="center">无序列表</td>
+<td align="center">* 无序列表</td>
+<td align="center">(⇧+⌘+U)</td>
+</tr>
+<tr>
+<td align="center">有序列表</td>
+<td align="center">数字. 有序列表</td>
+<td align="center">(⇧+⌘+O)</td>
 </tr>
 </tbody></table>
 <blockquote>
 <p>这是一个引用(Hexo的引用很丑陋)</p>
 </blockquote>
 <p><code>这是一个行内代码</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">这是一段代码块</span><br></pre></td></tr></table></figure>
+
+<h2 id="表格篇"><a href="#表格篇" class="headerlink" title="表格篇"></a>表格篇</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">表头|表头一|表头二</span><br><span class="line">:---:|:---:|:---:</span><br><span class="line">项目|项目一|项目二</span><br></pre></td></tr></table></figure>
+<table>
+<thead>
+<tr>
+<th align="center">表头</th>
+<th align="center">表头一</th>
+<th align="center">表头二</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">项目</td>
+<td align="center">项目一</td>
+<td align="center">项目二</td>
+</tr>
+</tbody></table>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>MarkDown确实是简单的文本格式,并且流传度极高,甚至有些电子书都适用MarkDown的格式.</p>
+<p>但相对的简单也带来了一些不便,字体颜色,排版等等都不如在当代文档中方便.</p>
+<h1 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h1><p>使用Hexo的几条指令</p>
+<table>
+<thead>
+<tr>
+<th align="center">名称</th>
+<th align="center">代码</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">新建文档</td>
+<td align="center">hexo new post “xxxx”</td>
+</tr>
+<tr>
+<td align="center">生成静态网页</td>
+<td align="center">hexo g</td>
+</tr>
+<tr>
+<td align="center">生成内地服务</td>
+<td align="center">hexo s</td>
+</tr>
+<tr>
+<td align="center">上传Github</td>
+<td align="center">hexo d</td>
+</tr>
+<tr>
+<td align="center">合并master</td>
+<td align="center">git merge origin/master –allow-unrelated-histories</td>
+</tr>
+</tbody></table>
 
       
     </div>

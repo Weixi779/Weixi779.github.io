@@ -154,6 +154,12 @@
                 <div class="post-heading">
                     <div class="tags">
                         
+                          <a class="tag" href="/tags/#OC" title="OC">OC</a>
+                        
+                          <a class="tag" href="/tags/#Swift" title="Swift">Swift</a>
+                        
+                          <a class="tag" href="/tags/#总结" title="总结">总结</a>
+                        
                     </div>
                     <h1>关于CTMediator杂谈</h1>
                     <h2 class="subheading"></h2>
@@ -178,8 +184,7 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <p>[toc]</p>
-<h1 id="一、组件化架构"><a href="#一、组件化架构" class="headerlink" title="一、组件化架构"></a>一、组件化架构</h1><h2 id="1-1-业界风向"><a href="#1-1-业界风向" class="headerlink" title="1.1 业界风向"></a>1.1 业界风向</h2><p>随着团队规模和应用版本的不断增长，项目的代码量也会不断膨胀，背负着越来越沉重的历史包袱。17、18年问题集中爆发了起来，在大厂号召下iOS开发领域掀起了一股“组件化”热潮。组件化是一种常见的应用架构设计，旨在提高代码的可重用性、可维护性和可扩展性，让并行开发更加高效。因此，越来越多的公司开始推行组件化架构，通过解耦和重组组件来提高开发效率。</p>
+                <h1 id="一、组件化架构"><a href="#一、组件化架构" class="headerlink" title="一、组件化架构"></a>一、组件化架构</h1><h2 id="1-1-业界风向"><a href="#1-1-业界风向" class="headerlink" title="1.1 业界风向"></a>1.1 业界风向</h2><p>随着团队规模和应用版本的不断增长，项目的代码量也会不断膨胀，背负着越来越沉重的历史包袱。17、18年问题集中爆发了起来，在大厂号召下iOS开发领域掀起了一股“组件化”热潮。组件化是一种常见的应用架构设计，旨在提高代码的可重用性、可维护性和可扩展性，让并行开发更加高效。因此，越来越多的公司开始推行组件化架构，通过解耦和重组组件来提高开发效率。</p>
 <blockquote>
 <ul>
 <li>美团平台与点评平台，自2015年底合并以来，为了共建和沉淀公共服务，减少重复造轮子，提升研发效率，着手组建化架构[^1]</li>
@@ -287,6 +292,20 @@
 
             </div>
     <!-- Side Catalog Container -->
+        
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
         
 
     <!-- Sidebar Container -->
@@ -433,6 +452,50 @@
 
 
 <!-- Side Catalog -->
+
+<script type="text/javascript">
+    function generateCatalog (selector) {
+        var P = $('div.post-container'),a,n,t,l,i,c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#"+$(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="'+i+'" rel="nofollow">'+t+'</a>');
+            l = $('<li class="'+n+'_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;    
+    }
+
+    generateCatalog(".catalog-body");
+
+    // toggle side catalog
+    $(".catalog-toggle").click((function(e){
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    /*
+     * Doc: https://github.com/davist11/jQuery-One-Page-Nav
+     * Fork by Hux to support padding
+     */
+    async("/js/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
 
 
 

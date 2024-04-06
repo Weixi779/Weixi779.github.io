@@ -1,5 +1,6 @@
 ---
 title: 浅谈Swift模型解析
+catalog: true
 top: false
 cover: false
 toc: true
@@ -7,7 +8,7 @@ mathjax: true
 date: 2024-01-24 15:15:22
 password:
 summary:
-tags:
+tags: [Swift, OC, 历史发展, 总结]
 categories:
 ---
 

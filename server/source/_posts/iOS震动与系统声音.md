@@ -1,5 +1,6 @@
 ---
 title: iOS震动与系统声音
+catalog: true
 top: false
 cover: false
 toc: true
@@ -7,7 +8,7 @@ mathjax: true
 date: 2024-03-04 20:37:31
 password:
 summary:
-tags:
+tags: [原生,踩坑记录]
 categories:
 ---
 

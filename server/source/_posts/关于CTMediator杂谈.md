@@ -1,5 +1,6 @@
 ---
 title: 关于CTMediator杂谈
+catalog: true
 top: false
 cover: false
 toc: true
@@ -7,11 +8,9 @@ mathjax: true
 date: 2023-06-18 16:39:29
 password:
 summary:
-tags:
+tags: [OC, Swift, 总结]
 categories:
 ---
-[toc]
-
 # 一、组件化架构
 
 ## 1.1 业界风向
@@ -185,9 +184,9 @@ iOS开发一直在不断发展，随着Swift + SPM的逐渐普及，Objective-C 
 《设计模式-可复用面向对象软件的基础》
 
 [^1]: [美团外卖iOS多端复用的推动、支撑与思考 - 美团技术团队](https://tech.meituan.com/2018/06/29/ios-multiterminal-reuse.html)
-    
+
 [^2]: [滴滴出行 iOS 客户端架构演进之路 - 掘金](https://juejin.cn/post/6844903428297080846)
-    
+
 [^3]: [京东iOS客户端组件管理实践_iOS_孙达威_InfoQ精选文章](https://www.infoq.cn/article/jd-ios-component-management)
-    
+
 [^4]: [在现有工程中实施基于CTMediator的组件化方案  - Casa Taloyum ](https://casatwy.com/modulization_in_action.html)

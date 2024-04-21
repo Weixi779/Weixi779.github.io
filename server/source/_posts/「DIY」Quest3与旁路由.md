@@ -1,4 +1,5 @@
 ---
+layout: post
 title: 「DIY」Quest3与旁路由
 catalog: true
 top: false

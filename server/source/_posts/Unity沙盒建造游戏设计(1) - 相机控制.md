@@ -6,7 +6,7 @@ mathjax: true
 date: 2024-04-14 19:58:43
 summary:
 tags: [Unity, 沙盒, 相机]
-categories: [Unity]
+categories: [Unity, 技术分享]
 ---
 
 ## 前言

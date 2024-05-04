@@ -25,7 +25,7 @@ categories: [Unity, 技术分享]
 
 即使是这样 如果相机在超过了Border范围的情况下, Follow对象没有设置对应的碰撞范围依然可以移动, 那么下次往相反的方向移动, 会先还原超过的距离, 再根据边缘移动相机从而有延迟感, 并穿帮
 
-那么为了避免这种情况的出现,就得需要手机屏幕的长宽进行比例结算, 动态设置相机的正交距离, 从而保证限制Follow对象的移动范围对应比例每次都和相机的Border比例都正常
+那么为了避免这种情况的出现, 就得需要手机屏幕的长宽进行比例结算, 动态设置相机的正交距离, 从而保证限制Follow对象的移动范围对应比例每次都和相机的Border比例都正常
 
 ```lua
     self.xSize = Screen.width
@@ -53,7 +53,7 @@ local function clamp(val, lower, upper)
     return math.max(lower, math.min(upper, val))
 end
 
-function EditCamera:UpdatePositionInBound(deltaVector)
+function Camera:UpdatePositionInBound(deltaVector)
     local orthographicSize = self.virtual.m_Lens.OrthographicSize
     local heightHalf = orthographicSize
     local widthHalf = heightHalf * Aspect
@@ -71,7 +71,7 @@ function EditCamera:UpdatePositionInBound(deltaVector)
     self.transform.position = Vector3(targetPosition.x, targetPosition.y, PositionZ)
 end
 
-function EditCamera:UpdateCameraOrthoSize(deltaSize)
+function Camera:UpdateCameraOrthoSize(deltaSize)
     local targetSize = self.virtual.m_Lens.OrthographicSize + (deltaSize * ZoomSpeed)
     targetSize = clamp(targetSize, MinOrthoSize, MaxOrthoSize)
     self:SetOrthoSize(targetSize)
@@ -125,4 +125,4 @@ end
 
 ## 结语
 
-目前第一部分主要内容是对于照相机代码控制的总结, 没有特别大的革新, 同时也不会有特别大的感受, 只是对这部分业务代码做了一些总结和批注. 只能算作是开胃小菜, 下一章将要讨论沙盒必定需要的设计模式 —— 命令模式
+目前第一部分主要内容是对于照相机代码控制的总结, 没有特别大的革新, 同样就不会有很多的心得与体会, 只是对这部分业务代码做了一些总结和批注. 只能算作是开胃小菜, 下一章将要讨论沙盒必定需要的设计模式 —— 命令模式

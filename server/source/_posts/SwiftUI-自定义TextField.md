@@ -6,7 +6,7 @@ mathjax: true
 date: 2024-08-18 14:59:38
 summary:
 tags:[iOS, swiftUI, textField]
-categories: [SwiftUI]
+categories: [SwiftUI, iOS开发]
 ---
 
 # 背景

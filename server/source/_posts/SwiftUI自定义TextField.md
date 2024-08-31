@@ -1,12 +1,12 @@
 ---
-title: SwiftUI 自定义TextField
+title: SwiftUI自定义TextField
 catalog: true
 top: false
 mathjax: true
 date: 2024-08-18 14:59:38
 summary:
-tags:[iOS, swiftUI, textField]
-categories: [SwiftUI, iOS开发]
+tags: [iOS, swiftUI, textField]
+categories:
 ---
 
 # 背景

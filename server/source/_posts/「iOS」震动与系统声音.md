@@ -1,5 +1,5 @@
 ---
-title: iOS震动与系统声音
+title: 「iOS」震动与系统声音
 catalog: true
 top: false
 cover: false
@@ -8,8 +8,8 @@ mathjax: true
 date: 2024-03-04 20:37:31
 password:
 summary:
-tags: [原生,踩坑记录]
-categories:
+tags: [技巧]
+categories: [iOS]
 ---
 
 # iOS麦克风与系统声音

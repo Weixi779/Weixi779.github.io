@@ -1,5 +1,5 @@
 ---
-title: 浅谈Swift模型解析
+title: 「iOS」浅谈Swift模型解析
 catalog: true
 top: false
 cover: false
@@ -8,8 +8,8 @@ mathjax: true
 date: 2024-01-24 15:15:22
 password:
 summary:
-tags: [Swift, OC, 历史发展, 总结]
-categories:
+tags: [变迁, 概括, 心得]
+categories: [iOS]
 ---
 
 # 一、背景介绍

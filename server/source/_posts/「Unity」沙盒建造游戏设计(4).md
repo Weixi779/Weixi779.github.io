@@ -1,12 +1,12 @@
 ---
-title: Unity沙盒建造游戏设计(4) - 搜索算法
+title: 「Unity」沙盒建造游戏设计(4) - 搜索算法
 catalog: true
 top: false
 mathjax: true
 date: 2024-05-04 13:50:47
 summary:
-tags: [Unity, 沙盒, 算法]
-categories: [Unity, 技术分享]
+tags: [技巧, 心得, 算法]
+categories: [Unity]
 ---
 
 # 前言

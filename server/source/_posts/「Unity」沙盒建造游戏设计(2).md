@@ -1,12 +1,12 @@
 ---
-title: Unity沙盒建造游戏设计(2) - 命令模式
+title: 「Unity」沙盒建造游戏设计(2) - 命令模式
 catalog: true
 top: false
 mathjax: true
 date: 2024-04-22 07:16:34
 summary:
-tags: [Unity, 沙盒, 命令]
-categories: [Unity, 技术分享]
+tags: [技巧, 心得]
+categories: [Unity]
 ---
 
 # 前言

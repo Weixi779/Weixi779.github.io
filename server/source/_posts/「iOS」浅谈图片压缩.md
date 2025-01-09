@@ -1,5 +1,5 @@
 ---
-title: 浅谈图片压缩
+title: 「iOS」浅谈图片压缩
 catalog: true
 layout: post
 top: false
@@ -9,8 +9,8 @@ mathjax: true
 date: 2024-03-07 19:28:08
 password:
 summary:
-tags: [图片压缩, 算法, luban]
-categories:
+tags: [图片压缩, 算法]
+categories: [iOS]
 ---
 # 一、前言
 

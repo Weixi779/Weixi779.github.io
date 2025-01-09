@@ -1,13 +1,13 @@
 ---
 layout: post
-title: 「DIY」Quest3与旁路由
+title: 「极客」Quest3与旁路由
 catalog: true
 top: false
 mathjax: true
 date: 2024-04-06 12:53:55
 summary:
-tags: [DIY, 旁路由]
-categories:
+tags: 
+categories: [极客]
 ---
 
 # 起因

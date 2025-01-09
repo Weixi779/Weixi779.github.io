@@ -1,12 +1,12 @@
 ---
-title: Unity沙盒建造游戏设计(3) - 状态模式
+title: 「Unity」沙盒建造游戏设计(3) - 状态模式
 catalog: true
 top: false
 mathjax: true
 date: 2024-04-27 19:20:13
 summary:
-tags: [Unity, 沙盒, 状态模式]
-categories: [Unity, 技术分享]
+tags: [技巧, 心得]
+categories: [Unity]
 ---
 
 # 前言

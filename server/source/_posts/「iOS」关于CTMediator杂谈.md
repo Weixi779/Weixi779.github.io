@@ -1,5 +1,5 @@
 ---
-title: 关于CTMediator杂谈
+title: 「iOS」关于CTMediator杂谈
 catalog: true
 top: false
 cover: false
@@ -8,8 +8,8 @@ mathjax: true
 date: 2023-06-18 16:39:29
 password:
 summary:
-tags: [OC, Swift, 总结]
-categories:
+tags: [变迁, 总结]
+categories: [iOS]
 ---
 # 一、组件化架构
 

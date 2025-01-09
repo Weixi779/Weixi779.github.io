@@ -1,12 +1,12 @@
 ---
-title: 自定义TabView
+title: 「iOS」自定义TabView
 catalog: true
 top: false
 mathjax: true
 date: 2024-07-29 13:15:07
 summary:
-tags: [SwiftUI]
-categories: [SwiftUI]
+tags: [SwiftUI, 技巧]
+categories: [iOS]
 ---
 
 # 概述

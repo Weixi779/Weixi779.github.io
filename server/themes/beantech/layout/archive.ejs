@@ -1,53 +1,173 @@
 ---
-layout: page
+layout: layout
 ---
 
 <!-- Main Content -->
+
 <div class="container">
     <div class="row">
-        <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-            <!-- 归档列表 -->
-            
-            <% 
-                var years = {};
-                site.posts.sort('date').reverse().forEach(function(post){
-                    var year = post.date.year()
-                    if(years[year]===undefined){
-                        years[year] = [];
-                    }
-                    years[year].push(post);
-                });
-            %>
+       <!-- 按分类归档列表 -->
+       <% var categories={}; %>
+       <% site.posts.forEach(function(post) { %>
+           <% post.categories.forEach(function(category) { %>
+               <% if (!categories[category.name]) { categories[category.name]=[]; } %>
+                   <% categories[category.name].push(post); %>
+                       <% }); %>
+                           <% }); %>
 
-             <!-- 归档列表 -->
+                               <% Object.keys(categories).forEach(function(categoryName, index) { %>
+                                   <div class="category-group">
+                                       <!-- 分类标题，带点击事件 -->
+                                       <h2 class="category-title"
+                                           onclick="toggleCategory('<%= 'category-' + index %>')">
+                                           <span>
+                                               <%= categoryName %>
+                                           </span>
+                                           <i class="fa fa-chevron-down toggle-icon"
+                                               id="<%= 'toggle-icon-' + index %>"></i>
+                                       </h2>
 
-            <% Object.keys(years).reverse().forEach(function(year){  %>
-            <div class="one-tag-list">
-                <span class="fa fa-calendar-times-o listing-seperator" id="<%= year %>">
-                    <span class="tag-text"><%= year %></span>
-                </span>
-                <ul>
-                <% years[year].map(function(post){  %>
-                  <!-- <li class="listing-item">
-                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
-                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
-                  </li> -->
-                 <li >
-                    <%= post.date.format('MM-DD') %>
-                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
-                    <a href="<%- config.root %><%- post.path %>" style="color: #0085a1">
-                        <span>
-                            <%- post.title || "Untitled" %>
-                        </span>
-                    </a>
-                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
-                </li>
-                <% }) %>
-                </ul>
-            </div>
-            <% }) %>
+                                       <!-- 分类内容，默认隐藏 -->
+                                       <div class="category-content" id="<%= 'category-' + index %>"
+                                           style="display: none;">
+                                           <% var years={}; %>
+                                               <% categories[categoryName].sort((a, b)=> b.date -
+                                                   a.date).forEach(function(post) { %>
+                                                   <% var year=post.date.year(); %>
+                                                       <% if (!years[year]) { years[year]=[]; } %>
+                                                           <% years[year].push(post); %>
+                                                               <% }); %>
 
-
-        </div>
+                                                                   <% Object.keys(years).reverse().forEach(function(year)
+                                                                       { %>
+                                                                       <div class="year-group">
+                                                                           <h4 class="year-title">
+                                                                               <%= year %>
+                                                                           </h4>
+                                                                           <ul class="post-list">
+                                                                               <% years[year].forEach(function(post)
+                                                                                   { %>
+                                                                                   <li class="post-item">
+                                                                                       <a href="<%- config.root %><%- post.path %>"
+                                                                                           style="color: #0085a1">
+                                                                                           <span><%- post.title
+                                                                                                   || "Untitled"
+                                                                                                   %></span>
+                                                                                       </a>
+                                                                                   </li>
+                                                                                   <% }); %>
+                                                                           </ul>
+                                                                       </div>
+                                                                       <% }); %>
+                                       </div>
+                                   </div>
+                                <% }); %>
     </div>
 </div>
+
+<!-- 添加交互脚本 -->
+<script>
+    function toggleCategory(categoryId) {
+        const content = document.getElementById(categoryId);
+        const icon = document.getElementById(`toggle-icon-${categoryId.split('-')[1]}`);
+        if (content.style.display === "none") {
+            content.style.display = "block";
+            icon.classList.remove('fa-chevron-down');
+            icon.classList.add('fa-chevron-up');
+        } else {
+            content.style.display = "none";
+            icon.classList.remove('fa-chevron-up');
+            icon.classList.add('fa-chevron-down');
+        }
+    }
+</script>
+
+<style>
+    /* 分类标题样式 */
+    .category-title {
+        font-size: 1.5em;
+        font-weight: bold;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.5em;
+        /* 图标和文字之间的间距 */
+        margin: 1em 0;
+        /* 标题的上下间距 */
+        padding: 0.5em;
+        background: linear-gradient(90deg, #f0f8ff, #e6f7ff);
+        border-radius: 5px;
+        transition: background 0.3s, transform 0.3s;
+    }
+
+    .category-title:hover {
+        background: linear-gradient(90deg, #e6f7ff, #d4edff);
+        transform: scale(1.02);
+        /* 鼠标悬浮时微微放大 */
+    }
+
+    .toggle-icon {
+        font-size: 1em;
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .year-group {
+        margin-top: 1em;
+        padding-left: 1.5em;
+        border-left: 3px solid #e6f7ff;
+    }
+
+    .year-title {
+        font-size: 1.2em;
+        font-weight: bold;
+        color: #444;
+        margin-bottom: 0.5em;
+    }
+
+    .post-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .post-item {
+        margin-bottom: 0.5em;
+        font-size: 1em;
+        color: #0085a1;
+        transition: color 0.3s, transform 0.3s;
+    }
+
+    .post-item a {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .post-item:hover {
+        color: #005f73;
+        transform: translateX(5px);
+        /* 鼠标悬浮时微微右移 */
+    }
+
+    .category-content {
+        margin-top: 0.5em;
+        padding: 0.5em 1em;
+        background: #f9f9f9;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    /* 响应式布局调整 */
+    @media (max-width: 768px) {
+        .category-title {
+            font-size: 1.2em;
+        }
+
+        .post-item {
+            font-size: 0.9em;
+        }
+
+        .year-title {
+            font-size: 1em;
+        }
+    }
+</style>

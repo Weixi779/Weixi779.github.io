@@ -1,79 +1,24 @@
 ---
 layout: layout
 ---
-
-<!-- Image to hack wechat -->
-<!-- <img src="<%= config['url'] %><%= config['root'] %>img/icon_wechat.png" width="0" height="0"> -->
-<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
-
-<!-- Post Header -->
-<style type="text/css">
-    header.intro-header{
-        background-image: url('<%= page["header-img"] || config.root + config["header-img"] %>')
-    }
-</style>
-<header class="intro-header" >
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                <div class="post-heading">
-                    <div class="tags">
-                        <% page.tags.forEach(function(tag){ %>
-                          <a class="tag" href="<%= config.root %>tags/#<%= tag.name %>" title="<%= tag.name %>"><%= tag.name %></a>
-                        <% }) %>
-                    </div>
-                    <h1><%= page.title %></h1>
-                    <h2 class="subheading"><%= page.subtitle || "" %></h2>
-                    <span class="meta">
-                        Posted by <%- page.author || config.author %> on
-                        <%= page.date.format(config.date_format) %>
-                    </span>
-                </div>
-            </div>
-        </div>
-    </div>
-</header>
+<!-- Modify by Yu-Hsuan Yen -->
 
 <!-- Post Content -->
 <article>
     <div class="container">
         <div class="row">
 
-    <!-- Post Container -->
+            <!-- Post Container -->
             <div class="
                 col-lg-8 col-lg-offset-2
                 col-md-10 col-md-offset-1
                 post-container">
 
                 <%- page.content %>
+                
 
                 <hr>
-
-                <% if(config['duoshuo_share'] && config['duoshuo_username']) { %>
-                <!-- 多说 Share start -->
-                </style>
-                <div class="ds-share"
-                    style="text-align: right"
-                    data-thread-key="<%= page.path %>"
-                    data-title="<%= page.title %>"
-                    data-url="<%= page.permalink %>"
-                    data-images="<%= page["header-img"] ? page.permalink + page["header-img"] : '' %>"
-                    data-content="<%- truncate(strip_html(page.content), {length: 50, omission: '...'}) %> | <%= config.SEOTitle %> " >
-                    <div class="ds-share-inline">
-                      <ul  class="ds-share-icons-16">
-                        <li data-toggle="ds-share-icons-more"><a class="ds-more" href="#">分享到：</a></li>
-                        <li><a class="ds-wechat flat" href="javascript:void(0);" data-service="wechat">微信</a></li>
-                        <li><a class="ds-weibo flat" href="javascript:void(0);" data-service="weibo">微博</a></li>
-                        <li><a class="ds-douban flat" href="javascript:void(0);" data-service="douban">豆瓣</a></li>
-                      </ul>
-                      <div class="ds-share-icons-more">
-                      </div>
-                    </div>
-                <hr>
-                </div>
-                <!-- 多说 Share end-->
-                <% } %>
-
+                <!-- Pager -->
                 <ul class="pager">
                     <% if (page.prev){ %>
                         <li class="previous">
@@ -87,46 +32,55 @@ layout: layout
                     <% } %>
                 </ul>
 
-                <% if(config['duoshuo_username']) { %>
-                <!-- 多说评论框 start -->
-                <div class="comment">
-                    <div class="ds-thread"
+                <!-- duoshuo Share start -->
+                <% if(config['duoshuo_share'] && config['duoshuo_username']) { %>
+                    <div class="ds-share"
+                        style="text-align: right"
                         data-thread-key="<%= page.path %>"
                         data-title="<%= page.title %>"
-                        data-url="<%= page.permalink %>" >
+                        data-url="<%= page.permalink %>"
+                        data-images="<%= page["header-img"] ? page.permalink + page["header-img"] : '' %>"
+                        data-content="<%- truncate(strip_html(page.content), {length: 50, omission: '...'}) %> | <%= config.SEOTitle %> " >
+                        <div class="ds-share-inline">
+                          <ul  class="ds-share-icons-16">
+                            <li data-toggle="ds-share-icons-more"><a class="ds-more" href="#">分享到：</a></li>
+                            <li><a class="ds-wechat flat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+                            <li><a class="ds-weibo flat" href="javascript:void(0);" data-service="weibo">微博</a></li>
+                            <li><a class="ds-douban flat" href="javascript:void(0);" data-service="douban">豆瓣</a></li>
+                          </ul>
+                          <div class="ds-share-icons-more">
+                          </div>
+                        </div>
+                    <hr>
                     </div>
-                </div>
+                <% } %>
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                <% if(config['duoshuo_username']) { %>
+                    <div class="comment">
+                        <div class="ds-thread"
+                            data-thread-key="<%= page.path %>"
+                            data-title="<%= page.title %>"
+                            data-url="<%= page.permalink %>" >
+                        </div>
+                    </div>
+                <% } %>
                 <!-- 多说评论框 end -->
-                <% } %>
 
+                <!-- disqus comment start -->
                 <% if(config['disqus_username']) { %>
-                <!-- disqus 评论框 start -->
-                <div class="comment">
-                    <div id="disqus_thread" class="disqus-thread"></div>
-                </div>
-                <!-- disqus 评论框 end -->
+                    <div class="comment">
+                        <div id="disqus_thread" class="disqus-thread"></div>
+                    </div>
                 <% } %>
-
+                <!-- disqus comment end -->
             </div>
-    <!-- Side Catalog Container -->
-        <% if (page.catalog) { %>
-            <div class="
-                col-lg-2 col-lg-offset-0
-                visible-lg-block
-                sidebar-container
-                catalog-container">
-                <div class="side-catalog">
-                    <hr class="hidden-sm hidden-xs">
-                    <h5>
-                        <a class="catalog-toggle" href="#">CATALOG</a>
-                    </h5>
-                    <ul class="catalog-body"></ul>
-                </div>
-            </div>
-        <% } %>
-
-    <!-- Sidebar Container -->
-
+            
+            <!-- Tabe of Content -->
+            <%- partial('_partial/toc') %>
+                
+            <!-- Sidebar Container -->
             <div class="
                 col-lg-8 col-lg-offset-2
                 col-md-10 col-md-offset-1
@@ -157,7 +111,6 @@ layout: layout
                 </ul>
                 <% }%>
             </div>
-
         </div>
     </div>
 </article>
@@ -183,7 +136,7 @@ layout: layout
 <% } %>
 
 <% if(config['disqus_username']) { %>
-<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<!-- disqus embedded js code start (one page only need to embed once) -->
 <script type="text/javascript">
     /* * * CONFIGURATION VARIABLES * * */
     var disqus_shortname = "<%= config['disqus_username'] %>";
@@ -196,7 +149,7 @@ layout: layout
         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
     })();
 </script>
-<!-- disqus 公共JS代码 end -->
+<!-- disqus embedded js code start end -->
 <% } %>
 
 
@@ -216,9 +169,9 @@ layout: layout
 <script>
     async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
         anchors.options = {
-          visible: 'always',
-          placement: 'right',
-          icon: '#'
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
         };
         anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
     })

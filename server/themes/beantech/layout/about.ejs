@@ -1,15 +1,15 @@
 ---
 layout: page
 ---
-
-
+<style type="text/css">
+    header.intro-header{
+        background-position: right; 
+    }
+</style>
 <!-- Chinese Version -->
 <div class="zh post-container">
     <%- page.content %>
 </div>
-
-
-
 
 <% if(config['duoshuo_username']) { %>
 
@@ -37,6 +37,7 @@ layout: page
          || document.getElementsByTagName('body')[0]).appendChild(ds);
     })();
 </script>
+
 <!-- 多说公共JS代码 end -->
 <% } %>
 

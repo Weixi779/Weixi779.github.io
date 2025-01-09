@@ -22,6 +22,14 @@ pretty_urls:
   trailing_index: false # Set to false to remove trailing 'index.html' from permalinks
   trailing_html: false # Set to false to remove trailing '.html' from permalinks
 
+# Sidebar settings
+sidebar: true # whether or not using Sidebar.
+sidebar-about-description: "一个对「编程」「音乐」「设计」充满好奇的程序员"
+sidebar-avatar: images/avatar.jpg
+widgets:
+- short-about
+# 相关修改需要去 theme下的config.yml进行修改
+
 # Directory
 source_dir: source
 public_dir: public
@@ -99,7 +107,7 @@ ignore:
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: huxblog
+theme: beantech
 
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
@@ -107,8 +115,3 @@ deploy:
   type: git
   repository: git@github.com:Weixi779/Weixi779.github.io.git
   branch: main
-
-# Sidebar settings
-sidebar: true # whether or not using Sidebar.
-sidebar-about-description: "一个对「编程」「音乐」「设计」充满好奇的程序员"
-sidebar-avatar: images/avatar.jpg

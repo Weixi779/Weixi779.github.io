@@ -16,6 +16,7 @@
 .sidebar-container h5 {
   color: #808080;
   padding-bottom: 1em;
+  text-transform: uppercase
 }
 .sidebar-container h5 a {
   color: #808080 !important;
@@ -35,6 +36,7 @@
 .sidebar-container .tags a:active {
   border-color: #0085a1;
 }
+
 .sidebar-container .short-about img {
   width: 80%;
   display: block;
@@ -48,6 +50,7 @@
 .sidebar-container .short-about .list-inline > li {
   padding-left: 0px;
 }
+
 body {
   /* Hux learn from
      *     TypeIsBeautiful,
@@ -124,6 +127,18 @@ img.shadow {
     background: white;
   }
 }
+select {
+    -webkit-appearance: none;
+    margin-top: 15px;
+    color: #337ab7;
+    border-color: #337ab7;
+    padding: 0 .4em;
+    background: #fff;
+}
+select.sel-lang {
+    min-height: 28px;
+    font-size: 14px;
+}
 .table th,
 .table td {
   border: 1px solid #eee !important;
@@ -132,7 +147,7 @@ hr.small {
   max-width: 100px;
   margin: 15px auto;
   border-width: 4px;
-  border-color: white;
+  /*border-color: white;*/
 }
 pre,
 .table-responsive {
@@ -210,6 +225,16 @@ pre code {
   line-height: 2;
   margin-top: 20px;
 }
+.post-container .tags a {
+  color: gray;
+  border-color: gray;
+}
+.post-container .tags a:hover,
+.post-container .tags a:active {
+  color: #0085a1;
+  border-color: #0085a1;
+}
+
 @media only screen and (max-width: 767px) {
   .navbar-default .navbar-collapse {
     border: none;
@@ -380,7 +405,7 @@ pre code {
   background-size: cover;
   -o-background-size: cover;
   margin-bottom: 0px;
-  /* 0 on mobile, modify by Hux */
+  /* modify by Yu-Hsuan Yen */
 }
 @media only screen and (min-width: 768px) {
   .intro-header {

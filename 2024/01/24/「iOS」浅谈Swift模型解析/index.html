@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="个人博客记录成长">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          「iOS」浅谈Swift模型解析 - undefined
+        
+    </title>
+
+    <link rel="canonical" href="https://weixi779.github.io/2024/01/24/「iOS」浅谈Swift模型解析/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS --> 
+    
+<link rel="stylesheet" href="/css/beantech.min.css">
+
+    
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    
+<link rel="stylesheet" href="/css/widget.css">
+
+
+    
+<link rel="stylesheet" href="/css/rocket.css">
+
+
+    
+<link rel="stylesheet" href="/css/signature.css">
+
+
+    
+<link rel="stylesheet" href="/css/toc.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('')
+            /*post*/
+        
+    }
+    
+</style>
+
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#心得" title="心得">心得</a>
+                            
+                              <a class="tag" href="/tags/#变迁" title="变迁">变迁</a>
+                            
+                              <a class="tag" href="/tags/#概括" title="概括">概括</a>
+                            
+                        </div>
+                        <h1>「iOS」浅谈Swift模型解析</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by Weixi on
+                            2024-01-24
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">伟兮の小屋</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="一、背景介绍"><a href="#一、背景介绍" class="headerlink" title="一、背景介绍"></a>一、背景介绍</h1><p>在移动应用开发领域，Android 和 iOS 构成了双分天下。</p>
+<p>对于安卓开发者而言，Kotlin 可被视为 Java 的精神传承。Kotlin 在完全兼容 Java 的基础上，引入了众多现代语法和特性，从而使开发变得更为简洁高效。</p>
+<p>然而，在 iOS 开发领域，情况略有不同。Swift 和 Objective-C 更像是逐渐演进的关系，前者在取代后者的过程中融合了传统与创新。</p>
+<p>这种渐进替代的格局，使得新老两代开发思想之间产生了碰撞，对于 iOS 开发者而言，语言转变并非一帆风顺的过程。</p>
+<h1 id="二、发展历程"><a href="#二、发展历程" class="headerlink" title="二、发展历程"></a>二、发展历程</h1><p>在 iOS 开发中，Objective-C 的运行时特性起到了至关重要的作用，它允许动态派发消息、动态添加方法、交换方法实现等强大的功能。这为 Objective-C 带来了灵活性和可扩展性，但同时也带来了一些潜在的问题和复杂性。</p>
+<p>然而，在 Swift 中，为了追求更高的性能和更严格的类型安全性，设计者选择了将运行时特性大幅度减少。这使得 Swift 在编译时就能发现更多的错误，并且更加高效地执行代码。</p>
+<p>虽然这为开发者带来了很多好处，但也意味着某些 Objective-C 中常见的动态特性在 Swift 中无法直接使用。</p>
+<h2 id="2-1-灵魂烙印"><a href="#2-1-灵魂烙印" class="headerlink" title="2.1 灵魂烙印"></a>2.1 灵魂烙印</h2><p>在 Swift 4.0 版本之前，iOS 开发者在处理 JSON 解析时仍延续着 Objective-C 时代的惯例，编写了许多不够符合 Swift 风格的代码。</p>
+<p>通常的做法是使用 <code>JSONSerialization.jsonObject</code> 将 JSON 数据转换为 <code>[String: Any]</code> 类型的字典，然后通过对数据类型进行扩展，实现类似于 Objective-C 中的 <code>stringValue</code>、<code>intValue</code> 等方法，从而完成模型的解析。</p>
+<p>尽管这种方法能够实现 JSON 解析，但它存在一些潜在问题。首先，将 JSON 转换为 <code>[String: Any]</code> 字典的做法缺乏具体类型信息，因此在访问具体值时必须进行类型转换，可能带来类型安全性和运行时错误的风险。</p>
+<p>其次，通过属性扩展方法来处理 JSON 解析可能降低代码的可读性和维护性，因为无法直接了解属性的类型和结构。最后，同时还会需要确认模型具体类型，会编写不少重复垃圾代码。</p>
+<p>许多第三方库基于上述流程诞生，并因其悠久历史而拥有众多星标。尽管它们在当下可能不再如此出色，但它们仍然承载着丰富的经验与资源。</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/SwiftyJSON/SwiftyJSON">SwiftyJSON - 22.1K star</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/alibaba/HandyJSON">HandyJSON - 4.1K star</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/kakaopensource/KakaJSON">KakaJSON - 1.1K star</a></li>
+</ul>
+<h2 id="2-2-更Swifty"><a href="#2-2-更Swifty" class="headerlink" title="2.2  更Swifty"></a>2.2  更Swifty</h2><p>随着对 Swift 的深入理解，一些开发者逐渐倾向于使用运算符重载的封装方式，以替代之前类似 Objective-C 中的 xxValue 方法的编写方式。这种方法可能受到其他编程语言开发者的启发，同时也展现了 Swift 语言的多样灵活特性。</p>
+<p>通过运算符重载，代码的可读性和简洁性得到了提升，使数据转换变得更加直观明了。通过对 Swift 原生类型进行运算符的定制，你能够实现类似于 <code>stringValue</code> 和 <code>intValue</code> 的功能，同时赋予你的代码更加优雅的外观。也使得确认模型具体类型时，会编写的垃圾代码相对减少。</p>
+<p>（当然，这也有可能是受到其他编程语言开发者重载运算符的启发。）</p>
+<p>代表第三方库为</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/tristanhimmelman/ObjectMapper">ObjectMapper - 9.1k star</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/isair/JSONHelper">JSONHelper - 786 star</a></li>
+</ul>
+<h1 id="三、官方出手"><a href="#三、官方出手" class="headerlink" title="三、官方出手"></a>三、官方出手</h1><p>其实无论上述的哪种方法 都是对 <code>[String: Any]</code>的变体,这种Objective-C解析思路的变体,无论在Swift无论怎么改变都显得表达复杂,使用繁琐.</p>
+<p>在Swift4.0的大版本中推出了 <code>Codable</code>、<code>JSONDecoder</code>和 <code>JSONEncoder</code>等方案,旨在解决以下问题</p>
+<ol>
+<li><strong>简化数据序列化和反序列化：</strong> 在开发中，我们经常需要将数据从一种格式转换为另一种格式，比如将对象转换为 JSON 格式，或者将 JSON 数据转换为对象。<code>Codable</code> 提供了一种简单的方式，通过使用 <code>JSONEncoder</code> 和 <code>JSONDecoder</code>，可以轻松地实现数据的编码和解码。</li>
+<li><strong>避免手动解析和构建：</strong> 在之前，进行数据的序列化和反序列化可能需要手动编写大量的解析和构建代码，特别是当数据结构复杂时。<code>Codable</code> 通过自动生成解析和构建代码，减少了手动操作的需求，从而降低了出错的可能性。</li>
+<li><strong>提高可维护性：</strong> <code>Codable</code> 使代码更加干净、紧凑，同时减少了处理数据转换时的重复性工作。这有助于提高代码的可读性和可维护性。</li>
+<li><strong>嵌套模型数组解析：</strong>当数组的成员也被标记 <code>Codable</code> 时不用添加额外代码即可完成解析工作</li>
+</ol>
+<p>但很可惜如果官方的Codable真有这么好用就没有这篇文档了,天下就会一统了,也不会存在所谓的第三方库了</p>
+<h2 id="3-1-问题何在"><a href="#3-1-问题何在" class="headerlink" title="3.1 问题何在"></a>3.1 问题何在</h2><p>让我们编写一个简单的演示来探讨一下 <code>Codable</code> 的使用和问题。</p>
+<p>首先，我们定义了一个数据结构：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">User</span>: <span class="title class_">Codable</span> &#123;</span><br><span class="line">    <span class="keyword">var</span> id: <span class="type">String</span></span><br><span class="line">    <span class="keyword">var</span> name: <span class="type">String</span></span><br><span class="line">    <span class="keyword">var</span> isVIP: <span class="type">Bool</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>接着，我们构造一个 JSON 数据进行数据解析：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> json <span class="operator">=</span> <span class="string">#&quot;&#123;&quot;id&quot;: &quot;123&quot;, &quot;name&quot;: &quot;weixi&quot;, &quot;isVIP&quot;: true&#125;&quot;#</span></span><br><span class="line"><span class="keyword">let</span> model <span class="operator">=</span> <span class="keyword">try</span> <span class="type">JSONDecoder</span>().decode(<span class="type">User</span>.<span class="keyword">self</span>, from: json.data(using: .utf8)<span class="operator">!</span>)</span><br></pre></td></tr></table></figure>
+
+<p>执行结果：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">User</span>(id: <span class="string">&quot;123&quot;</span>, name: <span class="string">&quot;weixi&quot;</span>, isVIP: <span class="literal">true</span>)</span><br></pre></td></tr></table></figure>
+
+<p>这个例子中，<code>Codable</code> 表现得非常出色，能够完美地完成数据解析任务。</p>
+<h3 id="3-1-1-数据映射"><a href="#3-1-1-数据映射" class="headerlink" title="3.1.1 数据映射"></a>3.1.1 数据映射</h3><p>当然，上述情况只是 <code>Codable</code> 最理想的应用情况。现在，让我们修改一下 JSON 数据：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> json <span class="operator">=</span> <span class="string">#&quot;&#123;&quot;id&quot;: &quot;123&quot;, &quot;name&quot;: &quot;weixi&quot;, &quot;isVIP&quot;: 0&#125;&quot;#</span></span><br></pre></td></tr></table></figure>
+
+<p>这是会直接崩溃Error</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Fatal</span> error: <span class="type">Error</span> raised at top level: <span class="type">Swift</span>.<span class="type">DecodingError</span>.typeMismatch(<span class="type">Swift</span>.<span class="type">Bool</span>, <span class="type">Swift</span>.<span class="type">DecodingError</span>.<span class="type">Context</span>(codingPath: [<span class="type">CodingKeys</span>(stringValue: <span class="string">&quot;isVIP&quot;</span>, intValue: <span class="literal">nil</span>)], debugDescription: <span class="string">&quot;Expected to decode Bool but found number instead.&quot;</span>, underlyingError: <span class="literal">nil</span>))</span><br></pre></td></tr></table></figure>
+
+<p>这个问题出在 Swift 认为你提供的是布尔类型，期望使用 <code>true</code> 或 <code>false</code> 进行解析。</p>
+<p>那么，我们作为解析方应该如何应对呢？</p>
+<p>我们需要将布尔类型映射到整数类型，然后自己编写一个 getter 方法：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">User</span>: <span class="title class_">Codable</span> &#123;</span><br><span class="line">    <span class="keyword">var</span> id: <span class="type">String</span></span><br><span class="line">    <span class="keyword">var</span> name: <span class="type">String</span></span><br><span class="line">    <span class="keyword">var</span> isVIP: <span class="type">Int</span></span><br><span class="line">  </span><br><span class="line">    <span class="keyword">var</span> isReallyVip: <span class="type">Bool</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> isVIP <span class="operator">==</span> <span class="number">1</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>但是，如果后端提供的是字符串类型的 <code>&quot;0&quot;</code> 或 <code>&quot;1&quot;</code> 呢？是的，同样的操作也需要执行。</p>
+<h3 id="3-1-2-关于可选值"><a href="#3-1-2-关于可选值" class="headerlink" title="3.1.2 关于可选值"></a>3.1.2 关于可选值</h3><p>当我们修改 JSON，使其缺少 <code>isVIP</code> 字段时：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> json <span class="operator">=</span> <span class="string">#&quot;&#123;&quot;id&quot;: &quot;123&quot;, &quot;name&quot;: &quot;weixi&quot;&#125;&quot;#</span></span><br></pre></td></tr></table></figure>
+
+<p>解析仍然会导致错误：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Fatal</span> error: <span class="type">Error</span> raised at top level: <span class="type">Swift</span>.<span class="type">DecodingError</span>.keyNotFound(<span class="type">CodingKeys</span>(stringValue: <span class="string">&quot;isVIP&quot;</span>, intValue: <span class="literal">nil</span>), <span class="type">Swift</span>.<span class="type">DecodingError</span>.<span class="type">Context</span>(codingPath: [], debugDescription: <span class="string">&quot;No value associated with key CodingKeys(stringValue: <span class="subst">\&quot;</span>isVIP<span class="subst">\&quot;</span>, intValue: nil) (<span class="subst">\&quot;</span>isVIP<span class="subst">\&quot;</span>).&quot;</span>, underlyingError: <span class="literal">nil</span>))</span><br></pre></td></tr></table></figure>
+
+<p>为了确保解析不会崩溃，我们尝试将 <code>Bool</code> 改为可选 <code>Bool?</code>：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">User</span>: <span class="title class_">Codable</span> &#123;</span><br><span class="line">    <span class="keyword">var</span> id: <span class="type">String</span></span><br><span class="line">    <span class="keyword">var</span> name: <span class="type">String</span></span><br><span class="line">    <span class="keyword">var</span> isVIP: <span class="type">Bool</span>?</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然而，这会导致解析后的结果如下：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">User</span>(id: <span class="string">&quot;123&quot;</span>, name: <span class="string">&quot;weixi&quot;</span>, isVIP: <span class="literal">nil</span>)</span><br></pre></td></tr></table></figure>
+
+<p>可选值会让外部使用变得非常繁琐，需要进行空判断或者使用 <code>?? false</code> 进行处理。</p>
+<p>实际上，我们的需求很简单：当这个简单的布尔值为空时，我们希望默认设为 <code>false</code>，就像在 Objective-C 中使用 <code>boolValue</code> 一样。</p>
+<p>尽管 <code>Codable</code> 支持这种操作，但我们的代码会变成这个样子：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">User</span>: <span class="title class_">Codable</span> &#123;</span><br><span class="line">    <span class="keyword">var</span> id: <span class="type">String</span></span><br><span class="line">    <span class="keyword">var</span> name: <span class="type">String</span></span><br><span class="line">    <span class="keyword">var</span> isVIP: <span class="type">Bool</span></span><br><span class="line">  </span><br><span class="line">    <span class="keyword">enum</span> <span class="title class_">CodingKeys</span>: <span class="title class_">String</span>, <span class="title class_">CodingKey</span> &#123;</span><br><span class="line">        <span class="keyword">case</span> id, name, isVIP</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">init</span>(<span class="params">from</span> <span class="params">decoder</span>: <span class="type">Decoder</span>) <span class="keyword">throws</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> container <span class="operator">=</span> <span class="keyword">try</span> decoder.container(keyedBy: <span class="type">CodingKeys</span>.<span class="keyword">self</span>)</span><br><span class="line">        id <span class="operator">=</span> <span class="keyword">try</span> container.decode(<span class="type">String</span>.<span class="keyword">self</span>, forKey: .id)</span><br><span class="line">        name <span class="operator">=</span> <span class="keyword">try</span> container.decode(<span class="type">String</span>.<span class="keyword">self</span>, forKey: .name)</span><br><span class="line">        isVIP <span class="operator">=</span> <span class="keyword">try</span> container.decodeIfPresent(<span class="type">Bool</span>.<span class="keyword">self</span>, forKey: .isVIP) <span class="operator">??</span> <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这不仅需要重写整个 <code>init(from decoder: Decoder)</code> 方法，还需要在里面重写其他属性的解析规则。这种做法不仅会影响解码效率，还会增加维护成本，特别是在模型不断扩展的情况下。</p>
+<p>在这种情况下，考虑到 <code>Codable</code> 在动态类型转换和处理上可能会产生不成熟的问题，以及维护成本可能会更高，许多开发者可能更倾向于选择那些更为稳定且维护成本较低的第三方解析库。</p>
+<h2 id="3-2-Property-Wrappers"><a href="#3-2-Property-Wrappers" class="headerlink" title="3.2 Property Wrappers"></a>3.2 Property Wrappers</h2><p>Swift 5.1 版本引入了 Property Wrappers 特性，旨在更加深入地融合 SwiftUI 和 Combine 框架。</p>
+<p>类似于 Java 的注解，属性包装器充当了强大的 getter 和 setter，但使用了官方提供的模板，结合 <code>@</code> 前缀，编译器会将相关逻辑嵌入到代码中。</p>
+<p>简而言之，这个特性为 Swift 带来了类似注解的功能，同时还提供了更大的灵活性和类型安全性。</p>
+<p>经过前面的案例分析，实际上 <code>Codable</code> 解析所需的是对于默认值或可空值的简单判空处理。在过去的这几年中，可以说 Swift 的解析相关特性经历了一次重要的调整和发展。参考链接中提供了关于 <code>Codable</code> 和 Property Wrappers 结合使用的一些资料，这里不再详细展开。</p>
+<p>其中出现了一些将这些特性进行封装的库，虽然它们相对较新，因此星标数可能较少。然而，在我看来，这才是 Swift 解析特性真正的显现。其中，一些代表性的第三方库包括：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/marksands/BetterCodable">BetterCodable - 1.6k star</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/GottaGetSwifty/CodableWrappers">CodableWrappers - 435 star</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/winddpan/CodableWrapper">CodableWrapper - 178 star</a></li>
+</ul>
+<h1 id="四、使用教程"><a href="#四、使用教程" class="headerlink" title="四、使用教程"></a>四、使用教程</h1><h2 id="4-1-框架使用"><a href="#4-1-框架使用" class="headerlink" title="4.1 框架使用"></a>4.1 框架使用</h2><p>这次选择的解析库是CodableWrapper,由于初版在20年提交,所以目前star数并不多,但横向对比其他两个三方库确实这个使用起来会更简单</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> CodableWrapper</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">User</span>: <span class="title class_">Codable</span> &#123;</span><br><span class="line">    <span class="meta">@Codec</span> <span class="keyword">var</span> id: <span class="type">String</span> <span class="operator">=</span> <span class="string">&quot;&quot;</span></span><br><span class="line">    <span class="meta">@Codec</span> <span class="keyword">var</span> name: <span class="type">String</span> <span class="operator">=</span> <span class="string">&quot;&quot;</span></span><br><span class="line">    <span class="meta">@Codec</span> <span class="keyword">var</span> isVIP: <span class="type">Bool</span> <span class="operator">=</span> <span class="literal">false</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>由于是内部写的getter和setter 所以要给予默认值,其他的均不需要任何改动</p>
+<p>这样他就可以自动帮我们的修复3.1.1 和 3.1.2 中讨论的两个问题</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> json <span class="operator">=</span> <span class="string">#&quot;&#123;&quot;id&quot;: &quot;123&quot;, &quot;name&quot;: &quot;weixi&quot;, &quot;isVIP&quot;: 1&#125;&quot;#</span></span><br><span class="line"><span class="keyword">let</span> json <span class="operator">=</span> <span class="string">#&quot;&#123;&quot;id&quot;: &quot;123&quot;, &quot;name&quot;: &quot;weixi&quot;, &quot;isVIP&quot;: &quot;1&quot;&#125;&quot;#</span></span><br><span class="line"></span><br><span class="line"><span class="operator">--</span> 执行结果 <span class="operator">--</span></span><br><span class="line"></span><br><span class="line"><span class="type">User</span>(_id: <span class="number">123</span>, _name: weixi, _isVIP: <span class="literal">true</span>)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> json <span class="operator">=</span> <span class="string">#&quot;&#123;&quot;id&quot;: &quot;123&quot;, &quot;name&quot;: &quot;weixi&quot;&#125;&quot;#</span></span><br><span class="line"></span><br><span class="line"><span class="operator">--</span> 执行结果 <span class="operator">--</span></span><br><span class="line"></span><br><span class="line"><span class="type">User</span>(_id: <span class="number">123</span>, _name: weixi, _isVIP: <span class="literal">false</span>)</span><br></pre></td></tr></table></figure>
+
+<h2 id="4-2-框架其他功能"><a href="#4-2-框架其他功能" class="headerlink" title="4.2 框架其他功能"></a>4.2 框架其他功能</h2><h3 id="4-2-1-重命名"><a href="#4-2-1-重命名" class="headerlink" title="4.2.1 重命名"></a>4.2.1 重命名</h3><figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">User</span>: <span class="title class_">Codable</span> &#123;</span><br><span class="line">    <span class="meta">@Codec</span> <span class="keyword">var</span> id: <span class="type">String</span> <span class="operator">=</span> <span class="string">&quot;&quot;</span></span><br><span class="line">    <span class="meta">@Codec</span> <span class="keyword">var</span> name: <span class="type">String</span> <span class="operator">=</span> <span class="string">&quot;&quot;</span></span><br><span class="line">    <span class="meta">@Codec</span>(<span class="string">&quot;isVIP&quot;</span>) <span class="keyword">var</span> isVip: <span class="type">Bool</span> <span class="operator">=</span> <span class="literal">false</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> json <span class="operator">=</span> <span class="string">#&quot;&#123;&quot;id&quot;: &quot;123&quot;, &quot;name&quot;: &quot;weixi&quot;, &quot;isVIP&quot;: true&#125;&quot;#</span></span><br><span class="line"></span><br><span class="line"><span class="operator">--</span> 执行结果 <span class="operator">--</span> </span><br><span class="line"></span><br><span class="line"><span class="type">User</span>(_id: <span class="number">123</span>, _name: weixi, _isVip: <span class="literal">true</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-2-2-enum-rawValue"><a href="#4-2-2-enum-rawValue" class="headerlink" title="4.2.2 enum rawValue"></a>4.2.2 enum rawValue</h3><figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">enum</span> <span class="title class_">Gender</span>: <span class="title class_">String</span>, <span class="title class_">Codable</span> &#123;</span><br><span class="line">    <span class="keyword">case</span> male <span class="operator">=</span> <span class="string">&quot;male&quot;</span></span><br><span class="line">    <span class="keyword">case</span> female <span class="operator">=</span> <span class="string">&quot;female&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">User</span>: <span class="title class_">Codable</span> &#123;</span><br><span class="line">    <span class="meta">@Codec</span> <span class="keyword">var</span> id: <span class="type">String</span> <span class="operator">=</span> <span class="string">&quot;&quot;</span></span><br><span class="line">    <span class="meta">@Codec</span> <span class="keyword">var</span> name: <span class="type">String</span> <span class="operator">=</span> <span class="string">&quot;&quot;</span></span><br><span class="line">    <span class="meta">@Codec</span> <span class="keyword">var</span> isVIP: <span class="type">Bool</span> <span class="operator">=</span> <span class="literal">false</span></span><br><span class="line">    <span class="meta">@Codec</span> <span class="keyword">var</span> gender: <span class="type">Gender</span> <span class="operator">=</span> .male</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> json <span class="operator">=</span> <span class="string">#&quot;&#123;&quot;id&quot;: &quot;123&quot;, &quot;name&quot;: &quot;weixi&quot;, &quot;isVIP&quot;: true, &quot;gender&quot;: &quot;female&quot; &#125;&quot;#</span></span><br><span class="line"></span><br><span class="line"><span class="operator">--</span> 执行结果 <span class="operator">--</span> </span><br><span class="line"></span><br><span class="line"><span class="type">User</span>(_id: <span class="number">123</span>, _name: weixi, _isVIP: <span class="literal">true</span>, _gender: female)</span><br></pre></td></tr></table></figure>
+
+<h1 id="五、论外"><a href="#五、论外" class="headerlink" title="五、论外"></a>五、论外</h1><h2 id="5-1-Codable解析模型数组"><a href="#5-1-Codable解析模型数组" class="headerlink" title="5.1 Codable解析模型数组"></a>5.1 Codable解析模型数组</h2><p><code>Codable</code> 的优势在于其特定的模型类型指定，因此不需要任何额外的代码。只需确保子模型遵循 <code>Codable</code> 协议即可。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">Title</span>: <span class="title class_">Codable</span> &#123;</span><br><span class="line">    <span class="keyword">var</span> content: <span class="type">String</span></span><br><span class="line">    <span class="keyword">var</span> level: <span class="type">Int</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">User</span>: <span class="title class_">Codable</span> &#123;</span><br><span class="line">    <span class="keyword">var</span> id: <span class="type">String</span></span><br><span class="line">    <span class="keyword">var</span> name: <span class="type">String</span></span><br><span class="line">    <span class="keyword">var</span> isVIP: <span class="type">Bool</span></span><br><span class="line">    <span class="keyword">var</span> titles: [<span class="type">Title</span>]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// json 就不贴了</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="5-2-关于Any"><a href="#5-2-关于Any" class="headerlink" title="5.2 关于Any"></a>5.2 关于Any</h2><p>在文章前部分，我主要对一些高星标解析库提出了一些批评。这是因为在 Swift 中，如果你试图声明一个 <code>Any</code> 类型并让它支持 <code>Codable</code> 协议，会发现无法顺利编译。Swift 作为一种强类型语言，对于 <code>Any</code> 这种不具体类型的使用是相当谨慎的。</p>
+<p>实际上，许多情况下我们都会不得不在代码中频繁使用 <code>Any</code>，但这种做法常常是被 Swift 所不鼓励的。然而，现阶段只能采用老旧的 <code>JSONSerialization</code> 方式或者引入类似 <code>AnyCodable</code> 的库来应对这些情况。</p>
+<h2 id="5-3-关于速度"><a href="#5-3-关于速度" class="headerlink" title="5.3 关于速度"></a>5.3 关于速度</h2><p>属性包装器的方案因为是硬编码肯定对速度有影响,所以在这里进行一些测试</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">User</span>: <span class="title class_">Codable</span> &#123;</span><br><span class="line">    <span class="keyword">var</span> id: <span class="type">String</span></span><br><span class="line">    <span class="keyword">var</span> name: <span class="type">String</span></span><br><span class="line">    <span class="keyword">var</span> isVIP: <span class="type">Bool</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> json <span class="operator">=</span> <span class="string">#&quot;&#123;&quot;id&quot;: &quot;123&quot;, &quot;name&quot;: &quot;weixi&quot;, &quot;isVIP&quot;: true &#125;&quot;#</span></span><br><span class="line"><span class="keyword">var</span> result <span class="operator">=</span> [<span class="type">CFAbsoluteTime</span>]()</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> <span class="keyword">_</span> <span class="keyword">in</span> <span class="number">0</span><span class="operator">..&lt;</span><span class="number">10</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> start <span class="operator">=</span> <span class="type">CFAbsoluteTimeGetCurrent</span>()</span><br><span class="line">    <span class="keyword">let</span> model <span class="operator">=</span> <span class="keyword">try</span> <span class="type">JSONDecoder</span>().decode(<span class="type">User</span>.<span class="keyword">self</span>, from: json.data(using: .utf8)<span class="operator">!</span>)</span><br><span class="line">    <span class="keyword">let</span> end <span class="operator">=</span> <span class="type">CFAbsoluteTimeGetCurrent</span>()</span><br><span class="line">    <span class="keyword">let</span> time <span class="operator">=</span> (end <span class="operator">-</span> start) <span class="operator">*</span> <span class="number">1000</span></span><br><span class="line">    result.append(time)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> total <span class="operator">=</span> result.reduce(<span class="number">0</span>) &#123; <span class="variable">$0</span> <span class="operator">+</span> <span class="variable">$1</span> &#125;</span><br><span class="line"><span class="built_in">print</span>(total <span class="operator">/</span> <span class="number">10</span>)</span><br><span class="line"></span><br><span class="line"><span class="operator">--</span> 执行结果 <span class="operator">--</span> </span><br><span class="line"></span><br><span class="line"><span class="number">0.11391639709472656</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">User</span>: <span class="title class_">Codable</span> &#123;</span><br><span class="line">    <span class="meta">@Codec</span> <span class="keyword">var</span> id: <span class="type">String</span> <span class="operator">=</span> <span class="string">&quot;&quot;</span></span><br><span class="line">    <span class="meta">@Codec</span> <span class="keyword">var</span> name: <span class="type">String</span> <span class="operator">=</span> <span class="string">&quot;&quot;</span></span><br><span class="line">    <span class="meta">@Codec</span> <span class="keyword">var</span> isVIP: <span class="type">Bool</span> <span class="operator">=</span> <span class="literal">false</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 其他代码同上</span></span><br><span class="line"><span class="operator">--</span> 执行结果 <span class="operator">--</span> </span><br><span class="line"></span><br><span class="line"><span class="number">0.3190040588378906</span></span><br></pre></td></tr></table></figure>
+
+<p>正是如此，以上操作显然会对执行速度产生一定的影响。然而，对于实际的性能影响，很难直接从代码量级中得出准确的概念。为了更好地理解这种影响，我运行了一个 Objective-C 示例。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSString</span> *json = <span class="string">@&quot;&#123;\&quot;id\&quot;: \&quot;123\&quot;, \&quot;name\&quot;: \&quot;weixi\&quot;, \&quot;isVIP\&quot;: true &#125;&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">NSMutableArray</span> *array = [<span class="built_in">NSMutableArray</span> new];</span><br><span class="line"><span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</span><br><span class="line">    <span class="built_in">CFAbsoluteTime</span> start = <span class="built_in">CFAbsoluteTimeGetCurrent</span>();</span><br><span class="line">    [User mj_objectWithKeyValues:json];</span><br><span class="line">    <span class="built_in">CFAbsoluteTime</span> end = <span class="built_in">CFAbsoluteTimeGetCurrent</span>();</span><br><span class="line">    <span class="built_in">CFAbsoluteTime</span> time = (end - start) * <span class="number">1000</span>;</span><br><span class="line">    <span class="built_in">NSNumber</span> *number = @(time);</span><br><span class="line">    [array addObject:number];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">NSNumber</span> *total = @(<span class="number">0</span>);</span><br><span class="line"><span class="keyword">for</span> (<span class="built_in">NSNumber</span> *number <span class="keyword">in</span> array) &#123;</span><br><span class="line">    total = @([total doubleValue] + [number doubleValue]);</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@&quot;%f&quot;</span>, [total doubleValue] / <span class="number">10</span>);</span><br><span class="line"></span><br><span class="line">-- 执行结果 -- </span><br><span class="line"></span><br><span class="line"><span class="number">1.6741</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="5-4-关于模型层共用"><a href="#5-4-关于模型层共用" class="headerlink" title="5.4 关于模型层共用"></a>5.4 关于模型层共用</h2><p>随着我们的项目进入OC与Swift的并行开发阶段，我们正在逐步向Swift迁移。首先，我们选择从最基础的业务模型层开始。为了确保模型层的无缝对接，我们需要考虑如何使Swift模型适配MJExtension解析。</p>
+<h3 id="5-4-1-如何添加"><a href="#5-4-1-如何添加" class="headerlink" title="5.4.1 如何添加"></a>5.4.1 如何添加</h3><p>若有模型需要被OC层解析时</p>
+<ol>
+<li>将其声明为Class，并继承自NSObject。</li>
+<li>在前缀处添加@objcMembers或@objc。</li>
+</ol>
+<p>完成上述步骤并编译后，OC层即可使用mj_objectWithKeyValues进行解析。</p>
+<p>解析嵌套组时会有出入,无法使用mj_objectClassInArray进行解析声明。</p>
+<ol start="3">
+<li>需要定义mj_didConvertToObject进行额外数组解析</li>
+</ol>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">@objc</span>Members</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">PhotoList</span>: <span class="title class_">NSObject</span>, <span class="title class_">Codable</span> &#123;</span><br><span class="line">    <span class="meta">@Codec</span> <span class="keyword">var</span> photos: [<span class="type">PhotoModel</span>] <span class="operator">=</span> []</span><br><span class="line">  </span><br><span class="line">    <span class="keyword">override</span> <span class="keyword">func</span> <span class="title function_">mj_didConvertToObject</span>(<span class="params">withKeyValues</span> <span class="params">keyValues</span>: [<span class="params">AnyHashable</span> : <span class="keyword">Any</span>]<span class="operator">!</span>) &#123;</span><br><span class="line">        <span class="keyword">let</span> paraseArray <span class="operator">=</span> <span class="type">PhotoModel</span>.mj_objectArray(withKeyValuesArray: photos)</span><br><span class="line">        <span class="keyword">self</span>.photos <span class="operator">=</span> (items <span class="keyword">as?</span> [<span class="type">PhotoModel</span>]) <span class="operator">??</span> []</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>为了方便后续调用，为数组添加了一个扩展：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// MARK: - MJ解析扩展</span></span><br><span class="line"><span class="keyword">extension</span> <span class="title class_">Array</span> <span class="title class_">where</span> <span class="title class_">Element</span>: <span class="title class_">NSObject</span> &#123;</span><br><span class="line">    <span class="comment">/// 解析嵌套模型数组</span></span><br><span class="line">    <span class="keyword">mutating</span> <span class="keyword">func</span> <span class="title function_">paraseArray</span>() &#123;</span><br><span class="line">        <span class="keyword">let</span> paraseArray <span class="operator">=</span> <span class="type">Element</span>.mj_objectArray(withKeyValuesArray: <span class="keyword">self</span>)</span><br><span class="line">        <span class="keyword">self</span> <span class="operator">=</span> paraseArray <span class="keyword">as?</span> [<span class="type">Element</span>] <span class="operator">??</span> []</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-4-2-讨论Swift中使用MJ"><a href="#5-4-2-讨论Swift中使用MJ" class="headerlink" title="5.4.2 讨论Swift中使用MJ"></a>5.4.2 讨论Swift中使用MJ</h3><p>虽然上述方法在Swift中是可行的，但并不推荐这样做，原因如下：</p>
+<ol>
+<li>模型必须被定义为Class。</li>
+<li>一旦继承了NSObject，任何本地的修改都会导致重新编译桥接文件。</li>
+<li>使用Codable是一个更好、更快、更流畅的选择。</li>
+<li>仍然存在与桥接相关的问题。</li>
+</ol>
+<p>总的来说，这只是为Swift化的底层搭建了一个初步的桥梁，但前路仍然漫长。</p>
+<h1 id="六、结语"><a href="#六、结语" class="headerlink" title="六、结语"></a>六、结语</h1><p>随着时间的推移，人们对于Swift的理解变得更加深入，语法也在逐步优化。Swift模式解析的完善正在逐渐显现，尽管从未来的角度来看，官方尚未明确指定一套解决方案。我们期待随着时间的推进，能够找到一套足够完美且符合Swift风格的解决方案。</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><p><a target="_blank" rel="noopener" href="https://github.com/SwiftyJSON/SwiftyJSON">SwiftyJSON&#x2F;SwiftyJSON: The better way to deal with JSON data in Swift. (github.com)</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/tristanhimmelman/ObjectMapper">tristanhimmelman&#x2F;ObjectMapper: Simple JSON Object mapping written in Swift (github.com)</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/kakaopensource/KakaJSON">kakaopensource&#x2F;KakaJSON: Fast conversion between JSON and model in Swift. (github.com)</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/tristanhimmelman/ObjectMapper">tristanhimmelman&#x2F;ObjectMapper: Simple JSON Object mapping written in Swift (github.com)</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/isair/JSONHelper">isair&#x2F;JSONHelper: ✌ Convert anything into anything in one operation; JSON data into class instances</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/fzhlee/article/details/114298582">关于Swift的Property Wrappers_李发展的博客-CSDN博客</a></p>
+<p><a target="_blank" rel="noopener" href="https://onevcat.com/2020/11/codable-default/">使用 Property Wrapper 为 Codable 解码设定默认值 | OneV&#39;s Den (onevcat.com)</a></p>
+<p><a target="_blank" rel="noopener" href="https://onevcat.com/2018/03/swift-meta/">不同角度看问题 - 从 Codable 到 Swift 元编程 | OneV&#39;s Den (onevcat.com)</a></p>
+<p><a target="_blank" rel="noopener" href="https://juejin.cn/post/6958827378093064206">关于Codable协议处理数据实体属性缺省值问题 - 掘金 (juejin.cn)</a></p>
+<p><a target="_blank" rel="noopener" href="https://docs.swift.org/swift-book/documentation/the-swift-programming-language/properties/#Property-Wrappers">Properties | Documentation (swift.org)</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnswift.org/properties">属性 – Swift 编程语言 (cnswift.org)</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/CoderMJLee/MJExtension">CoderMJLee&#x2F;MJExtension: A fast, convenient and nonintrusive conversion framework between JSON and model. Your model class doesn&#39;t need to extend any base class. You don&#39;t need to modify any model file. (github.com)</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/ab4fe7d2b7e2">MJExtension 使用OC和Swift - 简书 (jianshu.com)</a></p>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2024/03/04/「iOS」震动与系统声音/" data-toggle="tooltip" data-placement="top" title="「iOS」震动与系统声音">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2023/06/18/「iOS」关于CTMediator杂谈/" data-toggle="tooltip" data-placement="top" title="「iOS」关于CTMediator杂谈">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                <!-- disqus comment end -->
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E4%B8%80%E3%80%81%E8%83%8C%E6%99%AF%E4%BB%8B%E7%BB%8D"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">一、背景介绍</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E4%BA%8C%E3%80%81%E5%8F%91%E5%B1%95%E5%8E%86%E7%A8%8B"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">二、发展历程</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#2-1-%E7%81%B5%E9%AD%82%E7%83%99%E5%8D%B0"><span class="toc-nav-number">2.1.</span> <span class="toc-nav-text">2.1 灵魂烙印</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#2-2-%E6%9B%B4Swifty"><span class="toc-nav-number">2.2.</span> <span class="toc-nav-text">2.2  更Swifty</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E4%B8%89%E3%80%81%E5%AE%98%E6%96%B9%E5%87%BA%E6%89%8B"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">三、官方出手</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#3-1-%E9%97%AE%E9%A2%98%E4%BD%95%E5%9C%A8"><span class="toc-nav-number">3.1.</span> <span class="toc-nav-text">3.1 问题何在</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#3-1-1-%E6%95%B0%E6%8D%AE%E6%98%A0%E5%B0%84"><span class="toc-nav-number">3.1.1.</span> <span class="toc-nav-text">3.1.1 数据映射</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#3-1-2-%E5%85%B3%E4%BA%8E%E5%8F%AF%E9%80%89%E5%80%BC"><span class="toc-nav-number">3.1.2.</span> <span class="toc-nav-text">3.1.2 关于可选值</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#3-2-Property-Wrappers"><span class="toc-nav-number">3.2.</span> <span class="toc-nav-text">3.2 Property Wrappers</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E5%9B%9B%E3%80%81%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">四、使用教程</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#4-1-%E6%A1%86%E6%9E%B6%E4%BD%BF%E7%94%A8"><span class="toc-nav-number">4.1.</span> <span class="toc-nav-text">4.1 框架使用</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#4-2-%E6%A1%86%E6%9E%B6%E5%85%B6%E4%BB%96%E5%8A%9F%E8%83%BD"><span class="toc-nav-number">4.2.</span> <span class="toc-nav-text">4.2 框架其他功能</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#4-2-1-%E9%87%8D%E5%91%BD%E5%90%8D"><span class="toc-nav-number">4.2.1.</span> <span class="toc-nav-text">4.2.1 重命名</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#4-2-2-enum-rawValue"><span class="toc-nav-number">4.2.2.</span> <span class="toc-nav-text">4.2.2 enum rawValue</span></a></li></ol></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E4%BA%94%E3%80%81%E8%AE%BA%E5%A4%96"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">五、论外</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#5-1-Codable%E8%A7%A3%E6%9E%90%E6%A8%A1%E5%9E%8B%E6%95%B0%E7%BB%84"><span class="toc-nav-number">5.1.</span> <span class="toc-nav-text">5.1 Codable解析模型数组</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#5-2-%E5%85%B3%E4%BA%8EAny"><span class="toc-nav-number">5.2.</span> <span class="toc-nav-text">5.2 关于Any</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#5-3-%E5%85%B3%E4%BA%8E%E9%80%9F%E5%BA%A6"><span class="toc-nav-number">5.3.</span> <span class="toc-nav-text">5.3 关于速度</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#5-4-%E5%85%B3%E4%BA%8E%E6%A8%A1%E5%9E%8B%E5%B1%82%E5%85%B1%E7%94%A8"><span class="toc-nav-number">5.4.</span> <span class="toc-nav-text">5.4 关于模型层共用</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#5-4-1-%E5%A6%82%E4%BD%95%E6%B7%BB%E5%8A%A0"><span class="toc-nav-number">5.4.1.</span> <span class="toc-nav-text">5.4.1 如何添加</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#5-4-2-%E8%AE%A8%E8%AE%BASwift%E4%B8%AD%E4%BD%BF%E7%94%A8MJ"><span class="toc-nav-number">5.4.2.</span> <span class="toc-nav-text">5.4.2 讨论Swift中使用MJ</span></a></li></ol></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E5%85%AD%E3%80%81%E7%BB%93%E8%AF%AD"><span class="toc-nav-number">6.</span> <span class="toc-nav-text">六、结语</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="toc-nav-number">7.</span> <span class="toc-nav-text">参考链接</span></a></li></ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Weixi 2025 
+                    <br>
+                    Theme by <a target="_blank" rel="noopener" href="http://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    re-Ported by <a target="_blank" rel="noopener" href="http://beantech.org">BeanTech</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=YenYuHsuan&repo=hexo-theme-beantech&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://weixi779.github.io/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="https://weixi779.github.io/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

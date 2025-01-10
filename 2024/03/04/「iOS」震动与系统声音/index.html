@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="个人博客记录成长">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          「iOS」震动与系统声音 - undefined
+        
+    </title>
+
+    <link rel="canonical" href="https://weixi779.github.io/2024/03/04/「iOS」震动与系统声音/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS --> 
+    
+<link rel="stylesheet" href="/css/beantech.min.css">
+
+    
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    
+<link rel="stylesheet" href="/css/widget.css">
+
+
+    
+<link rel="stylesheet" href="/css/rocket.css">
+
+
+    
+<link rel="stylesheet" href="/css/signature.css">
+
+
+    
+<link rel="stylesheet" href="/css/toc.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('')
+            /*post*/
+        
+    }
+    
+</style>
+
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#技巧" title="技巧">技巧</a>
+                            
+                        </div>
+                        <h1>「iOS」震动与系统声音</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by Weixi on
+                            2024-03-04
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">伟兮の小屋</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="iOS麦克风与系统声音"><a href="#iOS麦克风与系统声音" class="headerlink" title="iOS麦克风与系统声音"></a>iOS麦克风与系统声音</h1><h2 id="起因背景"><a href="#起因背景" class="headerlink" title="起因背景"></a>起因背景</h2><p>产品需求游玩期间调用手动震动, Unity本内置振动的功能,</p>
+<p>但效果太差, Android震动程度特别大, iOS没有震动,</p>
+<p>就此提了一个需求编写原生iOS震动插件</p>
+<h2 id="过程"><a href="#过程" class="headerlink" title="过程"></a>过程</h2><p>那这个流程就涉及到两个内容, Unity调用原生及原生调用震动</p>
+<p>原生代码比较简单 <code>AudioServicesPlaySystemSound</code>即可</p>
+<p>Unity桥接也是用了网上比较大众流程的 <code>Swift Package</code> -&gt; <code>XCode</code> -&gt; <code>Framework</code> 的流程</p>
+<blockquote>
+<p>这种方法只能在低版本的MacOS系统上执行 我本人用老电脑(Catalina)进行测试</p>
+</blockquote>
+<p>但进入声网频道后调用无效果, 便展开了调研</p>
+<h2 id="自我怀疑"><a href="#自我怀疑" class="headerlink" title="自我怀疑"></a>自我怀疑</h2><p>由于新版本 <code>generate-xcodeproj</code>指令已被废弃, 加上传输文件并不方便, 就认为是个人Unity到iOS的桥接没有做好</p>
+<p>于是用 Objective-C 通信 C 的方式进行处理, 但结果依然不行</p>
+<p>深深的陷入了自我怀疑</p>
+<p>便重新写了一个弹原生Alert的测试函数竟然成功了…</p>
+<p>发现其实本身就不是流程问题, 而是播放系统音效的代码实现</p>
+<h2 id="播放调研"><a href="#播放调研" class="headerlink" title="播放调研"></a>播放调研</h2><p>发现手机切后台后, 键盘输入也没有声音与震动, 经过查看 设置-声音与触感 一切正常</p>
+<p>才恍然大悟这个需求的系统声音播放前提还有一个条件, 就是在声网频道里</p>
+<p>经过关键字查询:</p>
+<p><code>AVAudioSession</code> 中有一个 <code>mode</code> 字段</p>
+<p>为 <code>default</code> 时 震动不生效</p>
+<p>为 <code>voiceChat</code> 时 才能够震动</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">+ (<span class="type">void</span>)weakVibrate &#123;</span><br><span class="line">    <span class="comment">// 只有在VoiceChat模式下 才能在使用麦克风时 调用系统声音</span></span><br><span class="line">    <span class="keyword">if</span> ([<span class="built_in">AVAudioSession</span> sharedInstance].mode != <span class="built_in">AVAudioSessionModeVoiceChat</span>) &#123;</span><br><span class="line">        <span class="built_in">NSError</span> *error = <span class="literal">nil</span>;</span><br><span class="line">        [[<span class="built_in">AVAudioSession</span> sharedInstance] setMode:<span class="built_in">AVAudioSessionModeVoiceChat</span> error:&amp;error];</span><br><span class="line">    &#125;</span><br><span class="line">    SystemSoundID soundID = <span class="number">1521</span>;</span><br><span class="line">    AudioServicesPlaySystemSound(soundID);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>目前看来 <code>default</code> 与 <code>voiceChat</code> 区别并不大</p>
+<p>官方文档中也写的主要是优化语音质量</p>
+<p>问题解决</p>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p><a target="_blank" rel="noopener" href="https://forums.swift.org/t/rfc-deprecating-generate-xcodeproj/42159">https://forums.swift.org/t/rfc-deprecating-generate-xcodeproj/42159</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=DsKXNakuxsg">https://www.youtube.com/watch?v=DsKXNakuxsg</a></p>
+<p><a target="_blank" rel="noopener" href="https://qiita.com/atsutama/items/3c8fe716c2667be6025f">https://qiita.com/atsutama/items/3c8fe716c2667be6025f</a></p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/655327051">https://zhuanlan.zhihu.com/p/655327051</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/4e0f124a1ed4">https://www.jianshu.com/p/4e0f124a1ed4</a></p>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2024/03/07/「iOS」浅谈图片压缩/" data-toggle="tooltip" data-placement="top" title="「iOS」浅谈图片压缩">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2024/01/24/「iOS」浅谈Swift模型解析/" data-toggle="tooltip" data-placement="top" title="「iOS」浅谈Swift模型解析">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                <!-- disqus comment end -->
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#iOS%E9%BA%A6%E5%85%8B%E9%A3%8E%E4%B8%8E%E7%B3%BB%E7%BB%9F%E5%A3%B0%E9%9F%B3"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">iOS麦克风与系统声音</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#%E8%B5%B7%E5%9B%A0%E8%83%8C%E6%99%AF"><span class="toc-nav-number">1.1.</span> <span class="toc-nav-text">起因背景</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#%E8%BF%87%E7%A8%8B"><span class="toc-nav-number">1.2.</span> <span class="toc-nav-text">过程</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#%E8%87%AA%E6%88%91%E6%80%80%E7%96%91"><span class="toc-nav-number">1.3.</span> <span class="toc-nav-text">自我怀疑</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#%E6%92%AD%E6%94%BE%E8%B0%83%E7%A0%94"><span class="toc-nav-number">1.4.</span> <span class="toc-nav-text">播放调研</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="toc-nav-number">1.5.</span> <span class="toc-nav-text">参考链接</span></a></li></ol></li></ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Weixi 2025 
+                    <br>
+                    Theme by <a target="_blank" rel="noopener" href="http://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    re-Ported by <a target="_blank" rel="noopener" href="http://beantech.org">BeanTech</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=YenYuHsuan&repo=hexo-theme-beantech&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://weixi779.github.io/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="https://weixi779.github.io/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

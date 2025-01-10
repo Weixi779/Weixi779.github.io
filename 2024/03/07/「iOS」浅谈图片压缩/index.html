@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="个人博客记录成长">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          「iOS」浅谈图片压缩 - undefined
+        
+    </title>
+
+    <link rel="canonical" href="https://weixi779.github.io/2024/03/07/「iOS」浅谈图片压缩/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS --> 
+    
+<link rel="stylesheet" href="/css/beantech.min.css">
+
+    
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    
+<link rel="stylesheet" href="/css/widget.css">
+
+
+    
+<link rel="stylesheet" href="/css/rocket.css">
+
+
+    
+<link rel="stylesheet" href="/css/signature.css">
+
+
+    
+<link rel="stylesheet" href="/css/toc.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('')
+            /*post*/
+        
+    }
+    
+</style>
+
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#算法" title="算法">算法</a>
+                            
+                              <a class="tag" href="/tags/#图片压缩" title="图片压缩">图片压缩</a>
+                            
+                        </div>
+                        <h1>「iOS」浅谈图片压缩</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by Weixi on
+                            2024-03-07
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">伟兮の小屋</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="一、前言"><a href="#一、前言" class="headerlink" title="一、前言"></a>一、前言</h1><p>图片基本上是目前移动端无法逃避的内容 最基础的用户头像、相册、评论都有涉及</p>
+<p>涉及到了前端与后端的交互 那么一定会考虑到图片压缩</p>
+<p>本篇文章就是作者近期涉及到图片压缩所踩到的一些坑</p>
+<h1 id="二、一些基础知识"><a href="#二、一些基础知识" class="headerlink" title="二、一些基础知识"></a>二、一些基础知识</h1><h2 id="所谓大小"><a href="#所谓大小" class="headerlink" title="所谓大小"></a>所谓大小</h2><p>图片分为两个大小 <strong>分辨率大小</strong> 与 <strong>文件大小</strong></p>
+<p>通常文件大小与分辨率大小是有正相关关系的</p>
+<p>分辨率高 * 分辨率宽 &#x3D; 像素点数量</p>
+<p>像素点的格式化方式、文件格式、压缩率 等等影响到 文件大小</p>
+<p>而图片压缩的最终目的 就是 获取更小的图片文件大小</p>
+<h2 id="现实与里世界"><a href="#现实与里世界" class="headerlink" title="现实与里世界"></a>现实与里世界</h2><p>通常我们看到的某张图片是JPG(JPEG)&#x2F;PNG&#x2F;WEBP格式存在的</p>
+<p>但他其实只是一种文件格式</p>
+<p>在镜子后面与内存打交道的是图片的数据流 Android-BitMap iOS-NSData 其他大部分是 [Bit]</p>
+<p>通常通过选择图片的路径后会得到一串图片的数据流 之后再去转换成某些图片的格式 呈现在手机上</p>
+<p>在转换图片的期间可以选择的压缩率 但通常会造成不可逆的后果 也就是无法再将某些图片转回数据流</p>
+<h1 id="三、压缩方法"><a href="#三、压缩方法" class="headerlink" title="三、压缩方法"></a>三、压缩方法</h1><p>通常简单压缩流程分为两个部分 <code>设置图像分辨率</code> 与 <code>设置压缩质量</code></p>
+<p>大部分语言也都支持这个内容 但是寻找这两个数值甜点位置 是解决图片压缩的重点</p>
+<p>在此笔者介绍两个用到感觉还不错的方法</p>
+<h2 id="二分法"><a href="#二分法" class="headerlink" title="二分法"></a>二分法</h2><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">+ (<span class="built_in">NSData</span> *)imageDataWithLimitByteSize:(<span class="built_in">NSUInteger</span>)maxLength image:(<span class="built_in">UIImage</span> *)image &#123;</span><br><span class="line">    <span class="comment">//首先判断原图大小是否在要求内，如果满足要求则不进行压缩</span></span><br><span class="line">    <span class="built_in">CGFloat</span> compression = <span class="number">1</span>;</span><br><span class="line">    <span class="built_in">NSData</span> *data = <span class="built_in">UIImageJPEGRepresentation</span>(image, compression);</span><br><span class="line">    <span class="keyword">if</span> (data.length &lt; maxLength) <span class="keyword">return</span> data;</span><br><span class="line">    <span class="comment">//原图大小超过范围，先进行“压处理”，这里 压缩比 采用二分法进行处理，6次二分后的最小压缩比是0.015625，已经够小了</span></span><br><span class="line">    <span class="built_in">CGFloat</span> max = <span class="number">1</span>;</span><br><span class="line">    <span class="built_in">CGFloat</span> min = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">6</span>; ++i) &#123;</span><br><span class="line">        compression = (max + min) / <span class="number">2</span>;</span><br><span class="line">        data = <span class="built_in">UIImageJPEGRepresentation</span>(image, compression);</span><br><span class="line">        <span class="keyword">if</span> (data.length &lt; maxLength * <span class="number">0.9</span>) &#123;</span><br><span class="line">            min = compression;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (data.length &gt; maxLength) &#123;</span><br><span class="line">            max = compression;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//判断“压处理”的结果是否符合要求，符合要求就</span></span><br><span class="line">    <span class="built_in">UIImage</span> *resultImage = [<span class="built_in">UIImage</span> imageWithData:data];</span><br><span class="line">    <span class="keyword">if</span> (data.length &lt; maxLength) <span class="keyword">return</span> data;</span><br><span class="line">  </span><br><span class="line">    <span class="comment">//缩处理，直接用大小的比例作为缩处理的比例进行处理，因为有取整处理，所以一般是需要两次处理</span></span><br><span class="line">    <span class="built_in">NSUInteger</span> lastDataLength = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (data.length &gt; maxLength &amp;&amp; data.length != lastDataLength) &#123;</span><br><span class="line">        lastDataLength = data.length;</span><br><span class="line">        <span class="comment">//获取处理后的尺寸</span></span><br><span class="line">        <span class="built_in">CGFloat</span> ratio = (<span class="built_in">CGFloat</span>)maxLength / data.length;</span><br><span class="line">        <span class="built_in">CGSize</span> size = <span class="built_in">CGSizeMake</span>((<span class="built_in">NSUInteger</span>)(resultImage.size.width * sqrtf(ratio)),</span><br><span class="line">                                 (<span class="built_in">NSUInteger</span>)(resultImage.size.height * sqrtf(ratio)));</span><br><span class="line">        <span class="comment">//通过图片上下文进行处理图片</span></span><br><span class="line">        <span class="built_in">UIGraphicsBeginImageContext</span>(size);</span><br><span class="line">        [resultImage drawInRect:<span class="built_in">CGRectMake</span>(<span class="number">0</span>, <span class="number">0</span>, size.width, size.height)];</span><br><span class="line">        resultImage = <span class="built_in">UIGraphicsGetImageFromCurrentImageContext</span>();</span><br><span class="line">        <span class="built_in">UIGraphicsEndImageContext</span>();</span><br><span class="line">        <span class="comment">//获取处理后图片的大小</span></span><br><span class="line">        data = <span class="built_in">UIImageJPEGRepresentation</span>(resultImage, compression);</span><br><span class="line">    &#125;</span><br><span class="line">  </span><br><span class="line">    <span class="keyword">return</span> data;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>大致思路就是通过指定压缩后的文件大小确认压缩次数</p>
+<p>主要缺点就是没有动态压缩 对某些upload有硬性图片大小的要求的可以使用</p>
+<blockquote>
+<p>笔者遇到过一个其他问题 就是通过这个方法压缩出的是NSData 有时上传依然需要使用UIImage 然后再通过转换一层后就又超过了大小范围 但这是UIKit框架问题 在这里不再深入赘述</p>
+</blockquote>
+<h2 id="luban"><a href="#luban" class="headerlink" title="luban"></a>luban</h2><p>安卓圈曾诞生过一个被誉为接近微信朋友圈压缩算法的工具</p>
+<p>作者称其为luban 是其在发送100张图片后对微信算法的总结与归纳 发表了一个第三方库</p>
+<p>主要源码也很简单 这里也对其进行简单分析</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="type">int</span> <span class="title function_">computeSize</span><span class="params">()</span> &#123;</span><br><span class="line">    srcWidth = srcWidth % <span class="number">2</span> == <span class="number">1</span> ? srcWidth + <span class="number">1</span> : srcWidth;</span><br><span class="line">    srcHeight = srcHeight % <span class="number">2</span> == <span class="number">1</span> ? srcHeight + <span class="number">1</span> : srcHeight;</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> <span class="variable">longSide</span> <span class="operator">=</span> Math.max(srcWidth, srcHeight);</span><br><span class="line">    <span class="type">int</span> <span class="variable">shortSide</span> <span class="operator">=</span> Math.min(srcWidth, srcHeight);</span><br><span class="line"></span><br><span class="line">    <span class="type">float</span> <span class="variable">scale</span> <span class="operator">=</span> ((<span class="type">float</span>) shortSide / longSide);</span><br><span class="line">    <span class="keyword">if</span> (scale &lt;= <span class="number">1</span> &amp;&amp; scale &gt; <span class="number">0.5625</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (longSide &lt; <span class="number">1664</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (longSide &lt; <span class="number">4990</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">2</span>;</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (longSide &gt; <span class="number">4990</span> &amp;&amp; longSide &lt; <span class="number">10240</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">4</span>;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> longSide / <span class="number">1280</span> == <span class="number">0</span> ? <span class="number">1</span> : longSide / <span class="number">1280</span>;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (scale &lt;= <span class="number">0.5625</span> &amp;&amp; scale &gt; <span class="number">0.5</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span> longSide / <span class="number">1280</span> == <span class="number">0</span> ? <span class="number">1</span> : longSide / <span class="number">1280</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> (<span class="type">int</span>) Math.ceil(longSide / (<span class="number">1280.0</span> / scale));</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span> Bitmap <span class="title function_">rotatingImage</span><span class="params">(Bitmap bitmap, <span class="type">int</span> angle)</span> &#123;</span><br><span class="line">    <span class="type">Matrix</span> <span class="variable">matrix</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Matrix</span>();</span><br><span class="line"></span><br><span class="line">    matrix.postRotate(angle);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> Bitmap.createBitmap(bitmap, <span class="number">0</span>, <span class="number">0</span>, bitmap.getWidth(), bitmap.getHeight(), matrix, <span class="literal">true</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  File <span class="title function_">compress</span><span class="params">()</span> <span class="keyword">throws</span> IOException &#123;</span><br><span class="line">    BitmapFactory.<span class="type">Options</span> <span class="variable">options</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">BitmapFactory</span>.Options();</span><br><span class="line">    options.inSampleSize = computeSize();</span><br><span class="line"></span><br><span class="line">    <span class="type">Bitmap</span> <span class="variable">tagBitmap</span> <span class="operator">=</span> BitmapFactory.decodeStream(srcImg.open(), <span class="literal">null</span>, options);</span><br><span class="line">    <span class="type">ByteArrayOutputStream</span> <span class="variable">stream</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ByteArrayOutputStream</span>();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (Checker.SINGLE.isJPG(srcImg.open())) &#123;</span><br><span class="line">      tagBitmap = rotatingImage(tagBitmap, Checker.SINGLE.getOrientation(srcImg.open()));</span><br><span class="line">    &#125;</span><br><span class="line">    tagBitmap.compress(focusAlpha ? Bitmap.CompressFormat.PNG : Bitmap.CompressFormat.JPEG, <span class="number">60</span>, stream);</span><br><span class="line">    tagBitmap.recycle();</span><br><span class="line"></span><br><span class="line">    <span class="type">FileOutputStream</span> <span class="variable">fos</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">FileOutputStream</span>(tagImg);</span><br><span class="line">    fos.write(stream.toByteArray());</span><br><span class="line">    fos.flush();</span><br><span class="line">    fos.close();</span><br><span class="line">    stream.close();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> tagImg;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="源码优化"><a href="#源码优化" class="headerlink" title="源码优化"></a>源码优化</h3><p>金无足赤人无完人 仔细审视这段代码其实还能发现一些问题</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// return longSide / 1280 == 0 ? 1 : longSide / 1280;</span></span><br><span class="line">    <span class="comment">// 代码之前已经判断了 longSide &lt; 1664 不会再出现 &lt; 1280 的情况了</span></span><br><span class="line">    <span class="keyword">return</span> longSide / <span class="number">1280</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// return (int) Math.ceil(longSide / (1280.0 / scale));</span></span><br><span class="line">    <span class="comment">// 由于上面已经对scale进行计算 最后的返回可以优化一下公式</span></span><br><span class="line">    <span class="comment">// float scale = ((float) shortSide / longSide);</span></span><br><span class="line">    <span class="keyword">return</span> (<span class="type">int</span>) Math.ceil(shortSide / <span class="number">1280.0</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>以及目前的luban对JPG的压缩率是固定确认的60% 压缩率其实可以再做调整</p>
+<p>比如根据修改尺寸前的图片大小与修改尺寸后的图片大小进行比较</p>
+<p>在动态的设定压缩率也是不错的选择</p>
+<h3 id="唏嘘"><a href="#唏嘘" class="headerlink" title="唏嘘"></a>唏嘘</h3><p>无论代码如何 作者只是对发送了100次图片后的逆向破解就得到了次算法 且无私开源 实属不易</p>
+<p>转眼24开年WXG的年终开奖 高达20个月 微信在资本的推动下还在不停的飞速发展</p>
+<p>当年号称能够媲美微信朋友圈图片压缩算法的luban 如今五、六年后是否还能一战?</p>
+<p>却得知作者同生活对线去了 github库已多年没有更新</p>
+<p>昙花一现的奇迹 V.S. 柴米油盐的心酸</p>
+<p>只能让人感到无尽的唏嘘</p>
+<h2 id="融合算法"><a href="#融合算法" class="headerlink" title="融合算法"></a>融合算法</h2><p>没办法 笔者也需要与生活对线 在对比压缩效果之后 编写了一套Unity的Texutre压缩算法</p>
+<p>目前自测效果不错 也是对上述内容的一个总结</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="built_in">int</span> <span class="title">EnsureEven</span>(<span class="params"><span class="built_in">int</span> size</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> size % <span class="number">2</span> == <span class="number">1</span> ? size + <span class="number">1</span> : size;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="built_in">int</span> <span class="title">ComputeCompressSize</span>(<span class="params"><span class="built_in">int</span> width, <span class="built_in">int</span> height</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> originalWidth = EnsureEven(width);</span><br><span class="line">    <span class="keyword">var</span> originalHeight = EnsureEven(height);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> longSide = Math.Max(originalWidth, originalHeight);</span><br><span class="line">    <span class="keyword">var</span> shortSide = Math.Min(originalWidth, originalHeight);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> aspectRatio = (<span class="built_in">double</span>) shortSide / (<span class="built_in">double</span>) longSide;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> aspectRatio <span class="keyword">switch</span></span><br><span class="line">    &#123;</span><br><span class="line">        &lt;= <span class="number">1</span> <span class="keyword">and</span> &gt; <span class="number">0.5625</span> =&gt; longSide <span class="keyword">switch</span></span><br><span class="line">        &#123;</span><br><span class="line">            &lt; <span class="number">1664</span> =&gt; <span class="number">1</span>,</span><br><span class="line">            &lt; <span class="number">4990</span> =&gt; <span class="number">2</span>,</span><br><span class="line">            &gt; <span class="number">4990</span> <span class="keyword">and</span> &lt; <span class="number">10240</span> =&gt; <span class="number">4</span>,</span><br><span class="line">            _ =&gt; longSide / <span class="number">1280</span>,</span><br><span class="line">        &#125;,</span><br><span class="line">        &lt;= <span class="number">0.5625</span> <span class="keyword">and</span> &gt; <span class="number">0.5</span> =&gt; longSide &lt;= <span class="number">1280</span> ? <span class="number">1</span> : longSide / <span class="number">1280</span>,</span><br><span class="line">        _ =&gt; (<span class="built_in">int</span>) Mathf.Ceil((<span class="built_in">float</span>) (longSide / <span class="number">1280.0</span>)) <span class="comment">// 在笔者的环境下 不需要保留长图的尺寸 故选择压缩程度更大的结果</span></span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Texture2D <span class="title">CompressTexture</span>(<span class="params">Texture2D sourceTexture</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> size = ComputeCompressSize(sourceTexture.width, sourceTexture.height);</span><br><span class="line">    <span class="keyword">var</span> aspectRatio = Math.Pow(<span class="number">0.9f</span>, size);</span><br><span class="line">    <span class="keyword">var</span> targetWidth = (<span class="built_in">int</span>) (sourceTexture.width * aspectRatio);</span><br><span class="line">    <span class="keyword">var</span> targetHeight = (<span class="built_in">int</span>) (sourceTexture.height * aspectRatio);</span><br><span class="line">    <span class="keyword">return</span> ResizeTexture(sourceTexture, targetWidth, targetHeight);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="四、尾语"><a href="#四、尾语" class="headerlink" title="四、尾语"></a>四、尾语</h1><p>不追求极限、不涉及底层 这些简单的算法到现在也能打</p>
+<p>这篇文章是这几天我对成果的一个总结</p>
+<p>也希望能使后人的路走得再轻松一点</p>
+<p>祝好</p>
+<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a target="_blank" rel="noopener" href="https://github.com/Curzibn/Luban">Curzibn&#x2F;Luban: Luban(鲁班)—Image compression with efficiency very close to WeChat Moments&#x2F;可能是最接近微信朋友圈的图片压缩算法 (github.com)</a></p>
+<p><a target="_blank" rel="noopener" href="https://juejin.cn/post/7036716428174557221">可能是最详细的Android图片压缩原理分析（二）—— 鲁班压缩算法解析 - 掘金 (juejin.cn)</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/GuoZhiQiang/Luban_iOS">GuoZhiQiang&#x2F;Luban_iOS: Wiki (github.com)</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.mycroft.wang/2019/08/12/luban-ya-suo-shi-xian-fen-xi/">Luban压缩实现分析 | Mycroft</a></p>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2024/04/06/「极客」Quest3与旁路由/" data-toggle="tooltip" data-placement="top" title="「极客」Quest3与旁路由">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2024/03/04/「iOS」震动与系统声音/" data-toggle="tooltip" data-placement="top" title="「iOS」震动与系统声音">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                <!-- disqus comment end -->
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E4%B8%80%E3%80%81%E5%89%8D%E8%A8%80"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">一、前言</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E4%BA%8C%E3%80%81%E4%B8%80%E4%BA%9B%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">二、一些基础知识</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#%E6%89%80%E8%B0%93%E5%A4%A7%E5%B0%8F"><span class="toc-nav-number">2.1.</span> <span class="toc-nav-text">所谓大小</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#%E7%8E%B0%E5%AE%9E%E4%B8%8E%E9%87%8C%E4%B8%96%E7%95%8C"><span class="toc-nav-number">2.2.</span> <span class="toc-nav-text">现实与里世界</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E4%B8%89%E3%80%81%E5%8E%8B%E7%BC%A9%E6%96%B9%E6%B3%95"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">三、压缩方法</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#%E4%BA%8C%E5%88%86%E6%B3%95"><span class="toc-nav-number">3.1.</span> <span class="toc-nav-text">二分法</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#luban"><span class="toc-nav-number">3.2.</span> <span class="toc-nav-text">luban</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#%E6%BA%90%E7%A0%81%E4%BC%98%E5%8C%96"><span class="toc-nav-number">3.2.1.</span> <span class="toc-nav-text">源码优化</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#%E5%94%8F%E5%98%98"><span class="toc-nav-number">3.2.2.</span> <span class="toc-nav-text">唏嘘</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#%E8%9E%8D%E5%90%88%E7%AE%97%E6%B3%95"><span class="toc-nav-number">3.3.</span> <span class="toc-nav-text">融合算法</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E5%9B%9B%E3%80%81%E5%B0%BE%E8%AF%AD"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">四、尾语</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%AB%A0"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">参考文章</span></a></li></ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Weixi 2025 
+                    <br>
+                    Theme by <a target="_blank" rel="noopener" href="http://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    re-Ported by <a target="_blank" rel="noopener" href="http://beantech.org">BeanTech</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=YenYuHsuan&repo=hexo-theme-beantech&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://weixi779.github.io/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="https://weixi779.github.io/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

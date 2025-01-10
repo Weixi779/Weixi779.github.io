@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="个人博客记录成长">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          「Unity」沙盒建造游戏设计(2) - 命令模式 - undefined
+        
+    </title>
+
+    <link rel="canonical" href="https://weixi779.github.io/2024/04/22/「Unity」沙盒建造游戏设计(2)/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS --> 
+    
+<link rel="stylesheet" href="/css/beantech.min.css">
+
+    
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    
+<link rel="stylesheet" href="/css/widget.css">
+
+
+    
+<link rel="stylesheet" href="/css/rocket.css">
+
+
+    
+<link rel="stylesheet" href="/css/signature.css">
+
+
+    
+<link rel="stylesheet" href="/css/toc.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('/images/StardewValley.jpg')
+            /*post*/
+        
+    }
+    
+</style>
+
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#技巧" title="技巧">技巧</a>
+                            
+                              <a class="tag" href="/tags/#心得" title="心得">心得</a>
+                            
+                        </div>
+                        <h1>「Unity」沙盒建造游戏设计(2) - 命令模式</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by Weixi on
+                            2024-04-22
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">伟兮の小屋</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在近期的公司项目中，需求项目开发一个类沙盒建造功能。我有幸负责项目中的关键部分，这一经历充满了挑战与收获。鉴于这个部分内容的丰富性和技术性，我决定将涉及相关设计以及本人的一部分思绪分成四期内容。本文是系列文章的第二期，将重点讨论建造中的命令模式设计。</p>
+<p>为什么会有命令模式相关的内容呢? 允许用户根据不同的请求对操作进行参数化、排队、记录日志以及撤销操作等。这是大部分带有编辑模式内容不可会缺的一环, 本篇将从基础的命令模式内容讲起, 到业务层基础的命令搭建, 再到整体的框架设计,这篇文章是系列讲解中的重点之一.</p>
+<h1 id="命令模式"><a href="#命令模式" class="headerlink" title="命令模式"></a>命令模式</h1><p>命令模式（Command Pattern）是一种行为设计模式，它将请求或简单操作封装为一个对象，这样可以使用不同的请求、队列或日志来参数化其他对象。同时，它也支持可撤销的操作。</p>
+<details>
+  <summary>>> 关于行为设计模式</summary>
+  行为设计模式是一类设计模式，它主要关注对象之间的责任分配和通信。
+  这类模式通过改善系统内部的通信结构，使得系统更易于理解和维护。
+</details>
+
+<p>命令模式通常包括四个部分: <code>命令接口</code>、<code>具体命令(ConcreteCommand)</code>、<code>接收者(Receiver)</code>、<code>调用者(Invoker)</code></p>
+<h2 id="命令接口"><a href="#命令接口" class="headerlink" title="命令接口"></a>命令接口</h2><p> 这部分内容比较简单,基本就是命令的基本声明,如 <code>Execute</code>、<code>Undo</code>、<code>Type</code>、<code>Redo</code>等等</p>
+<p>不同语言的实现方式也有不用, 可以用基类, 也可以使用接口, 甚至是协议</p>
+<p>实现几个空方法即可</p>
+<p>这里笔者由于使用的语言语法糖相对落后 <del>游戏开发者苦Lua久已</del></p>
+<p>所以使用的是基类的方法实现 还比上述多一个 <code>Init</code>, 然后也没有 <code>Redo</code>的需求</p>
+<h2 id="具体命令"><a href="#具体命令" class="headerlink" title="具体命令"></a>具体命令</h2><p>再详细编写写命令之前, 首先需要抽象需求内容, 比如笔者这边是几个需求:</p>
+<p><code>Create</code>、<code>Delete</code>、<code>Move</code>、<code>Rotate</code>、<code>Style</code>、<code>Replace</code></p>
+<p>需要针对他们创建不同的具体命令子类</p>
+<details>
+  <summary>>> 关于命令类型</summary>
+    那这里其实就看到了命令模式的缺点之一: `在多种命令的情况下, 代码会变得繁杂` <br>
+  但正是因为这种拆分每个命令的内容才造就了命令模式的风格 <br>
+  关于如何让其没有那么冗杂, 笔者能收集到的材料是用类似函数式编程的方法实现 <br>
+  但实际上面在我这个需求中有点搞笑了, 函数式只能做一种命令, 如果读者有更好的办法可以留言讨论 <br>
+</details>
+
+<p>根据抽象出来的命令种类, 执行对应的方法</p>
+<p>在这一步笔者的做法是 将每一个方法的执行地图元素Element(传统上命令模式的接收者)放到了基类的 <code>Init</code>中</p>
+<p>在 <code>Execute</code>、<code>Undo</code>中执行Element的对应方法</p>
+<p>从而达成每一个命令的执行逻辑</p>
+<h2 id="接收者"><a href="#接收者" class="headerlink" title="接收者"></a>接收者</h2><p>上文其实也有所提及, 命名听起来与理解起来还是有点绕的, 但它其实就是命令内容的执行者.</p>
+<p>笔者这里是将基类命令的初始化函数传入了接收者, 不在初始化部分传入也是可以的, 倘若你只有一个单一接收者, 那么在所有命令的操作中再次传入即可.</p>
+<h2 id="调用者"><a href="#调用者" class="headerlink" title="调用者"></a>调用者</h2><p>调用者是命令模式的灵魂之一, 没有调用者维护命令的数据结构那么命令就是一盘散沙, 在通常理解中调用者大概有两个形式, 栈与队列, 各有优劣</p>
+<ul>
+<li>栈: 由于栈后进先出的特性, 能够非常完美的实现<strong>撤销</strong>、<strong>重做</strong>操作, 与用户期望操作顺序相同, 是绝大部分命令模式的首先调用者格式, 同时也是作者本次选用的格式</li>
+<li>队列: 由于队列先进先出的特性, 能够实现<strong>异步处理</strong>、<strong>批处理</strong>, 这些需要指定运行顺序的内容, 虽然在需求上没有那么常见, 但是对性能优化上起着这关无上的作用</li>
+</ul>
+<p>笔者这次需要实现的需求是两个内容: <code>当前命令操作栈</code> 和 <code>所有命令维护数组</code></p>
+<h3 id="操作栈"><a href="#操作栈" class="headerlink" title="操作栈"></a>操作栈</h3><p>主要负责用户输入命令的添加, 撤回, 但其实上内容就是一个普通的范型栈, <del>低能lua依然不支持</del>, 当然他会比普通的栈多两个方法, <code>撤销当前命令</code> 和 <code>撤销当前栈命令</code>, 两者有个遍历关系, 当用户确认操作无误后将当前命令操作栈记录到栈数组中</p>
+<h3 id="命令维护数组"><a href="#命令维护数组" class="headerlink" title="命令维护数组"></a>命令维护数组</h3><p>该数组负责所有命令相关的撤销与确认, 同时客户端上需要负责diff, 并将结果同步.</p>
+<p>这里主要聊聊diff操作:</p>
+<p>主要分为三个部分, 创建、更新、删除</p>
+<p>创建主要跟 <code>Create</code>命令强相关</p>
+<p>删除主要跟 <code>Delete</code>命令强相关, 此时需要注意, 如果是新创建的需要从创建部分删去, 否则从更新部分删除并添加至删除部分</p>
+<p>更新就是其他普遍命令了</p>
+<h3 id="其他形式"><a href="#其他形式" class="headerlink" title="其他形式"></a>其他形式</h3><p>更新方式其实有很多样的结果, 比如每次行程快照进行比对, 甚至可以把相关命令,传上去都是可以操作的选择</p>
+<h1 id="尾语"><a href="#尾语" class="headerlink" title="尾语"></a>尾语</h1><p>这部分就是命令模式的大体内容了, 因为这个模式的思路会比代码更重要, 所以其实笔者并没有针对某个语言去详细展开, 所以也就是没有直接上相关代码, 万变不离其宗, 望大家有所收获, 下一篇是有关状态模式的内容尽请期待.</p>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2024/04/27/「Unity」沙盒建造游戏设计(3)/" data-toggle="tooltip" data-placement="top" title="「Unity」沙盒建造游戏设计(3) - 状态模式">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2024/04/21/「后日谈」尼尔机械纪元/" data-toggle="tooltip" data-placement="top" title="「后日谈」尼尔机械纪元">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                <!-- disqus comment end -->
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">前言</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E5%91%BD%E4%BB%A4%E6%A8%A1%E5%BC%8F"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">命令模式</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#%E5%91%BD%E4%BB%A4%E6%8E%A5%E5%8F%A3"><span class="toc-nav-number">2.1.</span> <span class="toc-nav-text">命令接口</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#%E5%85%B7%E4%BD%93%E5%91%BD%E4%BB%A4"><span class="toc-nav-number">2.2.</span> <span class="toc-nav-text">具体命令</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#%E6%8E%A5%E6%94%B6%E8%80%85"><span class="toc-nav-number">2.3.</span> <span class="toc-nav-text">接收者</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#%E8%B0%83%E7%94%A8%E8%80%85"><span class="toc-nav-number">2.4.</span> <span class="toc-nav-text">调用者</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#%E6%93%8D%E4%BD%9C%E6%A0%88"><span class="toc-nav-number">2.4.1.</span> <span class="toc-nav-text">操作栈</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#%E5%91%BD%E4%BB%A4%E7%BB%B4%E6%8A%A4%E6%95%B0%E7%BB%84"><span class="toc-nav-number">2.4.2.</span> <span class="toc-nav-text">命令维护数组</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#%E5%85%B6%E4%BB%96%E5%BD%A2%E5%BC%8F"><span class="toc-nav-number">2.4.3.</span> <span class="toc-nav-text">其他形式</span></a></li></ol></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E5%B0%BE%E8%AF%AD"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">尾语</span></a></li></ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Weixi 2025 
+                    <br>
+                    Theme by <a target="_blank" rel="noopener" href="http://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    re-Ported by <a target="_blank" rel="noopener" href="http://beantech.org">BeanTech</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=YenYuHsuan&repo=hexo-theme-beantech&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://weixi779.github.io/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="https://weixi779.github.io/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

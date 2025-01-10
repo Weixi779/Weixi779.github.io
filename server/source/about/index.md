@@ -3,7 +3,7 @@ layout: "about"
 title: "About"
 date: 2024-03-18 22:00:00
 description: "致膝盖上的擦伤、童年的时光和青春心事。"
-header-img: "images/about-banner.jpg"
+header-img: "images/about_banner.jpg"
 comments: true
 ---
 Hi, 我是孙世伟, 00后, 双非本科生, 主业iOS开发, 目前就职于云账户, 中途接触了很多技术栈, Flutter, iOS原生, Unity, 依然保有浓厚的学习热情

@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="个人博客记录成长">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          「iOS」谈谈iOS图片压缩 - undefined
+        
+    </title>
+
+    <link rel="canonical" href="https://weixi779.github.io/2025/03/04/「iOS」谈谈iOS图片压缩/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS --> 
+    
+<link rel="stylesheet" href="/css/beantech.min.css">
+
+    
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    
+<link rel="stylesheet" href="/css/widget.css">
+
+
+    
+<link rel="stylesheet" href="/css/rocket.css">
+
+
+    
+<link rel="stylesheet" href="/css/signature.css">
+
+
+    
+<link rel="stylesheet" href="/css/toc.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('')
+            /*post*/
+        
+    }
+    
+</style>
+
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#算法" title="算法">算法</a>
+                            
+                              <a class="tag" href="/tags/#图片压缩" title="图片压缩">图片压缩</a>
+                            
+                        </div>
+                        <h1>「iOS」谈谈iOS图片压缩</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by Weixi on
+                            2025-03-04
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">伟兮の小屋</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="谈谈iOS图片压缩"><a href="#谈谈iOS图片压缩" class="headerlink" title="谈谈iOS图片压缩"></a>谈谈iOS图片压缩</h1><p>在上一篇文章中，我们探讨了图片压缩的基本概念，主要包括<strong>分辨率压缩</strong>和<strong>质量压缩</strong>。尽管这些方法在不同平台上的实现方式相似，但在 iOS 上，传统的压缩代码效果并不理想。因此，我们对 iOS 平台的图片压缩算法进行了深入研究。本文将从图片格式入手，逐步分析 iOS 的压缩逻辑，并分享一个 <strong>Swift Package</strong>，帮助开发者更高效地处理图片压缩。</p>
+<h2 id="图片格式"><a href="#图片格式" class="headerlink" title="图片格式"></a>图片格式</h2><p>在深入探讨图片压缩之前，首先需要了解各种图片格式类型，格式对应特定的压缩策略。对于各位客户端开发人员来说，JPEG 和 PNG 格式相信已经非常熟悉。然后在 Apple 平台中，自iOS 11 推出以来，HEIC 格式已成为iOS平台的主流图片格式。本文将对这三种格式进行简要讨论，以便更好地理解它们在压缩过程中的应用与优化策略。</p>
+<h3 id="JPEG（Joint-Photographic-Experts-Group）"><a href="#JPEG（Joint-Photographic-Experts-Group）" class="headerlink" title="JPEG（Joint Photographic Experts Group）"></a>JPEG（Joint Photographic Experts Group）</h3><p>JPEG由联合图像专家组于1992年推出，专为减少照片和复杂图像的文件大小而设计。通过采用离散余弦变换、霍夫曼编码等计算机图形学领域的先进算法，JPEG实现了高效的压缩能力。时至今日，它仍然是计算机界最广泛使用的图片格式之一。</p>
+<ul>
+<li><strong>有损压缩</strong>: 通过有损压缩，JPEG可以设置丢弃部分图像数据以减小文件大小，从而在一定程度上降低图像质量。</li>
+</ul>
+<blockquote>
+<p>jpg 与 jpge 归根结底是一种东西，在远古时代文件扩展名只能三位展示缩写带来疑惑</p>
+</blockquote>
+<h3 id="PNG（Portable-Network-Graphics）"><a href="#PNG（Portable-Network-Graphics）" class="headerlink" title="PNG（Portable Network Graphics）"></a>PNG（Portable Network Graphics）</h3><p>PNG格式由W3C于1996年推出，旨在作为GIF格式的替代方案，提供一种无版权限制的图像格式。PNG的出现有效解决了JPEG的两个主要问题：</p>
+<ul>
+<li><p><strong>透明通道</strong>：PNG支持透明通道(RGBA)，允许图像在不同背景下呈现出更加灵活和自然的效果。这一特性使得PNG在网页设计、图标制作和用户界面元素等应用中尤为重要。</p>
+</li>
+<li><p><strong>无损压缩</strong>：PNG采用DEFLATE算法等无损压缩技术，能够在不丢失任何图像数据的情况下显著减小文件大小。然而，PNG的压缩效率高度依赖于图像内容本身，对于包含复杂图案或高细节的图像，压缩效果可能不如简单图像理想。</p>
+</li>
+</ul>
+<h3 id="HEIF（High-Efficiency-Image-File-Format）"><a href="#HEIF（High-Efficiency-Image-File-Format）" class="headerlink" title="HEIF（High Efficiency Image File Format）"></a><strong>HEIF（High Efficiency Image File Format）</strong></h3><p>HEIF 是一种用于存储单张图像和图像序列的<strong>容器格式</strong>。它可以包含图像、音频、视频、文字等多种媒体内容。 HEIF 可以存储采用多种编码格式的图像，例如 SDR（标准动态范围: Standard Dynamic Range）和 HDR（高动态范围: High Dynamic Range）图像。</p>
+<ul>
+<li><strong>压缩格式</strong>：可选择相应压缩技术（常见的有<code>HEVC</code>、<code>AVIF</code>）在较小文件体积下保持高质量图像。</li>
+<li><strong>多帧存储</strong>：支持存储多张图片，比如连拍或动画效果。</li>
+<li><strong>扩展性强</strong>：可以包含透明度信息、深色模式数据、元数据等额外信息。</li>
+</ul>
+<h3 id="HEIC-High-Efficiency-Image-Coding"><a href="#HEIC-High-Efficiency-Image-Coding" class="headerlink" title="HEIC (High Efficiency Image Coding)"></a>HEIC (<strong>High Efficiency Image Coding</strong>)</h3><p>再说 HEIC 前，先聊聊HEVC。HEVC，亦称 H.265，是一种用于视频和图像数据的高效压缩标准。相比 H.264，它能在保持相同质量的情况下减少约 50% 的文件体积。HEIC 格式采用 HEVC 作为其图片压缩方式，因此 HEIC 具备更高的压缩率和质量表现。</p>
+<p>HEIC 是 HEIF 的一种编码实现，采用 <strong>HEVC压缩格式编码</strong>，即 <strong>HEIF + HEVC &#x3D; HEIC</strong>。自 iOS 11 起，HEIC 成为 Apple 设备的默认照片格式。相较于 JPEG，它在相同质量下占用更小的存储空间，同时支持更丰富的色彩信息，但在部分非 Apple 设备上可能需要转换为 JPEG 才能查看。</p>
+<ul>
+<li><strong>单张&#x2F;多张支持</strong>：可以存储单张图片或多张图片（例如，包含连拍图片）。</li>
+<li><strong>存储效率高</strong>：在相同分辨率下，HEIC 文件大小更小，质量更高。</li>
+<li><strong>兼容性问题</strong>：虽然在苹果设备上原生支持 HEIC，但在部分 Windows、Android 等系统中，可能需要额外软件或转换为 JPEG 才能查看。</li>
+</ul>
+<p>如果你使用苹果的 iPhone 或 iPad 拍照，照片会以 .heic 文件扩展名保存。HEIC 是一种容器格式，可以存储使用 HEVC 格式编码的图像和声音。</p>
+<p>例如，如果在 iPhone 上启用了 Live Photos（实况照片）功能，拍摄的照片会生成一个包含多个照片和录音文件，该照片会以 HEIC 格式保存。</p>
+<h2 id="压缩思路"><a href="#压缩思路" class="headerlink" title="压缩思路"></a>压缩思路</h2><p>在上篇文章中介绍了，压缩图片最终整体大小要分别处理两个方面，<code>图片分辨率大小</code> 与 <code>图像质量</code>. 下面聊聊怎么在iOS平台中处理这两个方面。</p>
+<h3 id="分辨率压缩"><a href="#分辨率压缩" class="headerlink" title="分辨率压缩"></a>分辨率压缩</h3><p>先说简单的 压缩分辨率，这个主要传入UIImage就可以，以下为实例代码:</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/// Resizes the given image to a specific target size.</span></span><br><span class="line"><span class="comment">/// - Parameters:</span></span><br><span class="line"><span class="comment">///   - image: The `UIImage` to be resized.</span></span><br><span class="line"><span class="comment">///   - targetSize: The desired size (`CGSize`), including width and height.</span></span><br><span class="line"><span class="comment">/// - Returns: A new resized `UIImage`, or `nil` if resizing fails.</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">func</span> <span class="title function_">resizeImage</span>(<span class="keyword">_</span> <span class="params">image</span>: <span class="type">UIImage</span>, <span class="params">to</span> <span class="params">targetSize</span>: <span class="type">CGSize</span>) -&gt; <span class="type">UIImage</span>? &#123;</span><br><span class="line">    <span class="keyword">let</span> format <span class="operator">=</span> <span class="type">UIGraphicsImageRendererFormat</span>.default()</span><br><span class="line">    format.scale <span class="operator">=</span> <span class="type">UIScreen</span>.main.scale  <span class="comment">// 适配 Retina 设备</span></span><br><span class="line">    <span class="keyword">let</span> renderer <span class="operator">=</span> <span class="type">UIGraphicsImageRenderer</span>(size: targetSize, format: format)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> renderer.image &#123; <span class="keyword">_</span> <span class="keyword">in</span></span><br><span class="line">        image.draw(in: <span class="type">CGRect</span>(origin: .zero, size: targetSize))</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>具体什么大小就可以根据之前说的<code>luban</code>算法进行处理，可以参考上篇文章对源码分析内容</p>
+<h3 id="图像质量"><a href="#图像质量" class="headerlink" title="图像质量"></a>图像质量</h3><p>质量压缩的核心挑战在于 <strong>iOS 中 UIImage 并不携带文件格式信息</strong>，而 Data 仅包含二进制数据，并不记录图像的分辨率。因此，在 iOS 平台上，<strong>区分图片类型</strong> 需要额外的判断逻辑，才能选择正确的压缩策略（如 pngData()、jpegData(quality:) 等）。</p>
+<p>所以作者在这里目前设计的思路是:</p>
+<ol>
+<li>传入选中文件的<code>UIImage</code> 与 <code>Data</code></li>
+<li>根据 <code>Data</code> 类型辨别出对应图片类型</li>
+<li>根据第2步的图片类型 将 <code>UIImage</code> 转换为对应 图片<code>Data</code> 并采取对应压缩策略  (e.g.: image.pngData()、image.jpegData(0.6) 内置方法)</li>
+</ol>
+<h3 id="HEIC压缩策略"><a href="#HEIC压缩策略" class="headerlink" title="HEIC压缩策略"></a>HEIC压缩策略</h3><p>一直说压缩策略压缩策略，那么HEIC的压缩策略到底是什么?</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/// Returns HEIC data representing the image, or nil if such a representation could not be generated. HEIC is recommended for efficiently storing all kinds of images, including those with high dynamic range content.</span></span><br><span class="line"><span class="keyword">@available</span>(<span class="keyword">iOS</span> <span class="number">17.0</span>, <span class="operator">*</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">func</span> <span class="title function_">heicData</span>() -&gt; <span class="type">Data</span>?</span><br></pre></td></tr></table></figure>
+
+<p>在iOS17官方新增了对HEIC数据的转换，可以直接使用，效果很好，整体的大小也控制的不错 而且还能支持实况功能。</p>
+<p>但苦逼的客户端有些事是需要妥协的，<strong>如果文件上传不支持HEIC文件怎么处理呢?</strong> 亦或者说 <strong>系统版本并不支持 iOS17呢?</strong></p>
+<p>我们这次主要要说的就是这件事</p>
+<p>在什么都不做的情况下，直接走 <code>image.pngData()</code>，或者 走对应压缩比例的 jpegData，效果会非常差，甚至反向压缩，因为 H.265 是相当高效的压缩方式，手动改为 H.264 必然会导致后面总体数据反向增大。</p>
+<p>目前的解决方案是手动写一个 H.265 压缩格式 的导出数据办法，并添加类似 jpeg 类似压缩系数。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/// 将 UIImage 转换为 HEIC 格式的 Data</span></span><br><span class="line"><span class="comment">/// - Parameters:</span></span><br><span class="line"><span class="comment">///   - image: 需要转换的 UIImage</span></span><br><span class="line"><span class="comment">///   - quality: 压缩质量（0.0 - 1.0），默认 1.0（最高质量）</span></span><br><span class="line"><span class="comment">///   - lossless: 是否使用无损压缩，默认为 false</span></span><br><span class="line"><span class="comment">/// - Returns: 转换后的 HEIC 格式 Data，若转换失败则返回 nil</span></span><br><span class="line"><span class="keyword">func</span> <span class="title function_">heicData</span>(<span class="keyword">_</span> <span class="params">image</span>: <span class="type">UIImage</span>, <span class="params">quality</span>: <span class="type">CGFloat</span>? <span class="operator">=</span> <span class="number">1.0</span>, <span class="params">lossless</span>: <span class="type">Bool</span> <span class="operator">=</span> <span class="literal">false</span>) -&gt; <span class="type">Data</span>? &#123;</span><br><span class="line">    <span class="keyword">guard</span> <span class="keyword">let</span> cgImage <span class="operator">=</span> image.cgImage <span class="keyword">else</span> &#123; <span class="keyword">return</span> <span class="literal">nil</span> &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> mutableData <span class="operator">=</span> <span class="type">NSMutableData</span>()</span><br><span class="line">    <span class="keyword">guard</span> <span class="keyword">let</span> destination <span class="operator">=</span> <span class="type">CGImageDestinationCreateWithData</span>(mutableData, <span class="type">UTType</span>.heic.identifier <span class="keyword">as</span> <span class="type">CFString</span>, <span class="number">1</span>, <span class="literal">nil</span>) <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> options: [<span class="type">CFString</span>: <span class="keyword">Any</span>] <span class="operator">=</span> [:]</span><br><span class="line">    <span class="keyword">if</span> <span class="operator">!</span>lossless &#123;</span><br><span class="line">        options[kCGImageDestinationLossyCompressionQuality] <span class="operator">=</span> quality <span class="operator">??</span> <span class="number">1.0</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="type">CGImageDestinationAddImage</span>(destination, cgImage, options <span class="keyword">as</span> <span class="type">CFDictionary</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="type">CGImageDestinationFinalize</span>(destination) <span class="operator">?</span> mutableData <span class="keyword">as</span> <span class="type">Data</span> : <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="后结"><a href="#后结" class="headerlink" title="后结"></a>后结</h2><p>在 iOS 平台，合理使用 HEIC 可以在保证图片质量的同时大幅减少存储占用。不过，由于 HEIC 兼容性有限，在某些场景（如 Web 或跨平台应用）仍建议使用 JPEG 或 PNG。开发者可以使用 <strong>CGImageDestination API</strong> 进行自定义 HEIC 压缩，或在 <strong>iOS 17+</strong> 直接使用官方 heicData() API 提高开发效率。</p>
+<p><strong>完整的 HEIC 压缩方案已封装为 Swift Package</strong>，可在 <a target="_blank" rel="noopener" href="https://github.com/Weixi779/WICompress">GitHub 仓库</a> 找到。该库轻量支持二次封装，开发者可根据需求灵活调整。本文主要分享核心思路，具体实现可参考源码。欢迎大家试用并提出建议！祝愿各位Happy Coding~</p>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                    
+                        <li class="next">
+                            <a href="/2025/01/12/「后日谈」赛博朋克2077/" data-toggle="tooltip" data-placement="top" title="「后日谈」赛博朋克2077">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                <!-- disqus comment end -->
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E8%B0%88%E8%B0%88iOS%E5%9B%BE%E7%89%87%E5%8E%8B%E7%BC%A9"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">谈谈iOS图片压缩</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#%E5%9B%BE%E7%89%87%E6%A0%BC%E5%BC%8F"><span class="toc-nav-number">1.1.</span> <span class="toc-nav-text">图片格式</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#JPEG%EF%BC%88Joint-Photographic-Experts-Group%EF%BC%89"><span class="toc-nav-number">1.1.1.</span> <span class="toc-nav-text">JPEG（Joint Photographic Experts Group）</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#PNG%EF%BC%88Portable-Network-Graphics%EF%BC%89"><span class="toc-nav-number">1.1.2.</span> <span class="toc-nav-text">PNG（Portable Network Graphics）</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#HEIF%EF%BC%88High-Efficiency-Image-File-Format%EF%BC%89"><span class="toc-nav-number">1.1.3.</span> <span class="toc-nav-text">HEIF（High Efficiency Image File Format）</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#HEIC-High-Efficiency-Image-Coding"><span class="toc-nav-number">1.1.4.</span> <span class="toc-nav-text">HEIC (High Efficiency Image Coding)</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#%E5%8E%8B%E7%BC%A9%E6%80%9D%E8%B7%AF"><span class="toc-nav-number">1.2.</span> <span class="toc-nav-text">压缩思路</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#%E5%88%86%E8%BE%A8%E7%8E%87%E5%8E%8B%E7%BC%A9"><span class="toc-nav-number">1.2.1.</span> <span class="toc-nav-text">分辨率压缩</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#%E5%9B%BE%E5%83%8F%E8%B4%A8%E9%87%8F"><span class="toc-nav-number">1.2.2.</span> <span class="toc-nav-text">图像质量</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#HEIC%E5%8E%8B%E7%BC%A9%E7%AD%96%E7%95%A5"><span class="toc-nav-number">1.2.3.</span> <span class="toc-nav-text">HEIC压缩策略</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#%E5%90%8E%E7%BB%93"><span class="toc-nav-number">1.3.</span> <span class="toc-nav-text">后结</span></a></li></ol></li></ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Weixi 2025 
+                    <br>
+                    Theme by <a target="_blank" rel="noopener" href="http://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    re-Ported by <a target="_blank" rel="noopener" href="http://beantech.org">BeanTech</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=YenYuHsuan&repo=hexo-theme-beantech&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://weixi779.github.io/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="https://weixi779.github.io/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

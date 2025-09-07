@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="个人博客记录成长">
+    <meta name="keyword"  content="">
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          「iOS」聊聊Markdown中的LaTeX - undefined
+        
+    </title>
+
+    <link rel="canonical" href="https://weixi779.github.io/2025/09/06/「iOS」聊聊Markdown中的LaTeX/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS --> 
+    
+<link rel="stylesheet" href="/css/beantech.min.css">
+
+    
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    
+<link rel="stylesheet" href="/css/widget.css">
+
+
+    
+<link rel="stylesheet" href="/css/rocket.css">
+
+
+    
+<link rel="stylesheet" href="/css/signature.css">
+
+
+    
+<link rel="stylesheet" href="/css/toc.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('/images/latex.jpg')
+            /*post*/
+        
+    }
+    
+</style>
+
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#Markdown" title="Markdown">Markdown</a>
+                            
+                              <a class="tag" href="/tags/#LaTeX" title="LaTeX">LaTeX</a>
+                            
+                        </div>
+                        <h1>「iOS」聊聊Markdown中的LaTeX</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by Weixi on
+                            2025-09-06
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">伟兮の小屋</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>最近在做AI应用的核心功能, 对AI返回的Markdown部分整体处理, 尝试过、使用过目前能在GitHub上搜索到的大部分iOS库, 但是很遗憾, 要么 UI 展示效果差强人意, 要么功能支持不完整. 部分高赞库功能全面, 但放到 SwiftUI 异步渲染 + CollectionView 桥接场景下会出现严重兼容问题. 没有什么办法只能自己去设计整体的流程, 慢慢看到了swift-markdown, 对其进行了二次封装, 开始整体将从预处理开始到解析最终渲染的全流程掌握到了自己手里, 其中也算是路途艰辛, 查阅了巨量的开源库参考, 但是没想想到整体的流程设计到逻辑时间 与 处理LaTeX的时间差不多… 这篇文章主要以LaTeX部分为主, 但是多少会设计一些Markdown的基础概念, 本文作者会主要介绍我调研iOS的LaTeX的整体流程以及到实现过程中踩过的坑, 以及最后对作者对开源社区做的一些微薄之力进行分享.</p>
+<h1 id="历史演变"><a href="#历史演变" class="headerlink" title="历史演变"></a>历史演变</h1><h2 id="markdown历史背景"><a href="#markdown历史背景" class="headerlink" title="markdown历史背景"></a>markdown历史背景</h2><p>如果你比较关心Markdown库的实现逻辑, 那么你会注意到一件事情, 那就是无论是 iOS or Android 开源库都很少默认支持LaTeX语法, 虽然我们最近总是使用这个相关AI能力, 总感觉他是一个很普遍的功能. 但究其原因其实是cmark(CommonMark reference implementation in C)中原版支持的就少, 实际上他只支持这些功能.</p>
+<ul>
+<li>标题（#、## 等）</li>
+<li>段落 &#x2F; 换行</li>
+<li>列表（有序 &#x2F; 无序）</li>
+<li>引用块（&gt;）</li>
+<li>代码块 &#x2F; 行内代码</li>
+<li>链接 &#x2F; 图片</li>
+<li>强调（<em>italic</em> &#x2F; <strong>bold</strong>）</li>
+<li>水平分割线（—）</li>
+</ul>
+<p>CommonMark 标准未定义，cmark 官方实现不支持，而 cmark-gfm 在此基础上加了扩展其实就是都是后期加出来来的, 以下常见的内容其实原版都没有</p>
+<ul>
+<li>不支持表格</li>
+<li>不支持任务列表（- [x]）</li>
+<li>不支持脚注</li>
+<li>更不用说数学公式（LaTeX）</li>
+</ul>
+<p>所以也有一部分库连表格效果也不支持, 第1渲染麻烦, 第2默认Markdown就是为了简化文字排版流程也压根不需要那么复杂.</p>
+<p>没有官方定义导致了其实 LaTeX 也是有很多表述方式的. <code>$...$</code> 、<code>$$...$$</code>、<code>\(...\)</code>、<code>\[...\]</code>、<code>\begin&#123;equation&#125; / \begin&#123;align&#125;</code>其实这些都是真正能够使用的LaTeX格式, 美元是TeX 社区常用的简写; 转义括号是 AMS 推荐的写法，很多 LaTeX 引擎更偏向这一套; \begin等才是完整环境;不同解析库选择的默认支持不一致,因此兼容性问题很普遍.所以许多第三方库没必要费力不讨好做这些事情. 这就引出了 iOS 开发中常用的 Swift-Markdown 框架, 它本身也有不少限制.</p>
+<h2 id="swift-markdown架构"><a href="#swift-markdown架构" class="headerlink" title="swift-markdown架构"></a>swift-markdown架构</h2><p>但是问题就扔到了开发者头上, 比如作者的需求就是使用美元符号去做区分. 那作者翻了一段获取了这么多信息, 觉得自己很强了, 我要对官方库进行fork简单二次封装即可, 暴露给外界一个vitor方法就好了, 不看不知道, 一看吓一跳. </p>
+<blockquote>
+<p>swift-markdown → swift-cmark → cmark-gfm → commonmark&#x2F;cmark</p>
+<ul>
+<li>swift-markdown: 只是 Swift wrapper 和 AST 建模层, 它自己并不做解析逻辑, 靠 swift-cmark 提供的 C 接口</li>
+<li>swift-cmark:  就是个 Swift &lt;-&gt; C 的桥接, 它也不做解析, 只是把底层 cmark AST 映射到 Swift</li>
+<li>cmark-gfm: 真正的解析器, GitHub 在这里加了表格 &#x2F; 删除线 &#x2F; task list 之类扩展, 所以我们如果自定义解析内容要在这里处理</li>
+<li>cmark: CommonMark 的官方参考实现，功能最纯净</li>
+</ul>
+</blockquote>
+<p>所以理论上只要改 cmark-gfm, 但在 SwiftPM 依赖链里常常要全链路维护 fork, 工作量依然很大. 恭喜你要准备好fork三个库的打算, 而且还要自己研究桥接流程什么. 作者看到了这里之后就果断放弃了. </p>
+<h1 id="内容提取"><a href="#内容提取" class="headerlink" title="内容提取"></a>内容提取</h1><p>swift-markdown 其实是支持相关自定义语法的, 那么这样的话我们对我们的markdown内容做一些预处理就可以达到我们想要的效果. 但是好用么? 我感觉算不上, 在我写的最初版本的Markdown有一个问题就是, 简单的markdown都可以通过自定义的 <code>BlockDirective</code> 或者 <code>InlineAttributes</code> 去二次封装, 但是当遇到了复杂的公式就完全不工作. </p>
+<figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">\\</span>begin&#123;cases&#125;</span><br><span class="line"><span class="keyword">\\</span>nabla <span class="keyword">\\</span>cdot <span class="keyword">\\</span>vec&#123;E&#125; = <span class="keyword">\\</span>frac&#123;<span class="keyword">\\</span>rho&#125;&#123;<span class="keyword">\\</span>epsilon<span class="built_in">_</span>0&#125; <span class="keyword">\\</span><span class="keyword">\\</span></span><br><span class="line"><span class="keyword">\\</span>nabla <span class="keyword">\\</span>cdot <span class="keyword">\\</span>vec&#123;B&#125; = 0</span><br><span class="line"><span class="keyword">\\</span>end&#123;cases&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这是一个LaTeX的方程组表现形式, 但是markdown的 <code>BlockDirective</code> 是 <code>@BlockKeyword &#123; content &#125;</code> 这样的效果导致与嵌套的大括号会有问题. 我在GitHub上开了一个<a target="_blank" rel="noopener" href="https://github.com/swiftlang/swift-markdown/issues/236">issue</a>但目前始终也是无人回复. 经过翻阅一些资料, 最后采用 <code>&lt;LaTeX&gt; &lt;\LaTeX&gt;</code> 的xml格式进行内容处理, 好处是能够完全保留LaTeX的内容, 但是代价是需要手动换行以及通过正则表达式获取到到content的内容, 那么到这里LaTeX的内容我们就可以成功的拿出来了.</p>
+<p>另外补充一点 <code>InlineAttributes</code> 的关键字效果是 <code>^[content](InlineKeyword)</code> 虽然LaTeX中很少会出现中括号的内容但是依然存在可能性, 所以 inline的部分我们也需要进行修改, 作者采用的是对content进行inlineCode <code>content</code> 进行二次包装避免了相关转义问题.</p>
+<figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">\begin</span>&#123;equation&#125;[htbp]</span><br><span class="line">E = mc<span class="built_in">^</span>2</span><br><span class="line"><span class="keyword">\end</span>&#123;equation&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="LaTeX渲染"><a href="#LaTeX渲染" class="headerlink" title="LaTeX渲染"></a>LaTeX渲染</h1><p>当你获取到完整的LaTeX之后, 你会发现<code>swiftMath</code>的实现效果非常有限, 很多功能都没有支持, 但是也是理解必经想把LaTeX的所有case转换为iOS底层文本的实现是相当困难的. 那么它带来的好处是什么? 极快的渲染速度(1ms~3ms), 以及不用使用者操心的UI渲染效果. 但是问题就是有些少见的特性不支持, 而且我不知道是SwiftMath的翻译问题还是原本iOSMath这个库的实现问题, 如果你遇到了一些特别的语法他会直接crash… 没办法我们只能去寻找fallback方案. 去网上搜索已经会遇到这两兄弟 <code>KaTeX</code> 与 <code>MathJax</code>. 作者这对这两个库都进行了一些尝试.</p>
+<h2 id="KaTeX"><a href="#KaTeX" class="headerlink" title="KaTeX"></a>KaTeX</h2><p>Khan Academy 开源的高性能 LaTeX 数学渲染库, 在网页端常作为 MathJax 的轻量替代. KaTeX的设计注重<strong>速度</strong>和<strong>小体积</strong>依然保持了良好的速度 。KaTeX 库本身压缩后约几百 KB，再加上一些字体资源，相较 MathJax 几兆的体积要轻量得多。描述的很好吧, 但是一切东西都是需要相应的代价的.</p>
+<p>我们可以将 KaTeX 和 iOS 原生代码集成, 手动将 KaTeX 的 JavaScript源代码打包进项目，使用 <code>JavaScriptCore</code> 在后台执行 KaTeX 渲染，将 LaTeX 字符串转换为 HTML片段。KaTeX仅支持最后的输出是HTML代码内容, 所以我们需要在移动端渲染真正的HTML代码就是最大的实现问题. 能想到的解决办法基本上就是离屏渲染WKWebView, 然后获取视图截图并返回, 或者开WebView到Markdown的CollectionView中. 但是作者其实最终的期望就是获取到一个UIImage, 因为我还需要做文图混排相关的功能. 如果你想这个东西做好可能还需要维护WebView对象池, 加上性能考虑没有采用这个方案. 另外有一些细节需要考虑的是, 你无法找到官方对于iOS的版本封装, 需要手动导入源代码部分. 另外iOS确实有相关库实现了该功能, <a target="_blank" rel="noopener" href="https://github.com/nks5117/KatexUtils">KatexUtils</a>. 但是该库已经不再维护使用的办法也基本是作者所描述的内容.</p>
+<h2 id="MathJax"><a href="#MathJax" class="headerlink" title="MathJax"></a>MathJax</h2><p>MathJax 是功能最完备的浏览器端 LaTeX&#x2F;MathML 渲染引擎。为了提升在原生环境的性能，我们可以绕开 WebView，通过 JavaScriptCore 在后台运行 MathJax 的核心脚本，只执行公式到可视元素的转换，然后将结果绘制出来。社区已有开源项目 <a target="_blank" rel="noopener" href="https://github.com/colinc86/MathJaxSwift">MathJaxSwift</a> 实现了这一思路：它将 MathJax 3 的源码嵌入，使用 JavaScriptCore 执行，并提供 Swift 接口调用转换函数。MathJax 本身支持将 TeX 转换为多种输出格式，如 CommonHTML、MathML、SVG 。这样我们就可以避免使用WKWebView了, 甚至不管他是不是离屏的了.</p>
+<p>然后如果你尝试调用相关代码, 你可以获取到对应 svg 的 xml 格式代码. 看吧问题来了吧, 目前iOS是肯定没有对应xml直接转换的库的, 如果你尝试 encode 到 data 然后直接扔到 UIImage 初始化方法里去一定是不支持的, 不是对你们说的是怕你们的AI会弱智到做这种操作. 所以我们的就到了下一部分 SVG</p>
+<h1 id="尝试SVG"><a href="#尝试SVG" class="headerlink" title="尝试SVG"></a>尝试SVG</h1><p>这里其实应该是整体最耗时的地方, 因为 <code>KaTeX</code> 与 <code>MathJax</code> 的方案很常见, 网上也是一搜一大堆. 但是SVG真的就难了, 在近几年的XCode版本已经就支持Asset导入SVG相关资源了, 但是SVG的xml格式, 还是不支持的依然需要第三方库内容. <code>SVGKit</code> 、<code>SwiftSVG</code> 、<code>Macaw</code>. 效果均不尽人意, 最后再继续翻找的时候看到了 SwiftDraw, 进行尝试简单的API, 易用的写法, 一次尝试后效果就work. 真的让我一用就爱上, 主要他也不用强行绑定视图相关, 使用SVG相关类就可以. 于是我开始测试各种异常case, 当我以为一切都尘埃落定的时候, 发现了令人绝望的事情.</p>
+<p>LaTeX是支持字体的, 但是我们主要的亚洲市场 <code>CJK Font</code> 全都展示不出来, 是乱码. 这时候我绝望了, 动摇了开始准备再次替换SVG库的想法. 但是其他家依然效果相当差, 就当我认为完了, 这个需求调研了一个星期多终将会以遗憾落幕的时候. 一个想法冒了出来, 我们能不能fork去检测如果是CJK字体的时候去做些什么? <a target="_blank" rel="noopener" href="https://github.com/Weixi779/SwiftDraw">Forked</a>, 自己添加了对部分字体的检测, 不过由于是测试代码, 所以并没有向原repo提起PR, 后续作者找时间会整理这个Fork库的代码处理内容, 如果当你们点不开这个链接的时候我相信应该是被merge了.</p>
+<h1 id="额外需求"><a href="#额外需求" class="headerlink" title="额外需求"></a>额外需求</h1><p>每次LaTeX变为图片的渲染需求太重了, 如存在AI深度思考的部分, 只是想将LaTeX基本上转为人能看懂的文字即可, 也方便整体的效果排版. 作者写了一个<a target="_blank" rel="noopener" href="https://github.com/Weixi779/LaTeX2Text-Swift">开源库</a>, 可供参考与使用, 也欢迎大家提PR. </p>
+<h1 id="总结补充"><a href="#总结补充" class="headerlink" title="总结补充"></a>总结补充</h1><p>关于兜底效果: swiftMath最后直出的太好了, 我们使用 MathJax + SwiftDraw 也只是尽可能地将最终的效果往 swiftMath 那边靠拢. 不过我作为开发者基本上知道哪些内容支持哪些内容不支持都能进行一些区别, 但是实际上的用户我想应该是很难区分最终的图片效果. </p>
+<p>关于渲染时间: swiftMath 转图片的耗时平均大概在 4ms左右, MathJax + SwiftDraw 大概在 8ms左右, 不同机型肯定也是有区别, 作者仅在这里提供耗时时长对比仅作参考. 虽然微乎其微, 但是我避免这种时长累加过多我做了一层Cache, 尽可能地优化第二次的加载速度.</p>
+<p>关于图片处理: SVG转图片直接拿是效果不好的, 我们需要给一个放大倍数, 毕竟我们的计算系数与JS直出的的效果不一样. 另外 <code>SwiftDraw</code> 提供padding方法, 拿到的图片经过处理后效果会更好.</p>
+<h1 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h1><p>特别感谢 <a target="_blank" rel="noopener" href="https://github.com/GIKICoder/GMarkdown">GMarkdown</a> 学习了相关LaTeX fallback思路, 受益良多. 一路心路历程走下来, 给我的感觉还是iOS社区的趋向逐渐势微, 现在看高赞老库基本上都不维护了, 而且老库的实现也逐渐脱离现在发展趋势了, 被逐渐淘汰我认为是必然的. 但是新的内容逐渐也不更新了很是遗憾, 更别说中文社区了. 期望能为开源社区送上微薄之力吧.</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/gonzalezreal/swift-markdown-ui">https://github.com/gonzalezreal/swift-markdown-ui</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/swiftlang/swift-markdown">https://github.com/swiftlang/swift-markdown</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/christianselig/Markdownosaur">https://github.com/christianselig/Markdownosaur</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/mgriebling/SwiftMath">https://github.com/mgriebling/SwiftMath</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/nks5117/KatexUtils">https://github.com/nks5117/KatexUtils</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/SVGKit/SVGKit">https://github.com/SVGKit/SVGKit</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/mchoe/SwiftSVG">https://github.com/mchoe/SwiftSVG</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/exyte/Macaw">https://github.com/exyte/Macaw</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/swhitty/SwiftDraw">https://github.com/swhitty/SwiftDraw</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/GIKICoder/GMarkdown">https://github.com/GIKICoder/GMarkdown</a></li>
+</ul>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                    
+                        <li class="next">
+                            <a href="/2025/08/04/「后日谈」日本出差随笔/" data-toggle="tooltip" data-placement="top" title="「后日谈」日本出差随笔">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                <!-- disqus comment end -->
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E8%83%8C%E6%99%AF"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">背景</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E5%8E%86%E5%8F%B2%E6%BC%94%E5%8F%98"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">历史演变</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#markdown%E5%8E%86%E5%8F%B2%E8%83%8C%E6%99%AF"><span class="toc-nav-number">2.1.</span> <span class="toc-nav-text">markdown历史背景</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#swift-markdown%E6%9E%B6%E6%9E%84"><span class="toc-nav-number">2.2.</span> <span class="toc-nav-text">swift-markdown架构</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E5%86%85%E5%AE%B9%E6%8F%90%E5%8F%96"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">内容提取</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#LaTeX%E6%B8%B2%E6%9F%93"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">LaTeX渲染</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#KaTeX"><span class="toc-nav-number">4.1.</span> <span class="toc-nav-text">KaTeX</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#MathJax"><span class="toc-nav-number">4.2.</span> <span class="toc-nav-text">MathJax</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E5%B0%9D%E8%AF%95SVG"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">尝试SVG</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E9%A2%9D%E5%A4%96%E9%9C%80%E6%B1%82"><span class="toc-nav-number">6.</span> <span class="toc-nav-text">额外需求</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E6%80%BB%E7%BB%93%E8%A1%A5%E5%85%85"><span class="toc-nav-number">7.</span> <span class="toc-nav-text">总结补充</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E6%9C%80%E5%90%8E"><span class="toc-nav-number">8.</span> <span class="toc-nav-text">最后</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="toc-nav-number">9.</span> <span class="toc-nav-text">参考链接</span></a></li></ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Weixi 2025 
+                    <br>
+                    Theme by <a target="_blank" rel="noopener" href="http://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    re-Ported by <a target="_blank" rel="noopener" href="http://beantech.org">BeanTech</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=YenYuHsuan&repo=hexo-theme-beantech&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://weixi779.github.io/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="https://weixi779.github.io/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

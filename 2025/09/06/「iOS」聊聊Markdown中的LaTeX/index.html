@@ -220,7 +220,7 @@
                 post-container">
 
                 <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>最近在做AI应用的核心功能, 对AI返回的Markdown部分整体处理, 尝试过、使用过目前能在GitHub上搜索到的大部分iOS库, 但是很遗憾, 要么 UI 展示效果差强人意, 要么功能支持不完整. 部分高赞库功能全面, 但放到 SwiftUI 异步渲染 + CollectionView 桥接场景下会出现严重兼容问题. 没有什么办法只能自己去设计整体的流程, 慢慢看到了swift-markdown, 对其进行了二次封装, 开始整体将从预处理开始到解析最终渲染的全流程掌握到了自己手里, 其中也算是路途艰辛, 查阅了巨量的开源库参考, 但是没想想到整体的流程设计到逻辑时间 与 处理LaTeX的时间差不多… 这篇文章主要以LaTeX部分为主, 但是多少会设计一些Markdown的基础概念, 本文作者会主要介绍我调研iOS的LaTeX的整体流程以及到实现过程中踩过的坑, 以及最后对作者对开源社区做的一些微薄之力进行分享.</p>
-<h1 id="历史演变"><a href="#历史演变" class="headerlink" title="历史演变"></a>历史演变</h1><h2 id="markdown历史背景"><a href="#markdown历史背景" class="headerlink" title="markdown历史背景"></a>markdown历史背景</h2><p>如果你比较关心Markdown库的实现逻辑, 那么你会注意到一件事情, 那就是无论是 iOS or Android 开源库都很少默认支持LaTeX语法, 虽然我们最近总是使用这个相关AI能力, 总感觉他是一个很普遍的功能. 但究其原因其实是cmark(CommonMark reference implementation in C)中原版支持的就少, 实际上他只支持这些功能.</p>
+<h1 id="历史演变"><a href="#历史演变" class="headerlink" title="历史演变"></a>历史演变</h1><h2 id="markdown历史背景"><a href="#markdown历史背景" class="headerlink" title="markdown历史背景"></a>markdown历史背景</h2><p>如果你真去翻移动端的 Markdown 库, 会发现“自带 LaTeX”基本是奢望——并不是大家不愿做，而是 CommonMark 的原生实现 cmark 天生就没把它当刚需。它的目标一直是「少即是多」，标准功能只有这些：</p>
 <ul>
 <li>标题（#、## 等）</li>
 <li>段落 &#x2F; 换行</li>
@@ -231,16 +231,15 @@
 <li>强调（<em>italic</em> &#x2F; <strong>bold</strong>）</li>
 <li>水平分割线（—）</li>
 </ul>
-<p>CommonMark 标准未定义，cmark 官方实现不支持，而 cmark-gfm 在此基础上加了扩展其实就是都是后期加出来来的, 以下常见的内容其实原版都没有</p>
+<p>剩下的表格 &#x2F; 任务列表 &#x2F; 删除线这些都是 GitHub 在 cmark-gfm 层加的扩展，LaTeX 更是完全没影，所以你在很多库里连表格都渲染不了也不奇怪——作者就是想保持语法轻量，没打算管一堆学术排版场景。</p>
 <ul>
 <li>不支持表格</li>
 <li>不支持任务列表（- [x]）</li>
 <li>不支持脚注</li>
 <li>更不用说数学公式（LaTeX）</li>
 </ul>
-<p>所以也有一部分库连表格效果也不支持, 第1渲染麻烦, 第2默认Markdown就是为了简化文字排版流程也压根不需要那么复杂.</p>
-<p>没有官方定义导致了其实 LaTeX 也是有很多表述方式的. <code>$...$</code> 、<code>$$...$$</code>、<code>\(...\)</code>、<code>\[...\]</code>、<code>\begin&#123;equation&#125; / \begin&#123;align&#125;</code>其实这些都是真正能够使用的LaTeX格式, 美元是TeX 社区常用的简写; 转义括号是 AMS 推荐的写法，很多 LaTeX 引擎更偏向这一套; \begin等才是完整环境;不同解析库选择的默认支持不一致,因此兼容性问题很普遍.所以许多第三方库没必要费力不讨好做这些事情. 这就引出了 iOS 开发中常用的 Swift-Markdown 框架, 它本身也有不少限制.</p>
-<h2 id="swift-markdown架构"><a href="#swift-markdown架构" class="headerlink" title="swift-markdown架构"></a>swift-markdown架构</h2><p>但是问题就扔到了开发者头上, 比如作者的需求就是使用美元符号去做区分. 那作者翻了一段获取了这么多信息, 觉得自己很强了, 我要对官方库进行fork简单二次封装即可, 暴露给外界一个vitor方法就好了, 不看不知道, 一看吓一跳. </p>
+<p>另外 LaTeX 自己就有一堆写法：<code>$…$</code>、<code>$$…$$</code>、<code>\(...\)</code>、<code>\[...\]</code>、<code>\begin&#123;equation&#125;</code> &#x2F; <code>\begin&#123;align&#125;</code>……美元符是 TeX 圈的习惯，AMS 推荐反斜杠括号，环境语法才是“正规军”。不同解析器默认支持的集合都不一样，你指望开源库把全部分支兜住基本等于让它重写一套 TeX。也正因为此，iOS 大多还是落在 Swift-Markdown 这条官方链路上，想扩展就必须自己补齐缺失的那一截。</p>
+<h2 id="swift-markdown架构"><a href="#swift-markdown架构" class="headerlink" title="swift-markdown架构"></a>swift-markdown架构</h2><p>知道 CommonMark 不管 LaTeX 之后，问题自然砸回我们头上：想用 <code>$...$</code> 自定义语法是不是 fork 一下官方库就行？我也是这么想的，直到顺着源码链路往下翻，发现根本不是“一个仓库”的事。</p>
 <blockquote>
 <p>swift-markdown → swift-cmark → cmark-gfm → commonmark&#x2F;cmark</p>
 <ul>
@@ -250,35 +249,29 @@
 <li>cmark: CommonMark 的官方参考实现，功能最纯净</li>
 </ul>
 </blockquote>
-<p>所以理论上只要改 cmark-gfm, 但在 SwiftPM 依赖链里常常要全链路维护 fork, 工作量依然很大. 恭喜你要准备好fork三个库的打算, 而且还要自己研究桥接流程什么. 作者看到了这里之后就果断放弃了. </p>
-<h1 id="内容提取"><a href="#内容提取" class="headerlink" title="内容提取"></a>内容提取</h1><h2 id="初步问题"><a href="#初步问题" class="headerlink" title="初步问题"></a>初步问题</h2><p>swift-markdown 其实是支持相关自定义语法的, 那么这样的话我们对我们的markdown内容做一些预处理就可以达到我们想要的效果. 但是好用么? 我感觉算不上, 在我写的最初版本的Markdown有一个问题就是, 简单的markdown都可以通过自定义的 <code>BlockDirective</code> 或者 <code>InlineAttributes</code> 去二次封装, 但是当遇到了复杂的公式就完全不工作. </p>
+<p>理论上只要动 cmark-gfm，但在 SwiftPM 里意味着你要维护三层 fork，还得跟进上游的 ABI 变动、重新生成桥接头文件。折腾半天只是为了认一个 <code>$</code>，投入产出比直接爆炸，于是我放弃“改底层”这条路，转而在 swift-markdown 之上做预处理+解析结果的二次加工。</p>
+<h1 id="内容提取"><a href="#内容提取" class="headerlink" title="内容提取"></a>内容提取</h1><h2 id="初步问题"><a href="#初步问题" class="headerlink" title="初步问题"></a>初步问题</h2><p>swift-markdown 给了我们 <code>BlockDirective</code>、<code>InlineAttributes</code> 这些扩展点，只要预处理得当理论上可以接入任何语法。但实践下来，简单示例都能过，复杂 LaTeX 一夜之间全失灵，尤其是成对大括号、环境语法彻底把默认解析器炸穿。</p>
 <figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">\\</span>begin&#123;cases&#125;</span><br><span class="line"><span class="keyword">\\</span>nabla <span class="keyword">\\</span>cdot <span class="keyword">\\</span>vec&#123;E&#125; = <span class="keyword">\\</span>frac&#123;<span class="keyword">\\</span>rho&#125;&#123;<span class="keyword">\\</span>epsilon<span class="built_in">_</span>0&#125; <span class="keyword">\\</span><span class="keyword">\\</span></span><br><span class="line"><span class="keyword">\\</span>nabla <span class="keyword">\\</span>cdot <span class="keyword">\\</span>vec&#123;B&#125; = 0</span><br><span class="line"><span class="keyword">\\</span>end&#123;cases&#125;</span><br></pre></td></tr></table></figure>
 
-<p>这是一个LaTeX的方程组表现形式, 但是markdown的 <code>BlockDirective</code> 是 <code>@BlockKeyword &#123; content &#125;</code> 这样的效果导致与嵌套的大括号会有问题. 我在GitHub上开了一个<a target="_blank" rel="noopener" href="https://github.com/swiftlang/swift-markdown/issues/236">issue</a>但目前始终也是无人回复. 经过翻阅一些资料, 最后采用 <code>&lt;LaTeX&gt; &lt;\LaTeX&gt;</code> 的xml格式进行内容处理, 好处是能够完全保留LaTeX的内容, 但是代价是需要手动换行以及通过正则表达式获取到到content的内容, 那么到这里LaTeX的内容我们就可以成功的拿出来了.</p>
-<p>另外补充一点 <code>InlineAttributes</code> 的关键字效果是 <code>^[content](InlineKeyword)</code> 虽然LaTeX中很少会出现中括号的内容但是依然存在可能性, 所以 inline的部分我们也需要进行修改, 作者采用的是对content进行inlineCode <code>content</code> 进行二次包装避免了相关转义问题.</p>
+<p>上面这种方程组是最典型的反例。<code>BlockDirective</code> 的语法是 <code>@Keyword &#123; ... &#125;</code>，一旦内容里再嵌套大括号就直接对不上。我给官方提了一个 <a target="_blank" rel="noopener" href="https://github.com/swiftlang/swift-markdown/issues/236">issue</a>，目前还没人接。最后只能把块级公式在预处理阶段替换为 <code>&lt;LaTeX&gt;...&lt;/LaTeX&gt;</code>，让它走 HTMLBlock 通道：语义得以保留，但代价是要自己控制换行、正则摘取内容、再把文本塞回 AST。</p>
+<p><code>InlineAttributes</code> 同样不靠谱。它需要 <code>^[content](Keyword)</code> 这种包裹方式，LaTeX 内嵌 <code>[]</code> 的概率虽然不算大，但谁敢保证后端不会给你一个 <code>\begin&#123;equation&#125;[htbp]</code>？我的处理方式是直接把原始内容包一层 <code>`content`</code> inline code，先保命，再在后续阶段自己拆。</p>
 <figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">\begin</span>&#123;equation&#125;[htbp]</span><br><span class="line">E = mc<span class="built_in">^</span>2</span><br><span class="line"><span class="keyword">\end</span>&#123;equation&#125;</span><br></pre></td></tr></table></figure>
 
-<h2 id="内联作用域"><a href="#内联作用域" class="headerlink" title="内联作用域"></a>内联作用域</h2><p>上面的描述其实都属于预处理阶段。但如果后端返回的数据非常“奇葩”，比如：</p>
+<h2 id="内联作用域"><a href="#内联作用域" class="headerlink" title="内联作用域"></a>内联作用域</h2><p>块级问题解决了，内联才是真正的噩梦：后端随时可能给你</p>
 <ul>
-<li>内联换行符；</li>
-<li>方程组写法；</li>
-<li>常见的 $ 没有转义；</li>
+<li>半截 <code>$</code> 没闭合；</li>
+<li>把 <code>\\</code> 当换行；</li>
+<li>一句话里夹了多段公式，甚至还跨行。</li>
 </ul>
-<p>那么单靠正则解析就会显得非常脆弱。一方面，正则的代价很高，我们需要在预处理中替换大量字符串；另一方面，这样得到的结果在用户手里可能就是一堆看不懂的残片，既不可维护，也难以扩展。</p>
-<p>更合适的方案是<strong>在内联粒度上做处理</strong>：即以段落或列表为单位，把它们内部的 Text 节点统一收集，然后检测其中是否包含 LaTeX 片段。如果有，就把普通文本和公式分开“分堆”。</p>
-<p>例如：遇到 $$，则先将前面的内容作为普通文本存储，再插入一条自定义的 inlineMath 节点，最后把尾部文本继续存进去。前提是你需要有一套自定义渲染模型，能够容纳这种“普通文本 + LaTeX”的混合节点结构。</p>
-<p>换句话说，如果只是初学者会觉得这很简单；但真正做过 Markdown 定制的人都知道，这背后要拆成两大部分：<strong>检测</strong>和<strong>分堆渲染</strong>，实现难度并不小。</p>
-<h3 id="原文切片与纯净性"><a href="#原文切片与纯净性" class="headerlink" title="原文切片与纯净性"></a>原文切片与纯净性</h3><p>另一个棘手点是：<strong>我们拿到的文本内容真的正确吗？</strong></p>
-<p>cmark 的实现会自动对文本做转义处理，这意味着直接放进 LaTeX 的内容一定会被破坏。大部分情况下，你可能能通过把内容包裹为 inline code 或 HTML 来避免，但这次我们恰恰是希望缩小 LaTeX 的检测范围，所以不能再依赖这种“旁路”。</p>
-<p>解决方案就是利用 <strong>markup 提供的原始范围信息</strong>。</p>
-<p>Markdown 的 AST 中确实有 SourceRange，但它基于字符索引。如果直接用 String.count 对齐，很容易出现错位。安全的做法是：</p>
+<p>你要是指望预处理阶段用一堆正则硬怼，执行成本高不说，出了问题连定位都难。我的做法是直接把解析后的 Text 节点再过一遍，把它们拆成“普通文本 + LaTeX token”的数组：每遇到 <code>$...$</code> 就把前面缓存的文字 flush，插入一个自定义 <code>inlineMath</code>，然后继续往后扫。这样能保证渲染层拿到的结构是明确的，虽然实现上要自己维护检测器和拆分逻辑，但至少不会在 UI 层炸锅。</p>
+<h3 id="原文切片与纯净性"><a href="#原文切片与纯净性" class="headerlink" title="原文切片与纯净性"></a>原文切片与纯净性</h3><p>还有个坑经常被忽略：swift-markdown 返回的 Text.string 已经被转义，<code>\$</code> 会变成 <code>$</code>，<code>\&#123;</code> 会变 <code>&#123;</code>，如果直接把它当 LaTeX 渲染，结果一定错。只能利用 AST 上的 <code>SourceRange</code> 重新到原文里切片：</p>
 <ol>
-<li>按照 UTF-8 offset 进行索引；</li>
-<li>在原始输入字符串上做切片；</li>
-<li>再把切片出来的内容当作 LaTeX 原文使用。</li>
+<li>预处理阶段记录整份 Markdown 的 UTF-8 行首偏移；</li>
+<li><code>SourceLocation</code>（行列）转成全局 offset；</li>
+<li>在原字符串的 utf8 视图里切片，得到未转义的子串。</li>
 </ol>
-<p>这样我们才能确保拿到的是真正的“原文”，而不是被转义或被修改后的结果。</p>
-<h1 id="LaTeX渲染"><a href="#LaTeX渲染" class="headerlink" title="LaTeX渲染"></a>LaTeX渲染</h1><p>当你获取到完整的LaTeX之后, 你会发现<code>swiftMath</code>的实现效果非常有限, 很多功能都没有支持, 但是也是理解必经想把LaTeX的所有case转换为iOS底层文本的实现是相当困难的. 那么它带来的好处是什么? 极快的渲染速度(1ms~3ms), 以及不用使用者操心的UI渲染效果. 但是问题就是有些少见的特性不支持, 而且我不知道是SwiftMath的翻译问题还是原本iOSMath这个库的实现问题, 如果你遇到了一些特别的语法他会直接crash… 没办法我们只能去寻找fallback方案. 去网上搜索已经会遇到这两兄弟 <code>KaTeX</code> 与 <code>MathJax</code>. 作者这对这两个库都进行了一些尝试.</p>
+<p>这样我们才能确保拿到真正的“原文”，再配合上面的内联拆分，公式检测才有意义。</p>
+<h1 id="LaTeX渲染"><a href="#LaTeX渲染" class="headerlink" title="LaTeX渲染"></a>LaTeX渲染</h1><p>拿到干净的 LaTeX 字符串后，渲染链路的第一选择仍然是 SwiftMath。它底层沿用 iOSMath 的 <code>MTMathUILabel</code>，只要语法能识别，1~4ms 内就能拿到一张渲染良好的图片，完全不用操心字体&#x2F;布局。但问题也明显：语法覆盖远不如 MathJax&#x2F;KaTeX，某些命令（例如 <code>\quad</code>、部分堆叠符号）会直接 crash，而且它必须在主线程跑。为了兼顾速度与稳定性，我最后做了一个“优先 SwiftMath、失败再 fallback”的策略，后面的双引擎就围绕这个思路展开。</p>
 <h2 id="KaTeX"><a href="#KaTeX" class="headerlink" title="KaTeX"></a>KaTeX</h2><p>Khan Academy 开源的高性能 LaTeX 数学渲染库, 在网页端常作为 MathJax 的轻量替代. KaTeX的设计注重<strong>速度</strong>和<strong>小体积</strong>依然保持了良好的速度 。KaTeX 库本身压缩后约几百 KB，再加上一些字体资源，相较 MathJax 几兆的体积要轻量得多。描述的很好吧, 但是一切东西都是需要相应的代价的.</p>
 <p>我们可以将 KaTeX 和 iOS 原生代码集成, 手动将 KaTeX 的 JavaScript源代码打包进项目，使用 <code>JavaScriptCore</code> 在后台执行 KaTeX 渲染，将 LaTeX 字符串转换为 HTML片段。KaTeX仅支持最后的输出是HTML代码内容, 所以我们需要在移动端渲染真正的HTML代码就是最大的实现问题. 能想到的解决办法基本上就是离屏渲染WKWebView, 然后获取视图截图并返回, 或者开WebView到Markdown的CollectionView中. 但是作者其实最终的期望就是获取到一个UIImage, 因为我还需要做文图混排相关的功能. 如果你想这个东西做好可能还需要维护WebView对象池, 加上性能考虑没有采用这个方案. 另外有一些细节需要考虑的是, 你无法找到官方对于iOS的版本封装, 需要手动导入源代码部分. 另外iOS确实有相关库实现了该功能, <a target="_blank" rel="noopener" href="https://github.com/nks5117/KatexUtils">KatexUtils</a>. 但是该库已经不再维护使用的办法也基本是作者所描述的内容.</p>
 <h2 id="MathJax"><a href="#MathJax" class="headerlink" title="MathJax"></a>MathJax</h2><p>MathJax 是功能最完备的浏览器端 LaTeX&#x2F;MathML 渲染引擎。为了提升在原生环境的性能，我们可以绕开 WebView，通过 JavaScriptCore 在后台运行 MathJax 的核心脚本，只执行公式到可视元素的转换，然后将结果绘制出来。社区已有开源项目 <a target="_blank" rel="noopener" href="https://github.com/colinc86/MathJaxSwift">MathJaxSwift</a> 实现了这一思路：它将 MathJax 3 的源码嵌入，使用 JavaScriptCore 执行，并提供 Swift 接口调用转换函数。MathJax 本身支持将 TeX 转换为多种输出格式，如 CommonHTML、MathML、SVG 。这样我们就可以避免使用WKWebView了, 甚至不管他是不是离屏的了.</p>

@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="个人博客记录成长">
+    <meta name="keyword"  content="">
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          「iOS」Design of the log system - undefined
+        
+    </title>
+
+    <link rel="canonical" href="https://weixi779.github.io/2026/01/09/「iOS」Design-of-the-log-system/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS --> 
+    
+<link rel="stylesheet" href="/css/beantech.min.css">
+
+    
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    
+<link rel="stylesheet" href="/css/widget.css">
+
+
+    
+<link rel="stylesheet" href="/css/rocket.css">
+
+
+    
+<link rel="stylesheet" href="/css/signature.css">
+
+
+    
+<link rel="stylesheet" href="/css/toc.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('')
+            /*post*/
+        
+    }
+    
+</style>
+
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#架构" title="架构">架构</a>
+                            
+                              <a class="tag" href="/tags/#日志" title="日志">日志</a>
+                            
+                        </div>
+                        <h1>「iOS」Design of the log system</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by Weixi on
+                            2026-01-09
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">伟兮の小屋</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="1-为什么需要日志"><a href="#1-为什么需要日志" class="headerlink" title="1 为什么需要日志"></a>1 为什么需要日志</h1><p>软件系统的运行过程本质上是不可见的。绝大多数行为发生在内存与线程之中。在本机调试阶段，我们可以借助断点、内存分析、控制台等手段直接观察系统状态；而一旦进入生产环境，这些能力几乎全部失效。此时，日志成为<strong>唯一能够跨越时间和空间的观测手段</strong>。</p>
+<p>但如果进一步追问：<strong>日志究竟解决了什么问题？</strong>这个问题并没有那么简单。日志的核心价值并不在于文本本身，而在于<strong>可见性</strong>。它最基础的作用，是让这些不可见的行为“显影”。一次简单的日志输出，至少隐含了三类信息：时间、位置、描述。</p>
+<p>这也是我们不建议使用简单 print 的原因：结构化日志在每次记录时，都会自动携带这些关键信息，从而形成稳定、可检索的观测数据。</p>
+<p>之后当系统规模变大、异步逻辑增多时，单条日志已经很难解释问题。真正有价值的，是一组日志所呈现出的<strong>因果关系</strong>. 在这一层面上，日志更像是<strong>事件证据</strong>，用于在事后还原一段已经发生过的执行流程。</p>
+<p>接下来，我们将从这些问题出发，逐步讨论一套面向真实生产环境的日志与可观测性设计。</p>
+<h1 id="2-日志系统"><a href="#2-日志系统" class="headerlink" title="2 日志系统"></a>2 日志系统</h1><p>尽管日志在实践中无处不在，它本身仍然存在天然局限：日志是离散的事件，而不是连续的流程;日志天然是“事后信息”，而不是实时状态;在客户端等受限环境中, 如 应用可能随时被杀掉, 各种网络情况不稳定, 隐私与安全限制，日志可能丢失、不可获取、不可上报。</p>
+<p>这意味着，<strong>日志并不是系统真相本身</strong>，它只是我们理解系统的一种工具。当系统复杂度继续提升，仅靠“多打日志”往往无法解决根本问题。</p>
+<h2 id="2-1-范围与功能"><a href="#2-1-范围与功能" class="headerlink" title="2.1 范围与功能"></a>2.1 范围与功能</h2><p>这样我们应该勾勒出日志系统的一些边界范围. </p>
+<ol>
+<li>不必要求日志的「绝对可靠上报」</li>
+<li>不通过日志修复「系统设计问题」(业务依赖、生命周期、指责转移错误)</li>
+<li>不将日志系统演化成「消息系统」(不持久化、不通过日志兜底)</li>
+</ol>
+<p>所以我们通过边界范围基本确定了我们日志系统的一些要求:</p>
+<ul>
+<li><p><strong>结构化并非文本化:</strong> 日志首先应该是结构化数据，而不是简单字符串。文本只是表现形式，结构才是核心价值.每条日志必须具备稳定的时间、位置、级别与上下文.日志应当天然支持检索、过滤与关联.</p>
+</li>
+<li><p><strong>本地优先, 而非远端依赖:</strong> 本地记录必须是同步、低成本、稳定的.远端上报只能是 best-effort 行为.系统不能因为远端日志失败而影响主流程</p>
+</li>
+</ul>
+<h2 id="2-2-系统架构"><a href="#2-2-系统架构" class="headerlink" title="2.2 系统架构"></a>2.2 系统架构</h2><p><img src="/../images/LoggerSystemArchitectureDiagram.svg" alt="LoggerSystemArchitectureDiagram"></p>
+<p>我们刻意限制了日志系统的职责范围，使其始终作为一个旁路的、可退化的基础设施存在。这些约束并非功能缺失，而是后续实现能够保持稳定与可演进的前提。所有依赖关系均为单向：日志系统不会反向调用业务模块或基础设施。</p>
+<h1 id="3-本地日志"><a href="#3-本地日志" class="headerlink" title="3 本地日志"></a>3 本地日志</h1><p>在整体架构中，本地日志被视为整个日志系统中<strong>最基础、也是最可靠的一环</strong>。无论远端日志是否可用、网络环境是否稳定，本地日志都必须能够在任何情况下正常工作。</p>
+<p>因此，在实现层面，我们选择优先构建一套<strong>稳定、低成本、符合平台特性的本地日志能力</strong>，而不是从远端导出反推本地设计。</p>
+<h2 id="3-1-为什么是os-Logger"><a href="#3-1-为什么是os-Logger" class="headerlink" title="3.1 为什么是os.Logger"></a>3.1 为什么是os.Logger</h2><p>在 iOS 开发里，print 很直观，但它更像调试手段：没有结构、难以检索、性能成本不可预测，也无法进入系统日志体系。进入生产环境后，这些缺点会被放大。</p>
+<p>os.Logger 是系统级日志通道，它的设计目标本身就面向“可长期运行”的生产场景。本文中，<code>os.Logger</code> 指 Apple 的系统日志实现，<code>Logger</code> 指本文封装的对外 API。我们选择它，主要基于这些原因：</p>
+<ul>
+<li>低成本写入：日志被拆分为静态模板与动态参数，格式化发生在读取阶段，而非写入阶段</li>
+<li>系统工具链一致性：天然接入 Console、Instruments 与系统日志采集工具</li>
+<li>隐私与合规能力：原生支持隐私级别控制</li>
+<li>结构化上下文：时间戳、级别、分类、源码位置可以稳定保留</li>
+</ul>
+<p>因此，日志可以作为“长期存在的基础能力”，在核心路径中持续开启，而不是仅限于调试阶段。需要说明的是，系统日志在生产环境的获取也受平台权限与采集策略限制，所以它是“本地可靠”，但并不是“远端万能”。</p>
+<p>在使用层面，Logger API 保持简单直接：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> logger <span class="operator">=</span> <span class="type">Logger</span>(subsystem: <span class="string">&quot;LoggerSystem&quot;</span>)</span><br><span class="line">logger.info(<span class="string">&quot;Request started&quot;</span>)</span><br><span class="line">logger.error(<span class="string">&quot;Request failed&quot;</span>, error: error)</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-2-附加功能"><a href="#3-2-附加功能" class="headerlink" title="3.2 附加功能"></a>3.2 附加功能</h2><p>除了系统日志的即时写入，我们还提供了几个本地诊断能力：通过 <code>LogStore</code> &#x2F; <code>OSLogStore</code> 进行日志检索（按时间、级别、分类）并支持导出为文本或 JSON；同时集成 <code>OSSignpost</code> &#x2F; <code>OSSignposter</code> 作为性能事件记录方式，用于衡量关键路径耗时。这些能力不进入主写入路径，只在排查与分析时启用。</p>
+<h1 id="4-远端日志与-OpenTelemetry"><a href="#4-远端日志与-OpenTelemetry" class="headerlink" title="4 远端日志与 OpenTelemetry"></a>4 远端日志与 OpenTelemetry</h1><h2 id="4-1-OpenTelemetry-在客户端日志系统中的位置"><a href="#4-1-OpenTelemetry-在客户端日志系统中的位置" class="headerlink" title="4.1 OpenTelemetry 在客户端日志系统中的位置"></a>4.1 OpenTelemetry 在客户端日志系统中的位置</h2><p>OpenTelemetry 由 CNCF 托管，起源于 2019 年 OpenCensus 与 OpenTracing 的合并，并于 2021 年成为 CNCF 顶级项目。它并不是某一个具体 SDK，而是一套<strong>用于描述可观测性数据的开放标准</strong>，定义了日志、指标与链路追踪的统一语义与数据模型，并配套给出了标准化的传输协议（OTLP）。</p>
+<p>在本章中，我们并不试图完整覆盖 OpenTelemetry 的体系，而是聚焦于其中与<strong>远端日志</strong>相关的部分：</p>
+<p><strong>日志数据在 OTel 语义下如何被结构化、如何被分组、以及如何被导出。</strong></p>
+<p>认证、上下文传播等问题会显著影响系统依赖关系，本文刻意将其延后，在下一章单独讨论。</p>
+<h4 id="4-1-1-Remote-Logger-的最小闭环"><a href="#4-1-1-Remote-Logger-的最小闭环" class="headerlink" title="4.1.1 Remote Logger 的最小闭环"></a>4.1.1 <strong>Remote Logger 的最小闭环</strong></h4><p>下图展示了在 OTel 语义下，客户端远端日志链路的<strong>最小可用闭环</strong>：</p>
+<p>这一闭环的目标并非“可靠投递”，而是在客户端约束条件下，提供一条<strong>可控、可退化的日志导出路径</strong>。</p>
+<p>从数据流动的角度看，这条链路可以被抽象为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">LogRecord[]</span><br><span class="line">  → LogRecordAdapter</span><br><span class="line">  → ResourceLogs / ScopeLogs / LogRecords</span><br><span class="line">  → ExportLogsServiceRequest (OTLP)</span><br><span class="line">  → OTLP Exporter (HTTP / gRPC)</span><br></pre></td></tr></table></figure>
+
+<p>在这一结构之上，可以按需叠加增强能力，例如批处理、失败缓存或延迟调度，但这些能力<strong>不会改变日志的协议语义</strong>。</p>
+<h4 id="4-1-2-结构化与分组：从-LogRecord-到-OTel-Logs"><a href="#4-1-2-结构化与分组：从-LogRecord-到-OTel-Logs" class="headerlink" title="4.1.2 结构化与分组：从 LogRecord 到 OTel Logs"></a>4.1.2 <strong>结构化与分组：从 LogRecord 到 OTel Logs</strong></h4><p>在 OTel 模型中，LogRecord 仍然是最小的事件单元，用于描述“发生了什么”。</p>
+<p>但真正的上传结构并不是一组扁平的日志列表，而是按以下层级组织：</p>
+<ul>
+<li><strong>ResourceLogs</strong>：描述日志产生的资源环境（设备、系统、应用）</li>
+<li><strong>ScopeLogs</strong>：描述产生日志的逻辑作用域（模块、库）</li>
+<li><strong>LogRecords</strong>：具体的日志事件</li>
+</ul>
+<p>这一分组方式的意义在于：</p>
+<ul>
+<li>避免重复携带环境信息</li>
+<li>明确日志的来源与归属</li>
+<li>为后端聚合与分析提供稳定结构</li>
+</ul>
+<p>在客户端侧，这一阶段通常通过一个 Adapter 或 Mapper 完成，其职责只是<strong>语义映射</strong>，而非业务处理。</p>
+<h4 id="4-1-3-批处理与调度：Processor-的职责边界"><a href="#4-1-3-批处理与调度：Processor-的职责边界" class="headerlink" title="4.1.3 批处理与调度：Processor 的职责边界"></a>4.1.3 <strong>批处理与调度：Processor 的职责边界</strong></h4><p>在日志被结构化之后，下一步并不是立刻发送，而是进入处理阶段。</p>
+<p>LogRecordProcessor 位于这一阶段的入口位置。以 BatchLogRecordProcessor 为例，它负责：</p>
+<ul>
+<li>将多条日志聚合为批次</li>
+<li>控制发送频率</li>
+<li>降低网络与系统调用成本</li>
+</ul>
+<p>需要注意的是，Processor 层体现的是<strong>策略位置</strong>，而不是协议逻辑。</p>
+<p>它不关心日志如何被编码，也不关心最终通过何种方式发送，只负责决定<strong>什么时候值得尝试导出</strong>。</p>
+<h4 id="4-1-4-导出边界：Exporter-作为协议适配层"><a href="#4-1-4-导出边界：Exporter-作为协议适配层" class="headerlink" title="4.1.4 导出边界：Exporter 作为协议适配层"></a>4.1.4 <strong>导出边界：Exporter 作为协议适配层</strong></h4><p>LogRecordExporter 是远端日志链路中的<strong>协议边界</strong>。</p>
+<p>在这一层中，结构化日志会被转换为 OTLP 定义的 ExportLogsServiceRequest，并通过具体传输方式发送。常见实现包括：</p>
+<ul>
+<li>OTLP&#x2F;HTTP</li>
+<li>OTLP&#x2F;gRPC</li>
+</ul>
+<p>无论采用哪种方式，Exporter 的核心职责都是一致的：</p>
+<p><strong>编码日志结构，并完成协议级发送。</strong></p>
+<p>它不感知业务上下文，也不参与重试策略之外的系统决策。</p>
+<h2 id="4-2-RemoteLogger-架构图"><a href="#4-2-RemoteLogger-架构图" class="headerlink" title="4.2 RemoteLogger 架构图"></a>4.2 RemoteLogger 架构图</h2><p>下面这张图是 RemoteLogger 在 OTel 语义下的最小闭环：</p>
+<p><img src="/../images/RemoteSinkSystem.svg" alt="RemoteSinkSystem"></p>
+<h1 id="5-上下文边界"><a href="#5-上下文边界" class="headerlink" title="5 上下文边界"></a>5 上下文边界</h1><p>从 RemoteLogger 开始真正发日志的那一刻，日志系统就第一次碰到外部依赖：鉴权。它不是“可选附加项”，而是远端链路的必经之门。</p>
+<h2 id="5-1-鉴权"><a href="#5-1-鉴权" class="headerlink" title="5.1 鉴权"></a>5.1 鉴权</h2><p>日志端点是基础设施入口（infra endpoint），它的目标是<strong>控制写入来源</strong>，而不是验证用户身份。因此更合理的鉴权方式是：IP allowlist、mTLS、ingestion key、project‑level key，配合采样与限流。这些机制与用户态解耦、无需刷新、不参与业务控制流，且失败也不会影响客户端主流程。</p>
+<p>在这种模型下，日志系统只做一件事：<strong>携带已准备好的凭证</strong>。它不维护鉴权状态，也不触发刷新，更不等待鉴权完成。</p>
+<h3 id="5-1-1-当鉴权被卷入业务流程"><a href="#5-1-1-当鉴权被卷入业务流程" class="headerlink" title="5.1.1 当鉴权被卷入业务流程"></a>5.1.1 当鉴权被卷入业务流程</h3><p>问题发生在日志复用业务鉴权体系时：access token 短期、频繁刷新、刷新依赖网络与生命周期，而鉴权失败本身又需要被记录。直觉做法是“刷新后重试”，但这会形成典型的依赖循环：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Logger</span><br><span class="line">  → RemoteExporter</span><br><span class="line">     → AuthManager</span><br><span class="line">        → RefreshToken</span><br><span class="line">           → Network</span><br><span class="line">              → Logger</span><br></pre></td></tr></table></figure>
+
+<p>这不是实现复杂的问题，而是依赖方向错误的问题：日志系统依赖了本应被它观测的系统，直接造成 <strong>auth blind zone（鉴权失败本身无法被观测的区域）</strong>。</p>
+<p>现实里，很多团队不得不复用业务鉴权，但这时唯一能做的是“隔离副作用”：不触发刷新、不重试鉴权、失败即丢弃，并保持凭证只读与短生命周期缓存。这样做无法消灭问题，却能把依赖循环缩到最小。</p>
+<p>结论只有一句：<strong>日志系统只能消费鉴权结果，不能成为鉴权流程的一部分。</strong></p>
+<h2 id="5-2-Traceparent"><a href="#5-2-Traceparent" class="headerlink" title="5.2 Traceparent"></a>5.2 Traceparent</h2><p>traceparent 是 W3C Trace Context 标准里的核心头部，用于跨进程传播 Trace。它不是日志系统的一部分，而是“流程上下文”的载体。日志系统只负责把它携带出去，而不负责生成、维护或推进它。</p>
+<p>它的基本结构非常固定：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">traceparent: &#123;version&#125;-&#123;trace-id&#125;-&#123;parent-id&#125;-&#123;trace-flags&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>version</strong>：版本号，当前常见为 <code>00</code></li>
+<li><strong>trace-id</strong>：16 字节（32 hex）的全局 trace 标识</li>
+<li><strong>parent-id</strong>：8 字节（16 hex）的当前 span 标识</li>
+<li><strong>trace-flags</strong>：采样与调试标记（如 <code>01</code> 表示采样）</li>
+</ul>
+<p>这四个字段共同决定“这条日志属于哪条 trace、处于哪一段 span 上下文”。</p>
+<h3 id="5-2-1-构造与传递"><a href="#5-2-1-构造与传递" class="headerlink" title="5.2.1 构造与传递"></a>5.2.1 构造与传递</h3><p>在客户端日志系统中，traceparent 应当被视为<strong>外部上下文</strong>：</p>
+<ul>
+<li>它由业务流程或 tracing 系统生成</li>
+<li>它随着请求&#x2F;事件生命周期变化</li>
+<li>它不由日志系统创建，也不由日志系统维护</li>
+</ul>
+<p>日志系统只做一件事：在日志生成或导出时附带 traceparent，让后端能够把日志与 Trace 对齐。</p>
+<p>这也意味着：日志系统不能尝试“修复” traceparent，也不能在缺失时伪造它。缺失就缺失，伪造会制造错误的因果链。</p>
+<p>traceparent 的构造来自 tracing 系统（SDK 或上游服务），它会在一次请求开始时生成新的 trace-id，并在 span 变化时更新 parent-id。日志系统只需在“生成日志的瞬间”读取当前上下文并携带即可。</p>
+<p>换句话说，traceparent 的生命周期与日志系统无关，而与业务流程一致。日志系统需要尊重这个边界，否则它会再次变成主流程的一部分。</p>
+<h2 id="5-3-Context-的角色"><a href="#5-3-Context-的角色" class="headerlink" title="5.3 Context 的角色"></a>5.3 Context 的角色</h2><p>如果说 traceparent 是“具体的上下文载体”，那么 Context 是“上下文在系统里的容器与作用域”。它回答的不是“字段长什么样”，而是“这份上下文从哪来、到哪去、何时结束”。</p>
+<p>在日志系统里，Context 只应当承担两件事：</p>
+<ol>
+<li><strong>携带流程信息</strong>，让日志具备可关联性</li>
+<li><strong>限定生命周期</strong>，避免上下文在系统内滞留</li>
+</ol>
+<p>这意味着 Context 的设计重点不是“存什么”，而是“何时注入、如何传播、何时释放”。</p>
+<p>更宽泛地看，Context 的生命周期其实是一种“作用域建模”。它既像 tracing 里的 active span，也像 DI 里的 scope：谁负责创建、谁负责结束、跨线程如何继承，这些都会直接决定 traceparent 的 parent-id 何时变化。换句话说，Context 的问题往往不是协议问题，而是作用域与生命周期策略的问题。</p>
+<p>Context 最难的部分其实是作用域与注入方式：</p>
+<ul>
+<li>它和依赖注入（DI）的关系应该是什么</li>
+<li>在多线程&#x2F;异步场景中，Context 的边界如何定义</li>
+<li>Context 是否应该是显式传参，还是隐式绑定</li>
+</ul>
+<p>这些问题没有一个完美答案，需要团队给出清晰的工程约定。</p>
+<h2 id="5-4-结语"><a href="#5-4-结语" class="headerlink" title="5.4 结语"></a>5.4 结语</h2><p>这套日志系统的核心不是“更多日志”，而是“正确的边界”：本地优先、远端旁路、结构化可关联、上下文可控。真正决定系统稳定性的，不是某一个 API，而是你如何定义依赖方向与生命周期。最后想留下的一句话是：<strong>可观测性不是无限的，它永远受平台约束。</strong></p>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                    
+                        <li class="next">
+                            <a href="/2026/01/05/「iOS」After-Moya/" data-toggle="tooltip" data-placement="top" title="After Moya 现代化网络层架构讨论">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                <!-- disqus comment end -->
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#1-%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E6%97%A5%E5%BF%97"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">1 为什么需要日志</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#2-%E6%97%A5%E5%BF%97%E7%B3%BB%E7%BB%9F"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">2 日志系统</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#2-1-%E8%8C%83%E5%9B%B4%E4%B8%8E%E5%8A%9F%E8%83%BD"><span class="toc-nav-number">2.1.</span> <span class="toc-nav-text">2.1 范围与功能</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#2-2-%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84"><span class="toc-nav-number">2.2.</span> <span class="toc-nav-text">2.2 系统架构</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#3-%E6%9C%AC%E5%9C%B0%E6%97%A5%E5%BF%97"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">3 本地日志</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#3-1-%E4%B8%BA%E4%BB%80%E4%B9%88%E6%98%AFos-Logger"><span class="toc-nav-number">3.1.</span> <span class="toc-nav-text">3.1 为什么是os.Logger</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#3-2-%E9%99%84%E5%8A%A0%E5%8A%9F%E8%83%BD"><span class="toc-nav-number">3.2.</span> <span class="toc-nav-text">3.2 附加功能</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#4-%E8%BF%9C%E7%AB%AF%E6%97%A5%E5%BF%97%E4%B8%8E-OpenTelemetry"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">4 远端日志与 OpenTelemetry</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#4-1-OpenTelemetry-%E5%9C%A8%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%97%A5%E5%BF%97%E7%B3%BB%E7%BB%9F%E4%B8%AD%E7%9A%84%E4%BD%8D%E7%BD%AE"><span class="toc-nav-number">4.1.</span> <span class="toc-nav-text">4.1 OpenTelemetry 在客户端日志系统中的位置</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#4-1-1-Remote-Logger-%E7%9A%84%E6%9C%80%E5%B0%8F%E9%97%AD%E7%8E%AF"><span class="toc-nav-number">4.1.0.1.</span> <span class="toc-nav-text">4.1.1 Remote Logger 的最小闭环</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#4-1-2-%E7%BB%93%E6%9E%84%E5%8C%96%E4%B8%8E%E5%88%86%E7%BB%84%EF%BC%9A%E4%BB%8E-LogRecord-%E5%88%B0-OTel-Logs"><span class="toc-nav-number">4.1.0.2.</span> <span class="toc-nav-text">4.1.2 结构化与分组：从 LogRecord 到 OTel Logs</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#4-1-3-%E6%89%B9%E5%A4%84%E7%90%86%E4%B8%8E%E8%B0%83%E5%BA%A6%EF%BC%9AProcessor-%E7%9A%84%E8%81%8C%E8%B4%A3%E8%BE%B9%E7%95%8C"><span class="toc-nav-number">4.1.0.3.</span> <span class="toc-nav-text">4.1.3 批处理与调度：Processor 的职责边界</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#4-1-4-%E5%AF%BC%E5%87%BA%E8%BE%B9%E7%95%8C%EF%BC%9AExporter-%E4%BD%9C%E4%B8%BA%E5%8D%8F%E8%AE%AE%E9%80%82%E9%85%8D%E5%B1%82"><span class="toc-nav-number">4.1.0.4.</span> <span class="toc-nav-text">4.1.4 导出边界：Exporter 作为协议适配层</span></a></li></ol></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#4-2-RemoteLogger-%E6%9E%B6%E6%9E%84%E5%9B%BE"><span class="toc-nav-number">4.2.</span> <span class="toc-nav-text">4.2 RemoteLogger 架构图</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#5-%E4%B8%8A%E4%B8%8B%E6%96%87%E8%BE%B9%E7%95%8C"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">5 上下文边界</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#5-1-%E9%89%B4%E6%9D%83"><span class="toc-nav-number">5.1.</span> <span class="toc-nav-text">5.1 鉴权</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#5-1-1-%E5%BD%93%E9%89%B4%E6%9D%83%E8%A2%AB%E5%8D%B7%E5%85%A5%E4%B8%9A%E5%8A%A1%E6%B5%81%E7%A8%8B"><span class="toc-nav-number">5.1.1.</span> <span class="toc-nav-text">5.1.1 当鉴权被卷入业务流程</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#5-2-Traceparent"><span class="toc-nav-number">5.2.</span> <span class="toc-nav-text">5.2 Traceparent</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#5-2-1-%E6%9E%84%E9%80%A0%E4%B8%8E%E4%BC%A0%E9%80%92"><span class="toc-nav-number">5.2.1.</span> <span class="toc-nav-text">5.2.1 构造与传递</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#5-3-Context-%E7%9A%84%E8%A7%92%E8%89%B2"><span class="toc-nav-number">5.3.</span> <span class="toc-nav-text">5.3 Context 的角色</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#5-4-%E7%BB%93%E8%AF%AD"><span class="toc-nav-number">5.4.</span> <span class="toc-nav-text">5.4 结语</span></a></li></ol></li></ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Weixi 2026 
+                    <br>
+                    Theme by <a target="_blank" rel="noopener" href="http://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    re-Ported by <a target="_blank" rel="noopener" href="http://beantech.org">BeanTech</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=YenYuHsuan&repo=hexo-theme-beantech&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://weixi779.github.io/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="https://weixi779.github.io/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

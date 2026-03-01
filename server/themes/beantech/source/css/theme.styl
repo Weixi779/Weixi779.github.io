@@ -55,8 +55,28 @@ a
 .post-container .tags a
   color: var(--muted) !important
 
+/* Keep home excerpts visually consistent by clamping to fixed lines. */
+.post-preview .post-content-preview
+  display: -webkit-box
+  -webkit-box-orient: vertical
+  -webkit-line-clamp: 4
+  line-height: 1.8
+  min-height: calc(1.8em * 4)
+  overflow: hidden
+  text-overflow: ellipsis
+  white-space: normal
+
 .navbar-custom
   transition: background-color .2s ease, border-color .2s ease
+
+.navbar-custom .container-fluid
+  padding-left: 18px
+  padding-right: 18px
+
+@media only screen and (min-width: 768px)
+  .navbar-custom .container-fluid
+    padding-left: 28px
+    padding-right: 28px
 
 @media only screen and (min-width: 1170px)
   .navbar-custom.is-fixed

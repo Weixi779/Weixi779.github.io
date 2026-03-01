@@ -1,17 +1,24 @@
 <!-- Modified by Yu-Hsuan Yen -->
 <!-- Post Header -->
+<%
+  var pageHeaderImg = page["header-img"];
+  var defaultHeaderImg = config["header-img"];
+  var resolvedHeaderImg = defaultHeaderImg;
+
+  if (pageHeaderImg) {
+    resolvedHeaderImg = pageHeaderImg;
+  }
+
+  // Normalize relative local paths to respect Hexo root.
+  if (resolvedHeaderImg && !/^https?:\/\//.test(resolvedHeaderImg) && resolvedHeaderImg.indexOf('//') !== 0) {
+    if (resolvedHeaderImg.charAt(0) !== '/') {
+      resolvedHeaderImg = config.root + resolvedHeaderImg;
+    }
+  }
+%>
 <style type="text/css">
     header.intro-header{
-        <% if (is_home()) { %>
-            background-image: url('<%= config.root + config["header-img"] %>') 
-            /*config*/
-        <%} else if (is_post()){%>
-            background-image: url('<%= page["header-img"] %>')
-            /*post*/
-        <%} else {%>
-            background-image: url('<%= config.root + page["header-img"] %>')
-            /*page*/
-        <%} %>
+        background-image: url('<%= resolvedHeaderImg %>')
     }
     <% if (page.layout === 'about' || page.path === 'about/index.html') { %>
     header.intro-header{

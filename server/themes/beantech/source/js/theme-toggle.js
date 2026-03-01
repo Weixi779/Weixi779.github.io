@@ -54,6 +54,36 @@
   function applyTheme(theme) {
     root.setAttribute('data-theme', theme);
     updateToggleButton(theme);
+    updateGiscusTheme(theme);
+  }
+
+  function getGiscusTheme(theme) {
+    var host = document.getElementById('giscus-comments');
+    if (!host) return theme;
+    var light = host.getAttribute('data-theme-light') || 'light';
+    var dark = host.getAttribute('data-theme-dark') || 'dark';
+    return theme === 'dark' ? dark : light;
+  }
+
+  function updateGiscusTheme(theme) {
+    var frame = document.querySelector('iframe.giscus-frame');
+    if (!frame || !frame.contentWindow) return;
+    frame.contentWindow.postMessage(
+      { giscus: { setConfig: { theme: getGiscusTheme(theme) } } },
+      'https://giscus.app'
+    );
+  }
+
+  function syncGiscusThemeWithRetry() {
+    var theme = root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+    var attempts = 0;
+    var timer = setInterval(function () {
+      attempts += 1;
+      updateGiscusTheme(theme);
+      if (document.querySelector('iframe.giscus-frame') || attempts >= 20) {
+        clearInterval(timer);
+      }
+    }, 300);
   }
 
   function toggleTheme() {
@@ -65,12 +95,14 @@
 
   function bindToggle() {
     var button = document.getElementById('theme-toggle');
-    if (!button) return;
-    button.addEventListener('click', function (event) {
-      event.preventDefault();
-      toggleTheme();
-    });
-    updateToggleButton(root.getAttribute('data-theme') || resolveTheme());
+    if (button) {
+      button.addEventListener('click', function (event) {
+        event.preventDefault();
+        toggleTheme();
+      });
+      updateToggleButton(root.getAttribute('data-theme') || resolveTheme());
+    }
+    syncGiscusThemeWithRetry();
   }
 
   window.__toggleTheme = toggleTheme;

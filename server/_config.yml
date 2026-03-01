@@ -115,3 +115,21 @@ deploy:
   type: git
   repository: git@github.com:Weixi779/Weixi779.github.io.git
   branch: main
+
+# giscus comments (IDs are generated on https://giscus.app)
+# When giscus.enable is false, templates can fall back to Disqus/Duoshuo.
+giscus:
+  enable: true
+  repo: Weixi779/Weixi779.github.io
+  repo_id: "MDEwOlJlcG9zaXRvcnkzODE5Nzk0MzA="
+  category: Announcements
+  category_id: "DIC_kwDOFsSLJs4C3eHH"
+  mapping: pathname
+  strict: 0
+  reactions_enabled: 1
+  emit_metadata: 0
+  input_position: bottom
+  lang: zh-CN
+  loading: lazy
+  theme_light: light
+  theme_dark: dark

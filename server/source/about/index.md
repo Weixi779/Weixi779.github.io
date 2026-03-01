@@ -6,7 +6,7 @@ description: "致膝盖上的擦伤、童年的时光和青春心事。"
 header-img: "images/about_banner.jpg"
 comments: true
 ---
-Hi, 我是孙世伟, 00后, 双非本科生, 主业iOS开发, 目前就职于云账户, 中途接触了很多技术栈, Flutter, iOS原生, Unity, 依然保有浓厚的学习热情
+Hi, 我是孙世伟, 00后, 双非本科生, 主业iOS开发, 中途接触了很多技术栈, Flutter, iOS原生, Unity, 依然保有浓厚的学习热情
 
 科技爱好者, 二次元文化爱好者, 目前在努力精进代码技术, 学习基础乐理, 理解人文艺术
 

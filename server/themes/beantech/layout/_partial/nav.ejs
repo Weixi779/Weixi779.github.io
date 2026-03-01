@@ -26,7 +26,6 @@
                     </li>
 
                     <% site.pages.forEach(function(page){ %>
-
                         <% if(page.title){ %>
                         <li>
                             <a href="<%= config.root %><%= page.path.replace('index.html', '') %>"><%= page.title %></a>

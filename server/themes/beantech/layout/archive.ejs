@@ -3,162 +3,89 @@ layout: layout
 ---
 
 <!-- Main Content -->
-
 <div class="container">
     <div class="row">
-        <!-- 按分类归档列表 -->
-        <% var categories = {}; %>
-        <% site.posts.forEach(function(post) { %>
-            <% post.categories.forEach(function(category) { %>
-                <% if (!categories[category.name]) { categories[category.name] = []; } %>
-                <% categories[category.name].push(post); %>
-            <% }); %>
-        <% }); %>
-
-        <% var sortedCategories = Object.keys(categories).sort(function(a, b) {
-            return categories[b].length - categories[a].length; // 按数量降序排序
-        }); %>
-
-        <% sortedCategories.forEach(function(categoryName, index) { %>
-            <div class="category-group">
-                <!-- 分类标题 -->
-                <h2 class="category-title" onclick="toggleCategory('<%= 'category-' + index %>')">
-                    <span><%= categoryName %> (<%= categories[categoryName].length %>)</span>
-                    <i class="fa fa-chevron-down toggle-icon" id="<%= 'toggle-icon-' + index %>"></i>
-                </h2>
-
-                <!-- 分类内容 -->
-                <div class="category-content" id="<%= 'category-' + index %>" style="display: none;">
-                    <% var years = {}; %>
-                    <% categories[categoryName].sort((a, b) => b.date - a.date).forEach(function(post) { %>
-                        <% var year = post.date.year(); %>
-                        <% if (!years[year]) { years[year] = []; } %>
-                        <% years[year].push(post); %>
-                    <% }); %>
-
-                    <% Object.keys(years).reverse().forEach(function(year) { %>
-                        <div class="year-group">
-                            <h4 class="year-title"><%= year %></h4>
-                            <ul class="post-list">
-                                <% years[year].forEach(function(post) { %>
-                                    <li class="post-item">
-                                        <a href="<%- config.root %><%- post.path %>" style="color: #0085a1">
-                                            <span><%- post.title || "Untitled" %></span>
-                                        </a>
-                                    </li>
-                                <% }); %>
-                            </ul>
-                        </div>
-                    <% }); %>
-                </div>
+        <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div id="tag_cloud" class="tags tags-sup js-tags">
+                <a class="tag-button tag-button--all" data-encode="">Show All <sup><%= site.posts.length %></sup></a>
+                <% site.tags.sort('length').reverse().each(function(tag) { %>
+                    <a class="tag-button"
+                       data-encode="<%= encodeURIComponent(tag.name) %>"
+                       href="<%= config.root %>archive/?tag=<%= encodeURIComponent(tag.name) %>"
+                       title="<%= tag.name %>"
+                       rel="<%= tag.length %>">
+                        <%= tag.name %>
+                        <sup><%= tag.length %></sup>
+                    </a>
+                <% }); %>
             </div>
-        <% }); %>
+
+            <div class="mini-post-list js-result">
+                <% var postsByYear = {}; %>
+                <% site.posts.sort('date').reverse().each(function(post) { %>
+                    <% var year = post.date.format('YYYY'); %>
+                    <% if (!postsByYear[year]) { postsByYear[year] = []; } %>
+                    <% postsByYear[year].push(post); %>
+                <% }); %>
+                <% Object.keys(postsByYear).sort().reverse().forEach(function(year) { %>
+                    <section class="archive-year-section">
+                        <span class="fa listing-seperator">
+                            <span class="tag-text"><%= year %></span>
+                        </span>
+                        <% postsByYear[year].forEach(function(post) { %>
+                            <% var encodedTags = post.tags.map(function(tag){ return encodeURIComponent(tag.name); }).join(','); %>
+                            <div class="post-preview item" data-tags="<%= encodedTags %>">
+                                <a href="<%- config.root %><%- post.path %>">
+                                    <h2 class="post-title"><%- post.title || "Untitled" %></h2>
+                                    <% if (post.subtitle && post.subtitle.length) { %>
+                                        <h3 class="post-subtitle"><%- post.subtitle %></h3>
+                                    <% } %>
+                                </a>
+                                <hr>
+                            </div>
+                        <% }); %>
+                    </section>
+                <% }); %>
+            </div>
+        </div>
     </div>
 </div>
 
-<!-- 添加交互脚本 -->
 <script>
-    function toggleCategory(categoryId) {
-        const content = document.getElementById(categoryId);
-        const icon = document.getElementById(`toggle-icon-${categoryId.split('-')[1]}`);
-        if (content.style.display === "none") {
-            content.style.display = "block";
-            icon.classList.remove('fa-chevron-down');
-            icon.classList.add('fa-chevron-up');
-        } else {
-            content.style.display = "none";
-            icon.classList.remove('fa-chevron-up');
-            icon.classList.add('fa-chevron-down');
+    (function () {
+        var params = new URLSearchParams(window.location.search);
+        var activeTag = params.get('tag');
+        var items = Array.prototype.slice.call(document.querySelectorAll('.mini-post-list .item'));
+        var sections = Array.prototype.slice.call(document.querySelectorAll('.archive-year-section'));
+        var buttons = Array.prototype.slice.call(document.querySelectorAll('.js-tags .tag-button'));
+
+        function update(tag) {
+            items.forEach(function (item) {
+                if (!tag) {
+                    item.style.display = '';
+                    return;
+                }
+                var tags = item.getAttribute('data-tags') || '';
+                item.style.display = tags.split(',').indexOf(tag) !== -1 ? '' : 'none';
+            });
+
+            sections.forEach(function (section) {
+                var visible = Array.prototype.some.call(section.querySelectorAll('.item'), function (item) {
+                    return item.style.display !== 'none';
+                });
+                section.style.display = visible ? '' : 'none';
+            });
+
+            buttons.forEach(function (button) {
+                var tagValue = button.getAttribute('data-encode') || '';
+                if ((tag || '') === tagValue) {
+                    button.classList.add('focus');
+                } else {
+                    button.classList.remove('focus');
+                }
+            });
         }
-    }
+
+        update(activeTag || '');
+    })();
 </script>
-
-<style>
-    /* 分类标题样式 */
-    .category-title {
-        font-size: 1.5em;
-        font-weight: bold;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        gap: 0.5em;
-        /* 图标和文字之间的间距 */
-        margin: 1em 0;
-        /* 标题的上下间距 */
-        padding: 0.5em;
-        background: linear-gradient(90deg, #f0f8ff, #e6f7ff);
-        border-radius: 5px;
-        transition: background 0.3s, transform 0.3s;
-    }
-
-    .category-title:hover {
-        background: linear-gradient(90deg, #e6f7ff, #d4edff);
-        transform: scale(1.02);
-        /* 鼠标悬浮时微微放大 */
-    }
-
-    .toggle-icon {
-        font-size: 1em;
-        transition: transform 0.3s ease-in-out;
-    }
-
-    .year-group {
-        margin-top: 1em;
-        padding-left: 1.5em;
-        border-left: 3px solid #e6f7ff;
-    }
-
-    .year-title {
-        font-size: 1.2em;
-        font-weight: bold;
-        color: #444;
-        margin-bottom: 0.5em;
-    }
-
-    .post-list {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
-
-    .post-item {
-        margin-bottom: 0.5em;
-        font-size: 1em;
-        color: #0085a1;
-        transition: color 0.3s, transform 0.3s;
-    }
-
-    .post-item a {
-        text-decoration: none;
-        color: inherit;
-    }
-
-    .post-item:hover {
-        color: #005f73;
-        transform: translateX(5px);
-        /* 鼠标悬浮时微微右移 */
-    }
-
-    .category-content {
-        margin-top: 0.5em;
-        padding: 0.5em 1em;
-        background: #f9f9f9;
-        border-radius: 5px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-
-    /* 响应式布局调整 */
-    @media (max-width: 768px) {
-        .category-title {
-            font-size: 1.2em;
-        }
-
-        .post-item {
-            font-size: 0.9em;
-        }
-
-        .year-title {
-            font-size: 1em;
-        }
-    }
-</style>

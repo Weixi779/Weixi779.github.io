@@ -13,6 +13,21 @@
             /*page*/
         <%} %>
     }
+    <% if (page.layout === 'about' || page.path === 'about/index.html') { %>
+    header.intro-header{
+        position: relative;
+    }
+    header.intro-header:before{
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.35);
+    }
+    header.intro-header #signature{
+        position: relative;
+        z-index: 1;
+    }
+    <% } %>
     <% if (config.signature) {%>
     #signature{
         background-image: url('<%= config.root + config["signature-img"] %>');
@@ -30,7 +45,7 @@
                     <div class="post-heading">
                         <div class="tags">
                             <% page.tags.forEach(function(tag){ %>
-                              <a class="tag" href="<%= config.root %>tags/#<%= tag.name %>" title="<%= tag.name %>"><%= tag.name %></a>
+                              <a class="tag" href="<%= config.root %>archive/?tag=<%= encodeURIComponent(tag.name) %>" title="<%= tag.name %>"><%= tag.name %></a>
                             <% }) %>
                         </div>
                         <h1><%= page.title %></h1>

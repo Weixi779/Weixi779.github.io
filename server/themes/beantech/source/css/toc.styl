@@ -2,11 +2,17 @@
 .toc-article
   position: absolute
   border-left: rgba(88,88,88,0.1) 1px solid
-  padding 1em 1em 0 1em
+  padding 1em 1em .8em 1em
   margin-left: 1em
+  width: 300px
+  max-height: 72vh
+  overflow: auto
+  background: rgba(255, 255, 255, 0.88)
+  border-radius: 6px
 
 .toc-title
   font-size 120%
+  font-weight 700
   &:before
     font-family: "FontAwesome"
     content: "\f02e"
@@ -18,29 +24,30 @@
 
 #toc
   width: inherit
-  line-height 1em
-  font-size 0.9em
+  line-height 1.5em
+  font-size 14px
   float left
-  overflow: auto
+  overflow: visible
   @media mq-mobile
     display: none
   @media mq-tablet
     display: none
 
 .toc-fixed
-  position: fixed;
-  top: 60px;
-  margin-top: 0;
-  max-height: 81%;
-  overflow: hidden;
-  z-index: 1;
+  position: fixed
+  top: 70px
+  margin-top: 0
+  max-height: 72vh
+  overflow: auto
+  z-index: 1
 
 .toc-nav
   padding 0
-  margin 1em
+  margin .8em 0 0
   line-height 1.8em
   li
     list-style-type: none
+    margin: 0
     a:hover
       background-color: transparent !important
   .active > a
@@ -48,13 +55,26 @@
 
 .toc-nav-link
   font-family: "futura-pt", Helvetica, Arial, "Hiragino Sans GB", "Hiragino Sans GB W3", Microsoft JhengHei, WenQuanYi Micro Hei, "Microsoft YaHei", sans-serif;
-  color: color-link
-  padding 1px !important
+  color: #3f3f3f
+  padding 2px 0 !important
+  display: block
+  word-break: break-word
+  overflow-wrap: anywhere
   &:hover
     color: color-theme
 
+.toc-nav-number
+  display: none
+
 .toc-nav-child 
-  margin-left 1.0em
+  margin-left .9em
+  padding-left .7em
+  border-left: 1px solid rgba(0, 0, 0, 0.08)
+
+.toc-nav-level-4,
+.toc-nav-level-5,
+.toc-nav-level-6
+  display: none
   
 #sidebar
   display: inline;

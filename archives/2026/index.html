@@ -3,22 +3,40 @@
 
 <!-- Head tag -->
 <head>
+    
+    
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="个人博客记录成长">
-    <meta name="keyword"  content="">
-    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <meta name="keywords"  content="iOS, Swift, Unity, 成长, 个人博客, 技术杂谈">
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
     <!-- Place this tag in your head or just before your close body tag. -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <title>
         
-          
+          伟兮の小屋
         
     </title>
 
     <link rel="canonical" href="https://weixi779.github.io/archives/2026/">
+    <meta name="color-scheme" content="light dark">
+
+    <script>
+      (function () {
+        var key = 'blog-theme';
+        var theme = null;
+        try {
+          theme = localStorage.getItem(key);
+        } catch (e) {}
+        if (theme !== 'light' && theme !== 'dark') {
+          var media = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)');
+          theme = media && media.matches ? 'dark' : 'light';
+        }
+        document.documentElement.setAttribute('data-theme', theme);
+      })();
+    </script>
 
     <!-- Bootstrap Core CSS -->
     
@@ -51,6 +69,14 @@
 <link rel="stylesheet" href="/css/toc.css">
 
 
+    
+<link rel="stylesheet" href="/css/theme.css">
+
+
+    
+<link rel="stylesheet" href="/css/markdown-skin.css">
+
+
     <!-- Custom Fonts -->
     <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
     <!-- Hux change font-awesome CDN to qiniu -->
@@ -80,13 +106,12 @@
 <body ontouchstart="">
 	<!-- Modified by Yu-Hsuan Yen -->
 <!-- Post Header -->
+
 <style type="text/css">
     header.intro-header{
-        
-            background-image: url('/undefined')
-            /*page*/
-        
+        background-image: url('/images/banner.jpg')
     }
+    
     
 </style>
 
@@ -140,24 +165,31 @@
                     </li>
 
                     
-
                         
                     
-
                         
                         <li>
-                            <a href="/archive/">Archives</a>
+                            <a href="/archive/">Archive</a>
                         </li>
                         
                     
-
                         
                         <li>
                             <a href="/about/">About</a>
                         </li>
                         
                     
-                    
+                    <li>
+                        <button
+                            id="theme-toggle"
+                            class="theme-toggle-btn"
+                            type="button"
+                            aria-label="Switch to dark mode"
+                            title="Toggle theme">
+                            <i class="fa fa-moon-o" aria-hidden="true"></i>
+                            <span class="theme-toggle-text">Dark</span>
+                        </button>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -198,545 +230,512 @@
     <!-- Main Content -->
     
 <!-- Main Content -->
-
 <div class="container">
     <div class="row">
-        <!-- 按分类归档列表 -->
-        
-        
-            
+        <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div id="tag_cloud" class="tags tags-sup js-tags">
+                <a class="tag-button tag-button--all" data-encode="">Show All <sup>20</sup></a>
                 
+                    <a class="tag-button"
+                       data-encode="%E6%8A%80%E5%B7%A7"
+                       href="/archive/?tag=%E6%8A%80%E5%B7%A7"
+                       title="技巧"
+                       rel="7">
+                        技巧
+                        <sup>7</sup>
+                    </a>
                 
-            
-        
-            
+                    <a class="tag-button"
+                       data-encode="%E5%BF%83%E5%BE%97"
+                       href="/archive/?tag=%E5%BF%83%E5%BE%97"
+                       title="心得"
+                       rel="5">
+                        心得
+                        <sup>5</sup>
+                    </a>
                 
+                    <a class="tag-button"
+                       data-encode="%E5%8F%98%E8%BF%81"
+                       href="/archive/?tag=%E5%8F%98%E8%BF%81"
+                       title="变迁"
+                       rel="3">
+                        变迁
+                        <sup>3</sup>
+                    </a>
                 
-            
-        
-            
+                    <a class="tag-button"
+                       data-encode="%E7%AE%97%E6%B3%95"
+                       href="/archive/?tag=%E7%AE%97%E6%B3%95"
+                       title="算法"
+                       rel="3">
+                        算法
+                        <sup>3</sup>
+                    </a>
                 
+                    <a class="tag-button"
+                       data-encode="%E6%B8%B8%E6%88%8F%E4%BA%BA%E7%94%9F"
+                       href="/archive/?tag=%E6%B8%B8%E6%88%8F%E4%BA%BA%E7%94%9F"
+                       title="游戏人生"
+                       rel="2">
+                        游戏人生
+                        <sup>2</sup>
+                    </a>
                 
-            
-        
-            
+                    <a class="tag-button"
+                       data-encode="%E5%9B%BE%E7%89%87%E5%8E%8B%E7%BC%A9"
+                       href="/archive/?tag=%E5%9B%BE%E7%89%87%E5%8E%8B%E7%BC%A9"
+                       title="图片压缩"
+                       rel="2">
+                        图片压缩
+                        <sup>2</sup>
+                    </a>
                 
+                    <a class="tag-button"
+                       data-encode="%E6%A6%82%E6%8B%AC"
+                       href="/archive/?tag=%E6%A6%82%E6%8B%AC"
+                       title="概括"
+                       rel="2">
+                        概括
+                        <sup>2</sup>
+                    </a>
                 
-            
-        
-            
+                    <a class="tag-button"
+                       data-encode="%E6%9E%B6%E6%9E%84"
+                       href="/archive/?tag=%E6%9E%B6%E6%9E%84"
+                       title="架构"
+                       rel="2">
+                        架构
+                        <sup>2</sup>
+                    </a>
                 
+                    <a class="tag-button"
+                       data-encode="SwiftUI"
+                       href="/archive/?tag=SwiftUI"
+                       title="SwiftUI"
+                       rel="2">
+                        SwiftUI
+                        <sup>2</sup>
+                    </a>
                 
-            
-        
-            
+                    <a class="tag-button"
+                       data-encode="%E6%96%87%E5%8C%96"
+                       href="/archive/?tag=%E6%96%87%E5%8C%96"
+                       title="文化"
+                       rel="1">
+                        文化
+                        <sup>1</sup>
+                    </a>
                 
+                    <a class="tag-button"
+                       data-encode="%E6%97%85%E8%A1%8C"
+                       href="/archive/?tag=%E6%97%85%E8%A1%8C"
+                       title="旅行"
+                       rel="1">
+                        旅行
+                        <sup>1</sup>
+                    </a>
                 
-            
-        
-            
+                    <a class="tag-button"
+                       data-encode="%E5%87%BA%E5%B7%AE"
+                       href="/archive/?tag=%E5%87%BA%E5%B7%AE"
+                       title="出差"
+                       rel="1">
+                        出差
+                        <sup>1</sup>
+                    </a>
                 
+                    <a class="tag-button"
+                       data-encode="%E4%BB%A3%E7%A0%81%E4%BA%BA%E7%94%9F"
+                       href="/archive/?tag=%E4%BB%A3%E7%A0%81%E4%BA%BA%E7%94%9F"
+                       title="代码人生"
+                       rel="1">
+                        代码人生
+                        <sup>1</sup>
+                    </a>
                 
-            
-        
-            
+                    <a class="tag-button"
+                       data-encode="LaTeX"
+                       href="/archive/?tag=LaTeX"
+                       title="LaTeX"
+                       rel="1">
+                        LaTeX
+                        <sup>1</sup>
+                    </a>
                 
+                    <a class="tag-button"
+                       data-encode="Markdown"
+                       href="/archive/?tag=Markdown"
+                       title="Markdown"
+                       rel="1">
+                        Markdown
+                        <sup>1</sup>
+                    </a>
                 
-            
-        
-            
+                    <a class="tag-button"
+                       data-encode="%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82"
+                       href="/archive/?tag=%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82"
+                       title="网络请求"
+                       rel="1">
+                        网络请求
+                        <sup>1</sup>
+                    </a>
                 
+                    <a class="tag-button"
+                       data-encode="%E6%97%A5%E5%BF%97"
+                       href="/archive/?tag=%E6%97%A5%E5%BF%97"
+                       title="日志"
+                       rel="1">
+                        日志
+                        <sup>1</sup>
+                    </a>
                 
-            
-        
-            
+                    <a class="tag-button"
+                       data-encode="%E6%80%BB%E7%BB%93"
+                       href="/archive/?tag=%E6%80%BB%E7%BB%93"
+                       title="总结"
+                       rel="1">
+                        总结
+                        <sup>1</sup>
+                    </a>
                 
-                
-            
-        
-            
-                
-                
-            
-        
-            
-                
-                
-            
-        
-            
-                
-                
-            
-        
-            
-                
-                
-            
-        
-            
-                
-                
-            
-        
-            
-                
-                
-            
-        
-            
-                
-                
-            
-        
-            
-                
-                
-            
-        
-            
-                
-                
-            
-        
-            
-                
-                
-            
-        
-
-        
-
-        
-            <div class="category-group">
-                <!-- 分类标题 -->
-                <h2 class="category-title" onclick="toggleCategory('category-0')">
-                    <span>iOS (11)</span>
-                    <i class="fa fa-chevron-down toggle-icon" id="toggle-icon-0"></i>
-                </h2>
-
-                <!-- 分类内容 -->
-                <div class="category-content" id="category-0" style="display: none;">
-                    
-                    
-                        
-                        
-                        
-                    
-                        
-                        
-                        
-                    
-                        
-                        
-                        
-                    
-                        
-                        
-                        
-                    
-                        
-                        
-                        
-                    
-                        
-                        
-                        
-                    
-                        
-                        
-                        
-                    
-                        
-                        
-                        
-                    
-                        
-                        
-                        
-                    
-                        
-                        
-                        
-                    
-                        
-                        
-                        
-                    
-
-                    
-                        <div class="year-group">
-                            <h4 class="year-title">2026</h4>
-                            <ul class="post-list">
-                                
-                                    <li class="post-item">
-                                        <a href="/2026/01/09/「iOS」Design-of-the-log-system/" style="color: #0085a1">
-                                            <span>「iOS」Design of the log system</span>
-                                        </a>
-                                    </li>
-                                
-                                    <li class="post-item">
-                                        <a href="/2026/01/05/「iOS」网络层工程范式迁移/" style="color: #0085a1">
-                                            <span>网络层工程范式迁移</span>
-                                        </a>
-                                    </li>
-                                
-                            </ul>
-                        </div>
-                    
-                        <div class="year-group">
-                            <h4 class="year-title">2025</h4>
-                            <ul class="post-list">
-                                
-                                    <li class="post-item">
-                                        <a href="/2025/09/06/「iOS」聊聊Markdown中的LaTeX/" style="color: #0085a1">
-                                            <span>「iOS」聊聊Markdown中的LaTeX</span>
-                                        </a>
-                                    </li>
-                                
-                                    <li class="post-item">
-                                        <a href="/2025/03/04/「iOS」谈谈iOS图片压缩/" style="color: #0085a1">
-                                            <span>「iOS」谈谈iOS图片压缩</span>
-                                        </a>
-                                    </li>
-                                
-                            </ul>
-                        </div>
-                    
-                        <div class="year-group">
-                            <h4 class="year-title">2024</h4>
-                            <ul class="post-list">
-                                
-                                    <li class="post-item">
-                                        <a href="/2024/08/18/「iOS」SwiftUI自定义TextField/" style="color: #0085a1">
-                                            <span>「iOS」SwiftUI自定义TextField</span>
-                                        </a>
-                                    </li>
-                                
-                                    <li class="post-item">
-                                        <a href="/2024/08/13/「iOS」聊聊swift「class」与「struct」/" style="color: #0085a1">
-                                            <span>「iOS」聊聊swift「class」与「struct」</span>
-                                        </a>
-                                    </li>
-                                
-                                    <li class="post-item">
-                                        <a href="/2024/07/29/「iOS」自定义TabView/" style="color: #0085a1">
-                                            <span>「iOS」自定义TabView</span>
-                                        </a>
-                                    </li>
-                                
-                                    <li class="post-item">
-                                        <a href="/2024/03/07/「iOS」浅谈图片压缩/" style="color: #0085a1">
-                                            <span>「iOS」浅谈图片压缩</span>
-                                        </a>
-                                    </li>
-                                
-                                    <li class="post-item">
-                                        <a href="/2024/03/04/「iOS」震动与系统声音/" style="color: #0085a1">
-                                            <span>「iOS」震动与系统声音</span>
-                                        </a>
-                                    </li>
-                                
-                                    <li class="post-item">
-                                        <a href="/2024/01/24/「iOS」浅谈Swift模型解析/" style="color: #0085a1">
-                                            <span>「iOS」浅谈Swift模型解析</span>
-                                        </a>
-                                    </li>
-                                
-                            </ul>
-                        </div>
-                    
-                        <div class="year-group">
-                            <h4 class="year-title">2023</h4>
-                            <ul class="post-list">
-                                
-                                    <li class="post-item">
-                                        <a href="/2023/06/18/「iOS」关于CTMediator杂谈/" style="color: #0085a1">
-                                            <span>「iOS」关于CTMediator杂谈</span>
-                                        </a>
-                                    </li>
-                                
-                            </ul>
-                        </div>
-                    
-                </div>
             </div>
-        
-            <div class="category-group">
-                <!-- 分类标题 -->
-                <h2 class="category-title" onclick="toggleCategory('category-1')">
-                    <span>Unity (4)</span>
-                    <i class="fa fa-chevron-down toggle-icon" id="toggle-icon-1"></i>
-                </h2>
 
-                <!-- 分类内容 -->
-                <div class="category-content" id="category-1" style="display: none;">
+            <div class="mini-post-list js-result">
+                
+                
                     
                     
-                        
-                        
-                        
                     
-                        
-                        
-                        
+                
                     
-                        
-                        
-                        
                     
-                        
-                        
-                        
                     
-
+                
                     
-                        <div class="year-group">
-                            <h4 class="year-title">2024</h4>
-                            <ul class="post-list">
-                                
-                                    <li class="post-item">
-                                        <a href="/2024/05/04/「Unity」沙盒建造游戏设计(4)/" style="color: #0085a1">
-                                            <span>「Unity」沙盒建造游戏设计(4) - 搜索算法</span>
-                                        </a>
-                                    </li>
-                                
-                                    <li class="post-item">
-                                        <a href="/2024/04/27/「Unity」沙盒建造游戏设计(3)/" style="color: #0085a1">
-                                            <span>「Unity」沙盒建造游戏设计(3) - 状态模式</span>
-                                        </a>
-                                    </li>
-                                
-                                    <li class="post-item">
-                                        <a href="/2024/04/22/「Unity」沙盒建造游戏设计(2)/" style="color: #0085a1">
-                                            <span>「Unity」沙盒建造游戏设计(2) - 命令模式</span>
-                                        </a>
-                                    </li>
-                                
-                                    <li class="post-item">
-                                        <a href="/2024/04/14/「Unity」沙盒建造游戏设计(1)/" style="color: #0085a1">
-                                            <span>「Unity」沙盒建造游戏设计(1) - 相机控制</span>
-                                        </a>
-                                    </li>
-                                
-                            </ul>
-                        </div>
                     
-                </div>
+                    
+                
+                    
+                    
+                    
+                
+                    
+                    
+                    
+                
+                    
+                    
+                    
+                
+                    
+                    
+                    
+                
+                    
+                    
+                    
+                
+                    
+                    
+                    
+                
+                    
+                    
+                    
+                
+                    
+                    
+                    
+                
+                    
+                    
+                    
+                
+                    
+                    
+                    
+                
+                    
+                    
+                    
+                
+                    
+                    
+                    
+                
+                    
+                    
+                    
+                
+                    
+                    
+                    
+                
+                    
+                    
+                    
+                
+                    
+                    
+                    
+                
+                    
+                    
+                    
+                
+                
+                    <section class="archive-year-section">
+                        <span class="fa listing-seperator">
+                            <span class="tag-text">2026</span>
+                        </span>
+                        
+                            
+                            <div class="post-preview item" data-tags="%E6%9E%B6%E6%9E%84,%E6%97%A5%E5%BF%97">
+                                <a href="/2026/01/09/「iOS」日志系统设计/">
+                                    <h2 class="post-title">「iOS」日志系统设计</h2>
+                                    
+                                </a>
+                                <hr>
+                            </div>
+                        
+                            
+                            <div class="post-preview item" data-tags="%E6%9E%B6%E6%9E%84,%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82">
+                                <a href="/2026/01/05/「iOS」网络层工程范式迁移/">
+                                    <h2 class="post-title">「iOS」网络层工程范式迁移</h2>
+                                    
+                                </a>
+                                <hr>
+                            </div>
+                        
+                    </section>
+                
+                    <section class="archive-year-section">
+                        <span class="fa listing-seperator">
+                            <span class="tag-text">2025</span>
+                        </span>
+                        
+                            
+                            <div class="post-preview item" data-tags="Markdown,LaTeX">
+                                <a href="/2025/09/06/「iOS」聊聊Markdown中的LaTeX/">
+                                    <h2 class="post-title">「iOS」聊聊Markdown中的LaTeX</h2>
+                                    
+                                </a>
+                                <hr>
+                            </div>
+                        
+                            
+                            <div class="post-preview item" data-tags="%E5%87%BA%E5%B7%AE,%E6%97%85%E8%A1%8C,%E6%96%87%E5%8C%96">
+                                <a href="/2025/08/04/「后日谈」日本出差随笔/">
+                                    <h2 class="post-title">「后日谈」日本出差随笔</h2>
+                                    
+                                </a>
+                                <hr>
+                            </div>
+                        
+                            
+                            <div class="post-preview item" data-tags="%E7%AE%97%E6%B3%95,%E5%9B%BE%E7%89%87%E5%8E%8B%E7%BC%A9">
+                                <a href="/2025/03/04/「iOS」谈谈iOS图片压缩/">
+                                    <h2 class="post-title">「iOS」谈谈iOS图片压缩</h2>
+                                    
+                                </a>
+                                <hr>
+                            </div>
+                        
+                            
+                            <div class="post-preview item" data-tags="%E6%B8%B8%E6%88%8F%E4%BA%BA%E7%94%9F">
+                                <a href="/2025/01/12/「后日谈」赛博朋克2077/">
+                                    <h2 class="post-title">「后日谈」赛博朋克2077</h2>
+                                    
+                                </a>
+                                <hr>
+                            </div>
+                        
+                    </section>
+                
+                    <section class="archive-year-section">
+                        <span class="fa listing-seperator">
+                            <span class="tag-text">2024</span>
+                        </span>
+                        
+                            
+                            <div class="post-preview item" data-tags="%E6%8A%80%E5%B7%A7,SwiftUI">
+                                <a href="/2024/08/18/「iOS」SwiftUI自定义TextField/">
+                                    <h2 class="post-title">「iOS」SwiftUI自定义TextField</h2>
+                                    
+                                </a>
+                                <hr>
+                            </div>
+                        
+                            
+                            <div class="post-preview item" data-tags="%E5%8F%98%E8%BF%81,%E6%A6%82%E6%8B%AC">
+                                <a href="/2024/08/13/「iOS」聊聊swift「class」与「struct」/">
+                                    <h2 class="post-title">「iOS」聊聊swift「class」与「struct」</h2>
+                                    
+                                </a>
+                                <hr>
+                            </div>
+                        
+                            
+                            <div class="post-preview item" data-tags="%E6%8A%80%E5%B7%A7,SwiftUI">
+                                <a href="/2024/07/29/「iOS」自定义TabView/">
+                                    <h2 class="post-title">「iOS」自定义TabView</h2>
+                                    
+                                </a>
+                                <hr>
+                            </div>
+                        
+                            
+                            <div class="post-preview item" data-tags="%E4%BB%A3%E7%A0%81%E4%BA%BA%E7%94%9F">
+                                <a href="/2024/07/15/「后日谈」三年阶段总结/">
+                                    <h2 class="post-title">「后日谈」三年阶段总结</h2>
+                                    
+                                </a>
+                                <hr>
+                            </div>
+                        
+                            
+                            <div class="post-preview item" data-tags="%E6%8A%80%E5%B7%A7,%E5%BF%83%E5%BE%97,%E7%AE%97%E6%B3%95">
+                                <a href="/2024/05/04/「Unity」沙盒建造游戏设计(4)/">
+                                    <h2 class="post-title">「Unity」沙盒建造游戏设计(4) - 搜索算法</h2>
+                                    
+                                </a>
+                                <hr>
+                            </div>
+                        
+                            
+                            <div class="post-preview item" data-tags="%E6%8A%80%E5%B7%A7,%E5%BF%83%E5%BE%97">
+                                <a href="/2024/04/27/「Unity」沙盒建造游戏设计(3)/">
+                                    <h2 class="post-title">「Unity」沙盒建造游戏设计(3) - 状态模式</h2>
+                                    
+                                </a>
+                                <hr>
+                            </div>
+                        
+                            
+                            <div class="post-preview item" data-tags="%E6%8A%80%E5%B7%A7,%E5%BF%83%E5%BE%97">
+                                <a href="/2024/04/22/「Unity」沙盒建造游戏设计(2)/">
+                                    <h2 class="post-title">「Unity」沙盒建造游戏设计(2) - 命令模式</h2>
+                                    
+                                </a>
+                                <hr>
+                            </div>
+                        
+                            
+                            <div class="post-preview item" data-tags="%E6%B8%B8%E6%88%8F%E4%BA%BA%E7%94%9F">
+                                <a href="/2024/04/21/「后日谈」尼尔机械纪元/">
+                                    <h2 class="post-title">「后日谈」尼尔机械纪元</h2>
+                                    
+                                </a>
+                                <hr>
+                            </div>
+                        
+                            
+                            <div class="post-preview item" data-tags="%E6%8A%80%E5%B7%A7,%E5%BF%83%E5%BE%97">
+                                <a href="/2024/04/14/「Unity」沙盒建造游戏设计(1)/">
+                                    <h2 class="post-title">「Unity」沙盒建造游戏设计(1) - 相机控制</h2>
+                                    
+                                </a>
+                                <hr>
+                            </div>
+                        
+                            
+                            <div class="post-preview item" data-tags="">
+                                <a href="/2024/04/06/「极客」Quest3与旁路由/">
+                                    <h2 class="post-title">「极客」Quest3与旁路由</h2>
+                                    
+                                </a>
+                                <hr>
+                            </div>
+                        
+                            
+                            <div class="post-preview item" data-tags="%E7%AE%97%E6%B3%95,%E5%9B%BE%E7%89%87%E5%8E%8B%E7%BC%A9">
+                                <a href="/2024/03/07/「iOS」浅谈图片压缩/">
+                                    <h2 class="post-title">「iOS」浅谈图片压缩</h2>
+                                    
+                                </a>
+                                <hr>
+                            </div>
+                        
+                            
+                            <div class="post-preview item" data-tags="%E6%8A%80%E5%B7%A7">
+                                <a href="/2024/03/04/「iOS」震动与系统声音/">
+                                    <h2 class="post-title">「iOS」震动与系统声音</h2>
+                                    
+                                </a>
+                                <hr>
+                            </div>
+                        
+                            
+                            <div class="post-preview item" data-tags="%E5%BF%83%E5%BE%97,%E5%8F%98%E8%BF%81,%E6%A6%82%E6%8B%AC">
+                                <a href="/2024/01/24/「iOS」浅谈Swift模型解析/">
+                                    <h2 class="post-title">「iOS」浅谈Swift模型解析</h2>
+                                    
+                                </a>
+                                <hr>
+                            </div>
+                        
+                    </section>
+                
+                    <section class="archive-year-section">
+                        <span class="fa listing-seperator">
+                            <span class="tag-text">2023</span>
+                        </span>
+                        
+                            
+                            <div class="post-preview item" data-tags="%E5%8F%98%E8%BF%81,%E6%80%BB%E7%BB%93">
+                                <a href="/2023/06/18/「iOS」关于CTMediator杂谈/">
+                                    <h2 class="post-title">「iOS」关于CTMediator杂谈</h2>
+                                    
+                                </a>
+                                <hr>
+                            </div>
+                        
+                    </section>
+                
             </div>
-        
-            <div class="category-group">
-                <!-- 分类标题 -->
-                <h2 class="category-title" onclick="toggleCategory('category-2')">
-                    <span>后日谈 (4)</span>
-                    <i class="fa fa-chevron-down toggle-icon" id="toggle-icon-2"></i>
-                </h2>
-
-                <!-- 分类内容 -->
-                <div class="category-content" id="category-2" style="display: none;">
-                    
-                    
-                        
-                        
-                        
-                    
-                        
-                        
-                        
-                    
-                        
-                        
-                        
-                    
-                        
-                        
-                        
-                    
-
-                    
-                        <div class="year-group">
-                            <h4 class="year-title">2025</h4>
-                            <ul class="post-list">
-                                
-                                    <li class="post-item">
-                                        <a href="/2025/08/04/「后日谈」日本出差随笔/" style="color: #0085a1">
-                                            <span>「后日谈」日本出差随笔</span>
-                                        </a>
-                                    </li>
-                                
-                                    <li class="post-item">
-                                        <a href="/2025/01/12/「后日谈」赛博朋克2077/" style="color: #0085a1">
-                                            <span>「后日谈」赛博朋克2077</span>
-                                        </a>
-                                    </li>
-                                
-                            </ul>
-                        </div>
-                    
-                        <div class="year-group">
-                            <h4 class="year-title">2024</h4>
-                            <ul class="post-list">
-                                
-                                    <li class="post-item">
-                                        <a href="/2024/07/15/「后日谈」三年阶段总结/" style="color: #0085a1">
-                                            <span>「后日谈」三年阶段总结</span>
-                                        </a>
-                                    </li>
-                                
-                                    <li class="post-item">
-                                        <a href="/2024/04/21/「后日谈」尼尔机械纪元/" style="color: #0085a1">
-                                            <span>「后日谈」尼尔机械纪元</span>
-                                        </a>
-                                    </li>
-                                
-                            </ul>
-                        </div>
-                    
-                </div>
-            </div>
-        
-            <div class="category-group">
-                <!-- 分类标题 -->
-                <h2 class="category-title" onclick="toggleCategory('category-3')">
-                    <span>极客 (1)</span>
-                    <i class="fa fa-chevron-down toggle-icon" id="toggle-icon-3"></i>
-                </h2>
-
-                <!-- 分类内容 -->
-                <div class="category-content" id="category-3" style="display: none;">
-                    
-                    
-                        
-                        
-                        
-                    
-
-                    
-                        <div class="year-group">
-                            <h4 class="year-title">2024</h4>
-                            <ul class="post-list">
-                                
-                                    <li class="post-item">
-                                        <a href="/2024/04/06/「极客」Quest3与旁路由/" style="color: #0085a1">
-                                            <span>「极客」Quest3与旁路由</span>
-                                        </a>
-                                    </li>
-                                
-                            </ul>
-                        </div>
-                    
-                </div>
-            </div>
-        
+        </div>
     </div>
 </div>
 
-<!-- 添加交互脚本 -->
 <script>
-    function toggleCategory(categoryId) {
-        const content = document.getElementById(categoryId);
-        const icon = document.getElementById(`toggle-icon-${categoryId.split('-')[1]}`);
-        if (content.style.display === "none") {
-            content.style.display = "block";
-            icon.classList.remove('fa-chevron-down');
-            icon.classList.add('fa-chevron-up');
-        } else {
-            content.style.display = "none";
-            icon.classList.remove('fa-chevron-up');
-            icon.classList.add('fa-chevron-down');
+    (function () {
+        var params = new URLSearchParams(window.location.search);
+        var activeTag = params.get('tag');
+        var items = Array.prototype.slice.call(document.querySelectorAll('.mini-post-list .item'));
+        var sections = Array.prototype.slice.call(document.querySelectorAll('.archive-year-section'));
+        var buttons = Array.prototype.slice.call(document.querySelectorAll('.js-tags .tag-button'));
+
+        function update(tag) {
+            items.forEach(function (item) {
+                if (!tag) {
+                    item.style.display = '';
+                    return;
+                }
+                var tags = item.getAttribute('data-tags') || '';
+                item.style.display = tags.split(',').indexOf(tag) !== -1 ? '' : 'none';
+            });
+
+            sections.forEach(function (section) {
+                var visible = Array.prototype.some.call(section.querySelectorAll('.item'), function (item) {
+                    return item.style.display !== 'none';
+                });
+                section.style.display = visible ? '' : 'none';
+            });
+
+            buttons.forEach(function (button) {
+                var tagValue = button.getAttribute('data-encode') || '';
+                if ((tag || '') === tagValue) {
+                    button.classList.add('focus');
+                } else {
+                    button.classList.remove('focus');
+                }
+            });
         }
-    }
+
+        update(activeTag || '');
+    })();
 </script>
 
-<style>
-    /* 分类标题样式 */
-    .category-title {
-        font-size: 1.5em;
-        font-weight: bold;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        gap: 0.5em;
-        /* 图标和文字之间的间距 */
-        margin: 1em 0;
-        /* 标题的上下间距 */
-        padding: 0.5em;
-        background: linear-gradient(90deg, #f0f8ff, #e6f7ff);
-        border-radius: 5px;
-        transition: background 0.3s, transform 0.3s;
-    }
-
-    .category-title:hover {
-        background: linear-gradient(90deg, #e6f7ff, #d4edff);
-        transform: scale(1.02);
-        /* 鼠标悬浮时微微放大 */
-    }
-
-    .toggle-icon {
-        font-size: 1em;
-        transition: transform 0.3s ease-in-out;
-    }
-
-    .year-group {
-        margin-top: 1em;
-        padding-left: 1.5em;
-        border-left: 3px solid #e6f7ff;
-    }
-
-    .year-title {
-        font-size: 1.2em;
-        font-weight: bold;
-        color: #444;
-        margin-bottom: 0.5em;
-    }
-
-    .post-list {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
-
-    .post-item {
-        margin-bottom: 0.5em;
-        font-size: 1em;
-        color: #0085a1;
-        transition: color 0.3s, transform 0.3s;
-    }
-
-    .post-item a {
-        text-decoration: none;
-        color: inherit;
-    }
-
-    .post-item:hover {
-        color: #005f73;
-        transform: translateX(5px);
-        /* 鼠标悬浮时微微右移 */
-    }
-
-    .category-content {
-        margin-top: 0.5em;
-        padding: 0.5em 1em;
-        background: #f9f9f9;
-        border-radius: 5px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-
-    /* 响应式布局调整 */
-    @media (max-width: 768px) {
-        .category-title {
-            font-size: 1.2em;
-        }
-
-        .post-item {
-            font-size: 0.9em;
-        }
-
-        .year-title {
-            font-size: 1em;
-        }
-    }
-</style>
 
     <!-- Footer -->
     <!-- Footer -->
@@ -790,6 +789,9 @@
 <!-- Custom Theme JavaScript -->
 
 <script src="/js/hux-blog.min.js"></script>
+
+
+<script src="/js/theme-toggle.js"></script>
 
 
 
@@ -853,7 +855,6 @@
 
 
 <!-- Baidu Tongji -->
-
 
 
 

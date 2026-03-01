@@ -3,22 +3,40 @@
 
 <!-- Head tag -->
 <head>
+    
+    
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="个人博客记录成长">
-    <meta name="keyword"  content="">
-    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <meta name="keywords"  content="iOS, Swift, Unity, 成长, 个人博客, 技术杂谈">
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
     <!-- Place this tag in your head or just before your close body tag. -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <title>
         
-          
+          伟兮の小屋
         
     </title>
 
     <link rel="canonical" href="https://weixi779.github.io/">
+    <meta name="color-scheme" content="light dark">
+
+    <script>
+      (function () {
+        var key = 'blog-theme';
+        var theme = null;
+        try {
+          theme = localStorage.getItem(key);
+        } catch (e) {}
+        if (theme !== 'light' && theme !== 'dark') {
+          var media = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)');
+          theme = media && media.matches ? 'dark' : 'light';
+        }
+        document.documentElement.setAttribute('data-theme', theme);
+      })();
+    </script>
 
     <!-- Bootstrap Core CSS -->
     
@@ -51,6 +69,14 @@
 <link rel="stylesheet" href="/css/toc.css">
 
 
+    
+<link rel="stylesheet" href="/css/theme.css">
+
+
+    
+<link rel="stylesheet" href="/css/markdown-skin.css">
+
+
     <!-- Custom Fonts -->
     <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
     <!-- Hux change font-awesome CDN to qiniu -->
@@ -80,13 +106,12 @@
 <body ontouchstart="">
 	<!-- Modified by Yu-Hsuan Yen -->
 <!-- Post Header -->
+
 <style type="text/css">
     header.intro-header{
-        
-            background-image: url('/images/banner.jpg') 
-            /*config*/
-        
+        background-image: url('/images/banner.jpg')
     }
+    
     
 </style>
 
@@ -140,24 +165,31 @@
                     </li>
 
                     
-
                         
                     
-
                         
                         <li>
-                            <a href="/archive/">Archives</a>
+                            <a href="/archive/">Archive</a>
                         </li>
                         
                     
-
                         
                         <li>
                             <a href="/about/">About</a>
                         </li>
                         
                     
-                    
+                    <li>
+                        <button
+                            id="theme-toggle"
+                            class="theme-toggle-btn"
+                            type="button"
+                            aria-label="Switch to dark mode"
+                            title="Toggle theme">
+                            <i class="fa fa-moon-o" aria-hidden="true"></i>
+                            <span class="theme-toggle-text">Dark</span>
+                        </button>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -216,16 +248,19 @@
 
 <div class="post-preview">
 
-    <a href="/2026/01/09/「iOS」Design-of-the-log-system/">
+    <a href="/2026/01/09/「iOS」日志系统设计/">
         <h2 class="post-title">
-            「iOS」Design of the log system
+            「iOS」日志系统设计
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            1 为什么需要日志软件系统的运行过程本质上是不可见的。绝大多数行为发生在内存与线程之中。在本机调试阶段，我们可以借助断点、内存分析、控制台等手段直接观察系统状态；而一旦进入生产环境，这些能力几乎全部失效。此时，日志成为唯一能够跨越时间和空间的观测手段。
-但如果进一步追问：日志究竟解决了什么问题？这个问题并没有那么简单。日志的核心价值并不在于文本本身，而在于可见性。它最基础的作用，是让这些不可......
+            一、为什么需要日志软件系统的运行过程本质上是不可见的。绝大多数行为发生在内存与线程之中。在本机调试阶段，我们可以借助断点、内存分析、控制台等手段直接观察系统状态；而一旦进入生产环境，这些能力几乎全部失效。此时，日志成为唯一能够跨越时间和空间的观测手段。
+但如果进一步追问：日志究竟解决了什么问题？这个问题并没有那么简单。日志的核心价值并不在于文本本身，而在于可见性。它最基础的作用，是让这些不可见的行为“显影”。一次简单的日志输出，至少隐含了三类信息：时间、位置、描述。
+这也是我们不建议使用简单 print 的原因：结构化日志在每次记录时，都会自动携带这些关键信息，从而形成稳定、可检索的观测数据。
+之后当系统规模变大、异步逻辑增多时，单条日志已经很难解释问题。真正有价值的，是一组日志所呈现出的因果关系. 在这一层面上，日志更像是事件证据，用于在事后还原一段已经发生过的执行流程。
+接下来，我们将从这些问题出发，逐步讨论一套面向真实生…
         </div>
     </a>
     
@@ -242,13 +277,16 @@
 
     <a href="/2026/01/05/「iOS」网络层工程范式迁移/">
         <h2 class="post-title">
-            网络层工程范式迁移
+            「iOS」网络层工程范式迁移
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            引言生活并非直线前进，而是在一次又一次的循环中向前。随着项目的更迭与技术栈的变化， 又一次站在了这个熟悉的网络层设计问题前——这已经是第几次，我大抵也记不太清了。有趣的是，问题几乎未曾改变，但在不同的技术背景与开发阶段下，循环的终点却彼此并不矛盾。为什么网络层总在被重构? 我反复更换的，究竟是网络请求库，还是对“网络层”这一概念本身的理解？当开发生产力不断提高，网络层的意义，是否也在随之发生......
+            引言生活并非直线前进，而是在一次又一次的循环中向前。随着项目的更迭与技术栈的变化， 又一次站在了这个熟悉的网络层设计问题前——这已经是第几次，我大抵也记不太清了。有趣的是，问题几乎未曾改变，但在不同的技术背景与开发阶段下，循环的终点却彼此并不矛盾。为什么网络层总在被重构? 我反复更换的，究竟是网络请求库，还是对“网络层”这一概念本身的理解？当开发生产力不断提高，网络层的意义，是否也在随之发生变化？
+回答这些问题，或许需要暂时抽离当下的技术语境，逆拨时间的指针，回到网络层第一次成为“工程问题”的年代。
+网络层的第一次工程化在 iOS 开发的早期，我们并没有一套足够简洁且稳定的 API 来完成一次 HTTP 请求。开发者需要直接面对 NSURLConnection 及其 delegate 回调，手动处理线程切换、状态维护、错误分支与生命周期管理。网络请求往往散落在各个业务代码中，高度依赖个人经验以及项目本身的成熟程度。
+也正是在这…
         </div>
     </a>
     
@@ -271,7 +309,8 @@
             
         </h3>
         <div class="post-content-preview">
-            背景最近在做AI应用的核心功能, 对AI返回的Markdown部分整体处理, 尝试过、使用过目前能在GitHub上搜索到的大部分iOS库, 但是很遗憾, 要么 UI 展示效果差强人意, 要么功能支持不完整. 部分高赞库功能全面, 但放到 SwiftUI 异步渲染 + CollectionView 桥接场景下会出现严重兼容问题. 没有什么办法只能自己去设计整体的流程, 慢慢看到了swift-m......
+            背景最近在做AI应用的核心功能, 对AI返回的Markdown部分整体处理, 尝试过、使用过目前能在GitHub上搜索到的大部分iOS库, 但是很遗憾, 要么 UI 展示效果差强人意, 要么功能支持不完整. 部分高赞库功能全面, 但放到 SwiftUI 异步渲染 + CollectionView 桥接场景下会出现严重兼容问题. 没有什么办法只能自己去设计整体的流程, 慢慢看到了swift-markdown, 对其进行了二次封装, 开始整体将从预处理开始到解析最终渲染的全流程掌握到了自己手里, 其中也算是路途艰辛, 查阅了巨量的开源库参考, 但是没想想到整体的流程设计到逻辑时间 与 处理LaTeX的时间差不多… 这篇文章主要以LaTeX部分为主, 但是多少会设计一些Markdown的基础概念, 本文作者会主要介绍我调研iOS的LaTeX的整体流程以及到实现过程中踩过的坑, 以及最后对作者对开源社区做的一些微薄之力进行分享.
+历史…
         </div>
     </a>
     
@@ -295,7 +334,10 @@
         </h3>
         <div class="post-content-preview">
             前言每个人的能力与阅历都不一样, 即使在共同参与同一件事情时, 也会有完全不一样的心得与感悟, 本次能就10多天的日本行程, 聊聊我对整体感受,
-背景近期跳槽到了一家看似外企的公司，实际上给我感觉国内团队更像是技术内包的形式。这种模式的好处在于，我们拥有相对较大的自由度——在技术选型、考勤管理、人才引进等方面都能发出自己的声音。然而，自由度也伴随着风险，如果遇到不合理的领导，过度push进度......
+背景近期跳槽到了一家看似外企的公司，实际上给我感觉国内团队更像是技术内包的形式。这种模式的好处在于，我们拥有相对较大的自由度——在技术选型、考勤管理、人才引进等方面都能发出自己的声音。然而，自由度也伴随着风险，如果遇到不合理的领导，过度push进度，整体的工作风格就会失控。
+目前我正经历着后者。公司挂着外企的牌子，却常常需要加班加点地工作。值得庆幸的是，这里的加班是有实际产出的，我们能够真正投入到技术攻关中，而不是浪费时间在无意义的流程或形式主义的文件上。
+几个月来，整个团队都在为7月底在横滨举办的技术大会而努力奋斗。这次日本之旅多少也是我的目标和动力，期待已久。
+通勤篇我怎么说也算一个特别珍惜时间的人, 所以总想在公共交通上做的点什么, 但是我很少坐飞机, 结果就是没有Wi-Fi,…
         </div>
     </a>
     
@@ -319,7 +361,8 @@
         </h3>
         <div class="post-content-preview">
             谈谈iOS图片压缩在上一篇文章中，我们探讨了图片压缩的基本概念，主要包括分辨率压缩和质量压缩。尽管这些方法在不同平台上的实现方式相似，但在 iOS 上，传统的压缩代码效果并不理想。因此，我们对 iOS 平台的图片压缩算法进行了深入研究。本文将从图片格式入手，逐步分析 iOS 的压缩逻辑，并分享一个 Swift Package，帮助开发者更高效地处理图片压缩。
-图片格式在深入探讨图片压缩之前，......
+图片格式在深入探讨图片压缩之前，首先需要了解各种图片格式类型，格式对应特定的压缩策略。对于各位客户端开发人员来说，JPEG 和 PNG 格式相信已经非常熟悉。然后在 Apple 平台中，自iOS 11 推出以来，HEIC 格式已成为iOS平台的主流图片格式。本文将对这三种格式进行简要讨论，以便更好地理解它们在压缩过程中的应用与优化策略。
+JPEG（Joint Photographic Experts Group）JPEG由联合图像专家组于1992年推出，专为减少照片和复杂…
         </div>
     </a>
     
@@ -343,7 +386,9 @@
         </h3>
         <div class="post-content-preview">
             背景《赛博朋克2077》CD Project 于2020年末推出的推出的开放世界游戏, 2023&#x2F;9推出了第一个也是唯一一个DLC资料片, 此篇内容均基于2.2游戏版本体验.
-初见2077曾经在游玩半个小时后就弃游了, 暗黑黑的环境搭配明晃晃的红蓝亮色调UI, 对比度相当让人不适;在吃惯了FPS细糠之后真的时候很难接受一坨射击手感;加上走路莫名其妙的屏幕抖动, 多次让我在新手教程就......
+初见2077曾经在游玩半个小时后就弃游了, 暗黑黑的环境搭配明晃晃的红蓝亮色调UI, 对比度相当让人不适;在吃惯了FPS细糠之后真的时候很难接受一坨射击手感;加上走路莫名其妙的屏幕抖动, 多次让我在新手教程就弃坑. 前期的主线剧情也不够出彩, 新手引导也做得稀烂, 基本上除了战斗以外, 其他的内容&#x2F;按键都是自己摸索或查询教程出来的.
+这些问题到了「偷货」之后得以缓解, 爆发的剧情环节, 第一次获得不朽武器, 所有体验一下冲击到了颅顶. 随着强大的冲击力, 完成了第一幕的剧情. 直到黑梦逐渐平息, 后续内容之间徐徐展开, 虽说后续的冲击不够强大. 更多的是人物性格之间的冲突, 不说人话, 不干人事. 
+渐入佳境随着主线剧情的平淡, 渐渐…
         </div>
     </a>
     
@@ -367,7 +412,9 @@
         </h3>
         <div class="post-content-preview">
             背景TextField, 作为移动端最常用的输入方式之一, 会非常频繁的出现在各类APP之中, SwiftUI 也提供了类似的组件, 但是真好用吗, 网上的教程真的够多吗? 客制化能力, 拼音长度限制 到底怎么写? 这篇文章作者会对近期的踩的TextField小坑做一个简单的总结.
-苦衷TextField 在 swiftUI 中的 API 非常之少, 基本只还保持的最初的API, iOS 1......
+苦衷TextField 在 swiftUI 中的 API 非常之少, 基本只还保持的最初的API, iOS 15 对其焦点部分进行了一下更新, 但是对客制化能力基本聊胜于无.
+首先聊聊文本长度限制的问题,  对于 TextField来讲, 没有内置的 API, 基本都是依赖 Combine 框架中的回调 onReceive 或者 onChange
+12345678910111213141516171819202122232425262728// onReceiveTextField(&quot;&quot;, text: $text)    .on…
         </div>
     </a>
     
@@ -394,7 +441,14 @@
 基础大部分语言都是有这两种分类的, 引用类型 与 值类型 . Kotlin, Rust, C#, Go, 现代语言们基本都有这样的设计, 虽然用法百花齐放, 但设计理念基本相同, 都是由于计算机本身设计实现构成的.
 引用类型在Swift中关键字为class
 
-引用类型......
+引用类型：class是引用类型，赋值或传递时只是传递对象的引用，而不是复制对象本身。
+存储在堆上：class的实例存储在堆上，通过引用进行访问。
+手动管理内存：虽然现代编程语言提供了垃圾回收机制，但堆上的内存管理相对栈来说更复杂，需要关注内存泄漏等问题。
+
+值类型在Swift中关键字为struct, enum, 以及一些基本的数据 String、Int ……
+
+值类型：每次赋值或传递时都会复制其内容。
+存储在栈上：实例通常存储在栈上，除非它们包含被…
         </div>
     </a>
     
@@ -421,7 +475,9 @@
 2025.05.25 更新 添加新内容 优化整体思路
 
 概述TabView 是在 SwiftUI 1.0 就引入的 View, 作为移动端的老牌设计风格, 在之后2.0有了一些新API之后, 基本没有API的大变动, 所以这个组件设计的还是算是比较成功的, 不过一些其他功能方面的API变更, 也会或多或少的稍微印象TabView的相关封装.
-下文将基于iOS16+, 对TabView进行二......
+下文将基于iOS16+, 对TabView进行二次封装使其能够支持完全自定义的底部效果展示以及一些扩展思路的想法.
+初见TabView正常使用来讲非常简单, 网上也是很多教程, 你可以直接写下类似这样内容.
+123456789101112131415161718192021222324252627struct ContentView: View &#123;    @State var selection = 1    var body: some View &#123;        …
         </div>
     </a>
     
@@ -445,7 +501,8 @@
         </h3>
         <div class="post-content-preview">
             起始距离2021年11月1日入职的第一天马上满三年,最近也一直没咋写东西,加上也到了这个时间节点,打算好好的记录一下.
-现在近23年中之后,部门一直在陆续走人,人员变动对一个公司来说属实正常.虽然说那些走的人确实有一些可恨之处(现在写代码看到他们遗留垃圾也会喷),但毕竟是曾经并肩作战的战友,也曾经一起努力过,奋斗过,一起加过班,一起喝过酒.他们有的是不满部门管理,有的是随着年限的提升回归了家......
+现在近23年中之后,部门一直在陆续走人,人员变动对一个公司来说属实正常.虽然说那些走的人确实有一些可恨之处(现在写代码看到他们遗留垃圾也会喷),但毕竟是曾经并肩作战的战友,也曾经一起努力过,奋斗过,一起加过班,一起喝过酒.他们有的是不满部门管理,有的是随着年限的提升回归了家庭,但看到与他们的聊天记录,或多或少还是会带点伤感在里面.
+其实每个季度走一个两个倒也无所谓,但是部门许久没有新鲜血液注入了,积少成多,现在业务也很难有再大力发展的势头了,现在我的其实也看到了几个月后的结局,在这里呆了三年难道没有一点怀念吗?不可能的,但我已经想象不到它下一个三年的样子了,现在就像一名癌症晚期的患者,平静的等待最后一天的到来而已.也许部门里所有的人都是这么想的, 但是你不知道哪天是最后一天,当事人、家属、医院我想在这期间都会…
         </div>
     </a>
     
@@ -470,7 +527,6 @@
         </li>
     
 </ul>
-
 
 
                 <!-- 如果开启评论功能 -->
@@ -579,6 +635,9 @@
 <script src="/js/hux-blog.min.js"></script>
 
 
+<script src="/js/theme-toggle.js"></script>
+
+
 
 <!-- async load function -->
 <script>
@@ -640,7 +699,6 @@
 
 
 <!-- Baidu Tongji -->
-
 
 
 

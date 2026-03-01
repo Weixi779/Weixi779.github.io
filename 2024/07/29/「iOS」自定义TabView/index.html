@@ -3,22 +3,40 @@
 
 <!-- Head tag -->
 <head>
+    
+    
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="个人博客记录成长">
-    <meta name="keyword"  content="">
-    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <meta name="keywords"  content="iOS, Swift, Unity, 成长, 个人博客, 技术杂谈">
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
     <!-- Place this tag in your head or just before your close body tag. -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <title>
         
-          「iOS」自定义TabView - undefined
+          「iOS」自定义TabView - 伟兮の小屋
         
     </title>
 
     <link rel="canonical" href="https://weixi779.github.io/2024/07/29/「iOS」自定义TabView/">
+    <meta name="color-scheme" content="light dark">
+
+    <script>
+      (function () {
+        var key = 'blog-theme';
+        var theme = null;
+        try {
+          theme = localStorage.getItem(key);
+        } catch (e) {}
+        if (theme !== 'light' && theme !== 'dark') {
+          var media = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)');
+          theme = media && media.matches ? 'dark' : 'light';
+        }
+        document.documentElement.setAttribute('data-theme', theme);
+      })();
+    </script>
 
     <!-- Bootstrap Core CSS -->
     
@@ -51,6 +69,14 @@
 <link rel="stylesheet" href="/css/toc.css">
 
 
+    
+<link rel="stylesheet" href="/css/theme.css">
+
+
+    
+<link rel="stylesheet" href="/css/markdown-skin.css">
+
+
     <!-- Custom Fonts -->
     <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
     <!-- Hux change font-awesome CDN to qiniu -->
@@ -80,13 +106,12 @@
 <body ontouchstart="">
 	<!-- Modified by Yu-Hsuan Yen -->
 <!-- Post Header -->
+
 <style type="text/css">
     header.intro-header{
-        
-            background-image: url('')
-            /*post*/
-        
+        background-image: url('/images/banner.jpg')
     }
+    
     
 </style>
 
@@ -100,9 +125,9 @@
                     <div class="post-heading">
                         <div class="tags">
                             
-                              <a class="tag" href="/tags/#技巧" title="技巧">技巧</a>
+                              <a class="tag" href="/archive/?tag=%E6%8A%80%E5%B7%A7" title="技巧">技巧</a>
                             
-                              <a class="tag" href="/tags/#SwiftUI" title="SwiftUI">SwiftUI</a>
+                              <a class="tag" href="/archive/?tag=SwiftUI" title="SwiftUI">SwiftUI</a>
                             
                         </div>
                         <h1>「iOS」自定义TabView</h1>
@@ -150,24 +175,31 @@
                     </li>
 
                     
-
                         
                     
-
                         
                         <li>
-                            <a href="/archive/">Archives</a>
+                            <a href="/archive/">Archive</a>
                         </li>
                         
                     
-
                         
                         <li>
                             <a href="/about/">About</a>
                         </li>
                         
                     
-                    
+                    <li>
+                        <button
+                            id="theme-toggle"
+                            class="theme-toggle-btn"
+                            type="button"
+                            aria-label="Switch to dark mode"
+                            title="Toggle theme">
+                            <i class="fa fa-moon-o" aria-hidden="true"></i>
+                            <span class="theme-toggle-text">Dark</span>
+                        </button>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -276,13 +308,33 @@
                 
                 <!-- 多说 Share end-->
 
-                <!-- 多说评论框 start -->
                 
-                <!-- 多说评论框 end -->
+                
+                  
 
-                <!-- disqus comment start -->
+<div class="comment comment-giscus">
+  <div id="giscus-comments"
+       data-theme-light="light"
+       data-theme-dark="dark"></div>
+  <script src="https://giscus.app/client.js"
+          data-repo="Weixi779/Weixi779.github.io"
+          data-repo-id="MDEwOlJlcG9zaXRvcnkzODE5Nzk0MzA="
+          data-category="Announcements"
+          data-category-id="DIC_kwDOFsSLJs4C3eHH"
+          data-mapping="pathname"
+          data-strict="0"
+          data-reactions-enabled="1"
+          data-emit-metadata="0"
+          data-input-position="bottom"
+          data-theme="preferred_color_scheme"
+          data-lang="zh-CN"
+          data-loading="lazy"
+          crossorigin="anonymous"
+          async></script>
+</div>
+
+
                 
-                <!-- disqus comment end -->
             </div>
             
             <!-- Tabe of Content -->
@@ -293,11 +345,12 @@
         <div id="toc" class="toc-article">
         <strong class="toc-title">Contents</strong>
         
-          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">概述</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E5%88%9D%E8%A7%81"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">初见</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E8%AE%BE%E8%AE%A1"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">设计</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#Model"><span class="toc-nav-number">3.1.</span> <span class="toc-nav-text">Model</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#TabSection"><span class="toc-nav-number">3.1.1.</span> <span class="toc-nav-text">TabSection</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#TabItem"><span class="toc-nav-number">3.1.2.</span> <span class="toc-nav-text">TabItem</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#%E6%95%B4%E4%BD%93%E8%A7%86%E5%9B%BE"><span class="toc-nav-number">3.2.</span> <span class="toc-nav-text">整体视图</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E6%89%A9%E5%B1%95"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">扩展</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#%E8%B7%AF%E7%94%B1"><span class="toc-nav-number">4.1.</span> <span class="toc-nav-text">路由</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#%E4%BA%8B%E4%BB%B6%E6%B5%81%E6%9E%84%E5%BB%BA"><span class="toc-nav-number">4.2.</span> <span class="toc-nav-text">事件流构建</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E7%BB%93%E8%AF%AD"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">结语</span></a></li></ol>
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="toc-nav-text">概述</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E5%88%9D%E8%A7%81"><span class="toc-nav-text">初见</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E8%AE%BE%E8%AE%A1"><span class="toc-nav-text">设计</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#Model"><span class="toc-nav-text">Model</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#%E6%95%B4%E4%BD%93%E8%A7%86%E5%9B%BE"><span class="toc-nav-text">整体视图</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E6%89%A9%E5%B1%95"><span class="toc-nav-text">扩展</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#%E8%B7%AF%E7%94%B1"><span class="toc-nav-text">路由</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#%E4%BA%8B%E4%BB%B6%E6%B5%81%E6%9E%84%E5%BB%BA"><span class="toc-nav-text">事件流构建</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E7%BB%93%E8%AF%AD"><span class="toc-nav-text">结语</span></a></li></ol>
         
         </div>
       </aside>
     
+
 
                 
             <!-- Sidebar Container -->
@@ -315,6 +368,7 @@
         </div>
     </div>
 </article>
+
 
 
 
@@ -378,6 +432,9 @@
 <script src="/js/hux-blog.min.js"></script>
 
 
+<script src="/js/theme-toggle.js"></script>
+
+
 
 <!-- async load function -->
 <script>
@@ -439,7 +496,6 @@
 
 
 <!-- Baidu Tongji -->
-
 
 
 

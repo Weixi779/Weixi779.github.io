@@ -1,0 +1,206 @@
+:root {
+  --bg: #fff;
+  --text: #2f3a45;
+  --muted: #6f7b86;
+  --heading: #1f2d3d;
+  --link: #1b7fb6;
+  --link-hover: #0b5a86;
+  --border: rgba(0,0,0,0.12);
+  --nav-bg: rgba(255,255,255,0.94);
+  --card-bg: #fff;
+  --toc-bg: rgba(255,255,255,0.9);
+  --code-bg: #f6f8fa;
+  --code-text: #2d3748;
+}
+[data-theme='dark'] {
+  --bg: #0f141a;
+  --text: #d2dae3;
+  --muted: #9aa7b3;
+  --heading: #f2f6fa;
+  --link: #62b0e8;
+  --link-hover: #9ad2f5;
+  --border: rgba(255,255,255,0.16);
+  --nav-bg: rgba(15,20,26,0.94);
+  --card-bg: #131a22;
+  --toc-bg: rgba(19,26,34,0.92);
+  --code-bg: #18202a;
+  --code-text: #d8e0e8;
+}
+html,
+body {
+  background-color: var(--bg);
+  color: var(--text);
+}
+body {
+  color: var(--text);
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--heading);
+}
+p,
+li,
+.post-content-preview {
+  color: var(--text);
+}
+a {
+  color: var(--link);
+}
+a:hover,
+a:focus {
+  color: var(--link-hover);
+}
+.post-preview > a,
+.post-preview > .post-meta > a {
+  color: var(--text);
+}
+.post-preview > .post-meta,
+.sidebar-container,
+.sidebar-container h5,
+.sidebar-container a,
+.post-container .tags a {
+  color: var(--muted) !important;
+}
+/* Keep home excerpts visually consistent by clamping to fixed lines. */
+.post-preview .post-content-preview {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  line-height: 1.8;
+  min-height: calc(1.8em * 4);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+}
+.navbar-custom {
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+.navbar-custom .container-fluid {
+  padding-left: 18px;
+  padding-right: 18px;
+}
+@media only screen and (min-width: 768px) {
+  .navbar-custom .container-fluid {
+    padding-left: 28px;
+    padding-right: 28px;
+  }
+}
+@media only screen and (min-width: 1170px) {
+  .navbar-custom.is-fixed {
+    background-color: var(--nav-bg);
+    border-bottom-color: var(--border);
+  }
+  .navbar-custom.is-fixed .navbar-brand,
+  .navbar-custom.is-fixed .nav li a {
+    color: var(--text);
+  }
+  .navbar-custom.is-fixed .navbar-brand:hover,
+  .navbar-custom.is-fixed .navbar-brand:focus,
+  .navbar-custom.is-fixed .nav li a:hover,
+  .navbar-custom.is-fixed .nav li a:focus {
+    color: var(--link-hover);
+  }
+}
+[data-theme='dark'] .navbar-default .navbar-collapse {
+  background: transparent;
+}
+@media only screen and (max-width: 767px) {
+  [data-theme='dark'] .navbar-default .navbar-collapse {
+    background: var(--card-bg);
+  }
+}
+.theme-toggle-btn {
+  margin-top: 13px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: transparent;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  line-height: 20px;
+  padding: 4px 10px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.theme-toggle-btn i {
+  margin-right: 5px;
+}
+.theme-toggle-btn:hover,
+.theme-toggle-btn:focus {
+  background: rgba(255,255,255,0.18);
+  color: #fff;
+  outline: none;
+}
+@media only screen and (min-width: 1170px) {
+  .navbar-custom.is-fixed .theme-toggle-btn {
+    color: var(--text);
+    border-color: var(--border);
+  }
+  .navbar-custom.is-fixed .theme-toggle-btn:hover,
+  .navbar-custom.is-fixed .theme-toggle-btn:focus {
+    color: var(--link-hover);
+    border-color: var(--link-hover);
+    background: rgba(127,127,127,0.08);
+  }
+}
+.post-container,
+.sidebar-container .short-about,
+.comment #ds-thread #ds-reset a.ds-like-thread-button,
+.comment #ds-thread #ds-reset li.ds-tab a.ds-current {
+  background-color: transparent;
+  color: var(--text);
+}
+.comment {
+  margin-top: 24px;
+  margin-bottom: 8px;
+}
+#toc {
+  color: var(--text);
+}
+.toc-article {
+  background: var(--toc-bg);
+  border-left-color: var(--border);
+}
+.toc-nav .active > a {
+  color: var(--link);
+}
+.toc-nav-link {
+  color: var(--text);
+}
+.toc-nav-link:hover {
+  color: var(--link-hover);
+}
+.toc-nav-child {
+  border-left-color: var(--border);
+}
+pre,
+code,
+.highlight {
+  background-color: var(--code-bg);
+  color: var(--code-text);
+}
+.highlight pre {
+  background-color: var(--code-bg);
+  color: var(--code-text);
+}
+[data-theme='dark'] .post-container blockquote {
+  color: var(--muted);
+  border-left-color: var(--border);
+}
+/* Keep hero/banner typography stable in both light and dark themes. */
+.intro-header .site-heading h1,
+.intro-header .page-heading h1,
+.intro-header .post-heading h1,
+.intro-header .site-heading .subheading,
+.intro-header .page-heading .subheading,
+.intro-header .post-heading .subheading,
+.intro-header .post-heading .meta,
+.intro-header .post-heading .meta a {
+  color: #fff !important;
+}

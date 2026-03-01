@@ -3,22 +3,40 @@
 
 <!-- Head tag -->
 <head>
+    
+    
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="个人博客记录成长">
-    <meta name="keyword"  content="">
-    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <meta name="keywords"  content="iOS, Swift, Unity, 成长, 个人博客, 技术杂谈">
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
     <!-- Place this tag in your head or just before your close body tag. -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <title>
         
-          About - undefined
+          About - 伟兮の小屋
         
     </title>
 
     <link rel="canonical" href="https://weixi779.github.io/about/">
+    <meta name="color-scheme" content="light dark">
+
+    <script>
+      (function () {
+        var key = 'blog-theme';
+        var theme = null;
+        try {
+          theme = localStorage.getItem(key);
+        } catch (e) {}
+        if (theme !== 'light' && theme !== 'dark') {
+          var media = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)');
+          theme = media && media.matches ? 'dark' : 'light';
+        }
+        document.documentElement.setAttribute('data-theme', theme);
+      })();
+    </script>
 
     <!-- Bootstrap Core CSS -->
     
@@ -51,6 +69,14 @@
 <link rel="stylesheet" href="/css/toc.css">
 
 
+    
+<link rel="stylesheet" href="/css/theme.css">
+
+
+    
+<link rel="stylesheet" href="/css/markdown-skin.css">
+
+
     <!-- Custom Fonts -->
     <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
     <!-- Hux change font-awesome CDN to qiniu -->
@@ -80,13 +106,26 @@
 <body ontouchstart="">
 	<!-- Modified by Yu-Hsuan Yen -->
 <!-- Post Header -->
+
 <style type="text/css">
     header.intro-header{
-        
-            background-image: url('/images/about_banner.jpg')
-            /*page*/
-        
+        background-image: url('/images/about_banner.jpg')
     }
+    
+    header.intro-header{
+        position: relative;
+    }
+    header.intro-header:before{
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.35);
+    }
+    header.intro-header #signature{
+        position: relative;
+        z-index: 1;
+    }
+    
     
 </style>
 
@@ -140,24 +179,31 @@
                     </li>
 
                     
-
                         
                     
-
                         
                         <li>
-                            <a href="/archive/">Archives</a>
+                            <a href="/archive/">Archive</a>
                         </li>
                         
                     
-
                         
                         <li>
                             <a href="/about/">About</a>
                         </li>
                         
                     
-                    
+                    <li>
+                        <button
+                            id="theme-toggle"
+                            class="theme-toggle-btn"
+                            type="button"
+                            aria-label="Switch to dark mode"
+                            title="Toggle theme">
+                            <i class="fa fa-moon-o" aria-hidden="true"></i>
+                            <span class="theme-toggle-text">Dark</span>
+                        </button>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -211,13 +257,13 @@
                 post-container
             ">
             
-                <p>Hi, 我是孙世伟, 00后, 双非本科生, 主业iOS开发, 目前就职于云账户, 中途接触了很多技术栈, Flutter, iOS原生, Unity, 依然保有浓厚的学习热情</p>
+                <p>Hi, 我是孙世伟, 00后, 双非本科生, 主业iOS开发, 中途接触了很多技术栈, Flutter, iOS原生, Unity, 依然保有浓厚的学习热情</p>
 <p>科技爱好者, 二次元文化爱好者, 目前在努力精进代码技术, 学习基础乐理, 理解人文艺术</p>
 <p>本站会陆续更新相关作品, 同时文章可能会同步上传掘金, 看未来造化</p>
 <p>愿将来某天能对某个产品拍着胸脯说出 <em>「这是我伟大的作品」</em></p>
 <p>联系方式</p>
 <p>QQ: 1349750521</p>
-<p>Email: <a href="mailto:&#x73;&#x75;&#110;&#x73;&#104;&#105;&#119;&#101;&#105;&#52;&#x31;&#56;&#x40;&#x31;&#50;&#x36;&#46;&#99;&#x6f;&#x6d;">&#x73;&#x75;&#110;&#x73;&#104;&#105;&#119;&#101;&#105;&#52;&#x31;&#56;&#x40;&#x31;&#50;&#x36;&#46;&#99;&#x6f;&#x6d;</a></p>
+<p>Email: <a href="mailto:&#115;&#x75;&#x6e;&#x73;&#x68;&#x69;&#119;&#x65;&#x69;&#x34;&#x31;&#x38;&#x40;&#49;&#50;&#54;&#x2e;&#99;&#x6f;&#109;">&#115;&#x75;&#x6e;&#x73;&#x68;&#x69;&#119;&#x65;&#x69;&#x34;&#x31;&#x38;&#x40;&#49;&#50;&#54;&#x2e;&#99;&#x6f;&#109;</a></p>
 
 
                 <!-- 如果开启评论功能 -->
@@ -337,6 +383,9 @@
 <script src="/js/hux-blog.min.js"></script>
 
 
+<script src="/js/theme-toggle.js"></script>
+
+
 
 <!-- async load function -->
 <script>
@@ -398,7 +447,6 @@
 
 
 <!-- Baidu Tongji -->
-
 
 
 

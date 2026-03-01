@@ -3,22 +3,40 @@
 
 <!-- Head tag -->
 <head>
+    
+    
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="个人博客记录成长">
-    <meta name="keyword"  content="">
-    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <meta name="keywords"  content="iOS, Swift, Unity, 成长, 个人博客, 技术杂谈">
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
     <!-- Place this tag in your head or just before your close body tag. -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <title>
         
-          「iOS」Design of the log system - undefined
+          「iOS」日志系统设计 - 伟兮の小屋
         
     </title>
 
-    <link rel="canonical" href="https://weixi779.github.io/2026/01/09/「iOS」Design-of-the-log-system/">
+    <link rel="canonical" href="https://weixi779.github.io/2026/01/09/「iOS」日志系统设计/">
+    <meta name="color-scheme" content="light dark">
+
+    <script>
+      (function () {
+        var key = 'blog-theme';
+        var theme = null;
+        try {
+          theme = localStorage.getItem(key);
+        } catch (e) {}
+        if (theme !== 'light' && theme !== 'dark') {
+          var media = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)');
+          theme = media && media.matches ? 'dark' : 'light';
+        }
+        document.documentElement.setAttribute('data-theme', theme);
+      })();
+    </script>
 
     <!-- Bootstrap Core CSS -->
     
@@ -51,6 +69,14 @@
 <link rel="stylesheet" href="/css/toc.css">
 
 
+    
+<link rel="stylesheet" href="/css/theme.css">
+
+
+    
+<link rel="stylesheet" href="/css/markdown-skin.css">
+
+
     <!-- Custom Fonts -->
     <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
     <!-- Hux change font-awesome CDN to qiniu -->
@@ -80,13 +106,12 @@
 <body ontouchstart="">
 	<!-- Modified by Yu-Hsuan Yen -->
 <!-- Post Header -->
+
 <style type="text/css">
     header.intro-header{
-        
-            background-image: url('')
-            /*post*/
-        
+        background-image: url('/images/opentelemetry.png')
     }
+    
     
 </style>
 
@@ -100,12 +125,12 @@
                     <div class="post-heading">
                         <div class="tags">
                             
-                              <a class="tag" href="/tags/#架构" title="架构">架构</a>
+                              <a class="tag" href="/archive/?tag=%E6%9E%B6%E6%9E%84" title="架构">架构</a>
                             
-                              <a class="tag" href="/tags/#日志" title="日志">日志</a>
+                              <a class="tag" href="/archive/?tag=%E6%97%A5%E5%BF%97" title="日志">日志</a>
                             
                         </div>
-                        <h1>「iOS」Design of the log system</h1>
+                        <h1>「iOS」日志系统设计</h1>
                         <h2 class="subheading"></h2>
                         <span class="meta">
                             Posted by Weixi on
@@ -150,24 +175,31 @@
                     </li>
 
                     
-
                         
                     
-
                         
                         <li>
-                            <a href="/archive/">Archives</a>
+                            <a href="/archive/">Archive</a>
                         </li>
                         
                     
-
                         
                         <li>
                             <a href="/about/">About</a>
                         </li>
                         
                     
-                    
+                    <li>
+                        <button
+                            id="theme-toggle"
+                            class="theme-toggle-btn"
+                            type="button"
+                            aria-label="Switch to dark mode"
+                            title="Toggle theme">
+                            <i class="fa fa-moon-o" aria-hidden="true"></i>
+                            <span class="theme-toggle-text">Dark</span>
+                        </button>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -219,12 +251,12 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <h1 id="1-为什么需要日志"><a href="#1-为什么需要日志" class="headerlink" title="1 为什么需要日志"></a>1 为什么需要日志</h1><p>软件系统的运行过程本质上是不可见的。绝大多数行为发生在内存与线程之中。在本机调试阶段，我们可以借助断点、内存分析、控制台等手段直接观察系统状态；而一旦进入生产环境，这些能力几乎全部失效。此时，日志成为<strong>唯一能够跨越时间和空间的观测手段</strong>。</p>
+                <h1 id="一、为什么需要日志"><a href="#一、为什么需要日志" class="headerlink" title="一、为什么需要日志"></a>一、为什么需要日志</h1><p>软件系统的运行过程本质上是不可见的。绝大多数行为发生在内存与线程之中。在本机调试阶段，我们可以借助断点、内存分析、控制台等手段直接观察系统状态；而一旦进入生产环境，这些能力几乎全部失效。此时，日志成为<strong>唯一能够跨越时间和空间的观测手段</strong>。</p>
 <p>但如果进一步追问：<strong>日志究竟解决了什么问题？</strong>这个问题并没有那么简单。日志的核心价值并不在于文本本身，而在于<strong>可见性</strong>。它最基础的作用，是让这些不可见的行为“显影”。一次简单的日志输出，至少隐含了三类信息：时间、位置、描述。</p>
 <p>这也是我们不建议使用简单 print 的原因：结构化日志在每次记录时，都会自动携带这些关键信息，从而形成稳定、可检索的观测数据。</p>
 <p>之后当系统规模变大、异步逻辑增多时，单条日志已经很难解释问题。真正有价值的，是一组日志所呈现出的<strong>因果关系</strong>. 在这一层面上，日志更像是<strong>事件证据</strong>，用于在事后还原一段已经发生过的执行流程。</p>
 <p>接下来，我们将从这些问题出发，逐步讨论一套面向真实生产环境的日志与可观测性设计。</p>
-<h1 id="2-日志系统"><a href="#2-日志系统" class="headerlink" title="2 日志系统"></a>2 日志系统</h1><p>尽管日志在实践中无处不在，它本身仍然存在天然局限：日志是离散的事件，而不是连续的流程;日志天然是“事后信息”，而不是实时状态;在客户端等受限环境中, 如 应用可能随时被杀掉, 各种网络情况不稳定, 隐私与安全限制，日志可能丢失、不可获取、不可上报。</p>
+<h1 id="二、日志系统"><a href="#二、日志系统" class="headerlink" title="二、日志系统"></a>二、日志系统</h1><p>尽管日志在实践中无处不在，它本身仍然存在天然局限：日志是离散的事件，而不是连续的流程;日志天然是“事后信息”，而不是实时状态;在客户端等受限环境中, 如 应用可能随时被杀掉, 各种网络情况不稳定, 隐私与安全限制，日志可能丢失、不可获取、不可上报。</p>
 <p>这意味着，<strong>日志并不是系统真相本身</strong>，它只是我们理解系统的一种工具。当系统复杂度继续提升，仅靠“多打日志”往往无法解决根本问题。</p>
 <h2 id="2-1-范围与功能"><a href="#2-1-范围与功能" class="headerlink" title="2.1 范围与功能"></a>2.1 范围与功能</h2><p>这样我们应该勾勒出日志系统的一些边界范围. </p>
 <ol>
@@ -241,7 +273,7 @@
 </ul>
 <h2 id="2-2-系统架构"><a href="#2-2-系统架构" class="headerlink" title="2.2 系统架构"></a>2.2 系统架构</h2><p><img src="/../images/LoggerSystemArchitectureDiagram.svg" alt="LoggerSystemArchitectureDiagram"></p>
 <p>我们刻意限制了日志系统的职责范围，使其始终作为一个旁路的、可退化的基础设施存在。这些约束并非功能缺失，而是后续实现能够保持稳定与可演进的前提。所有依赖关系均为单向：日志系统不会反向调用业务模块或基础设施。</p>
-<h1 id="3-本地日志"><a href="#3-本地日志" class="headerlink" title="3 本地日志"></a>3 本地日志</h1><p>在整体架构中，本地日志被视为整个日志系统中<strong>最基础、也是最可靠的一环</strong>。无论远端日志是否可用、网络环境是否稳定，本地日志都必须能够在任何情况下正常工作。</p>
+<h1 id="三、本地日志"><a href="#三、本地日志" class="headerlink" title="三、本地日志"></a>三、本地日志</h1><p>在整体架构中，本地日志被视为整个日志系统中<strong>最基础、也是最可靠的一环</strong>。无论远端日志是否可用、网络环境是否稳定，本地日志都必须能够在任何情况下正常工作。</p>
 <p>因此，在实现层面，我们选择优先构建一套<strong>稳定、低成本、符合平台特性的本地日志能力</strong>，而不是从远端导出反推本地设计。</p>
 <h2 id="3-1-为什么是os-Logger"><a href="#3-1-为什么是os-Logger" class="headerlink" title="3.1 为什么是os.Logger"></a>3.1 为什么是os.Logger</h2><p>在 iOS 开发里，print 很直观，但它更像调试手段：没有结构、难以检索、性能成本不可预测，也无法进入系统日志体系。进入生产环境后，这些缺点会被放大。</p>
 <p>os.Logger 是系统级日志通道，它的设计目标本身就面向“可长期运行”的生产场景。本文中，<code>os.Logger</code> 指 Apple 的系统日志实现，<code>Logger</code> 指本文封装的对外 API。我们选择它，主要基于这些原因：</p>
@@ -256,7 +288,7 @@
 <figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> logger <span class="operator">=</span> <span class="type">Logger</span>(subsystem: <span class="string">&quot;LoggerSystem&quot;</span>)</span><br><span class="line">logger.info(<span class="string">&quot;Request started&quot;</span>)</span><br><span class="line">logger.error(<span class="string">&quot;Request failed&quot;</span>, error: error)</span><br></pre></td></tr></table></figure>
 
 <h2 id="3-2-附加功能"><a href="#3-2-附加功能" class="headerlink" title="3.2 附加功能"></a>3.2 附加功能</h2><p>除了系统日志的即时写入，我们还提供了几个本地诊断能力：通过 <code>LogStore</code> &#x2F; <code>OSLogStore</code> 进行日志检索（按时间、级别、分类）并支持导出为文本或 JSON；同时集成 <code>OSSignpost</code> &#x2F; <code>OSSignposter</code> 作为性能事件记录方式，用于衡量关键路径耗时。这些能力不进入主写入路径，只在排查与分析时启用。</p>
-<h1 id="4-远端日志与-OpenTelemetry"><a href="#4-远端日志与-OpenTelemetry" class="headerlink" title="4 远端日志与 OpenTelemetry"></a>4 远端日志与 OpenTelemetry</h1><h2 id="4-1-OpenTelemetry-在客户端日志系统中的位置"><a href="#4-1-OpenTelemetry-在客户端日志系统中的位置" class="headerlink" title="4.1 OpenTelemetry 在客户端日志系统中的位置"></a>4.1 OpenTelemetry 在客户端日志系统中的位置</h2><p>OpenTelemetry 由 CNCF 托管，起源于 2019 年 OpenCensus 与 OpenTracing 的合并，并于 2021 年成为 CNCF 顶级项目。它并不是某一个具体 SDK，而是一套<strong>用于描述可观测性数据的开放标准</strong>，定义了日志、指标与链路追踪的统一语义与数据模型，并配套给出了标准化的传输协议（OTLP）。</p>
+<h1 id="四、远端日志与-OpenTelemetry"><a href="#四、远端日志与-OpenTelemetry" class="headerlink" title="四、远端日志与 OpenTelemetry"></a>四、远端日志与 OpenTelemetry</h1><h2 id="4-1-OpenTelemetry-在客户端日志系统中的位置"><a href="#4-1-OpenTelemetry-在客户端日志系统中的位置" class="headerlink" title="4.1 OpenTelemetry 在客户端日志系统中的位置"></a>4.1 OpenTelemetry 在客户端日志系统中的位置</h2><p>OpenTelemetry 由 CNCF 托管，起源于 2019 年 OpenCensus 与 OpenTracing 的合并，并于 2021 年成为 CNCF 顶级项目。它并不是某一个具体 SDK，而是一套<strong>用于描述可观测性数据的开放标准</strong>，定义了日志、指标与链路追踪的统一语义与数据模型，并配套给出了标准化的传输协议（OTLP）。</p>
 <p>在本章中，我们并不试图完整覆盖 OpenTelemetry 的体系，而是聚焦于其中与<strong>远端日志</strong>相关的部分：</p>
 <p><strong>日志数据在 OTel 语义下如何被结构化、如何被分组、以及如何被导出。</strong></p>
 <p>认证、上下文传播等问题会显著影响系统依赖关系，本文刻意将其延后，在下一章单独讨论。</p>
@@ -300,7 +332,7 @@
 <p>它不感知业务上下文，也不参与重试策略之外的系统决策。</p>
 <h2 id="4-2-RemoteLogger-架构图"><a href="#4-2-RemoteLogger-架构图" class="headerlink" title="4.2 RemoteLogger 架构图"></a>4.2 RemoteLogger 架构图</h2><p>下面这张图是 RemoteLogger 在 OTel 语义下的最小闭环：</p>
 <p><img src="/../images/RemoteSinkSystem.svg" alt="RemoteSinkSystem"></p>
-<h1 id="5-上下文边界"><a href="#5-上下文边界" class="headerlink" title="5 上下文边界"></a>5 上下文边界</h1><p>从 RemoteLogger 开始真正发日志的那一刻，日志系统就第一次碰到外部依赖：鉴权。它不是“可选附加项”，而是远端链路的必经之门。</p>
+<h1 id="五、上下文边界"><a href="#五、上下文边界" class="headerlink" title="五、上下文边界"></a>五、上下文边界</h1><p>从 RemoteLogger 开始真正发日志的那一刻，日志系统就第一次碰到外部依赖：鉴权。它不是“可选附加项”，而是远端链路的必经之门。</p>
 <h2 id="5-1-鉴权"><a href="#5-1-鉴权" class="headerlink" title="5.1 鉴权"></a>5.1 鉴权</h2><p>日志端点是基础设施入口（infra endpoint），它的目标是<strong>控制写入来源</strong>，而不是验证用户身份。因此更合理的鉴权方式是：IP allowlist、mTLS、ingestion key、project‑level key，配合采样与限流。这些机制与用户态解耦、无需刷新、不参与业务控制流，且失败也不会影响客户端主流程。</p>
 <p>在这种模型下，日志系统只做一件事：<strong>携带已准备好的凭证</strong>。它不维护鉴权状态，也不触发刷新，更不等待鉴权完成。</p>
 <h3 id="5-1-1-当鉴权被卷入业务流程"><a href="#5-1-1-当鉴权被卷入业务流程" class="headerlink" title="5.1.1 当鉴权被卷入业务流程"></a>5.1.1 当鉴权被卷入业务流程</h3><p>问题发生在日志复用业务鉴权体系时：access token 短期、频繁刷新、刷新依赖网络与生命周期，而鉴权失败本身又需要被记录。直觉做法是“刷新后重试”，但这会形成典型的依赖循环：</p>
@@ -355,7 +387,7 @@
                     
                     
                         <li class="next">
-                            <a href="/2026/01/05/「iOS」网络层工程范式迁移/" data-toggle="tooltip" data-placement="top" title="网络层工程范式迁移">Next Post &rarr;</a>
+                            <a href="/2026/01/05/「iOS」网络层工程范式迁移/" data-toggle="tooltip" data-placement="top" title="「iOS」网络层工程范式迁移">Next Post &rarr;</a>
                         </li>
                     
                 </ul>
@@ -364,13 +396,33 @@
                 
                 <!-- 多说 Share end-->
 
-                <!-- 多说评论框 start -->
                 
-                <!-- 多说评论框 end -->
+                
+                  
 
-                <!-- disqus comment start -->
+<div class="comment comment-giscus">
+  <div id="giscus-comments"
+       data-theme-light="light"
+       data-theme-dark="dark"></div>
+  <script src="https://giscus.app/client.js"
+          data-repo="Weixi779/Weixi779.github.io"
+          data-repo-id="MDEwOlJlcG9zaXRvcnkzODE5Nzk0MzA="
+          data-category="Announcements"
+          data-category-id="DIC_kwDOFsSLJs4C3eHH"
+          data-mapping="pathname"
+          data-strict="0"
+          data-reactions-enabled="1"
+          data-emit-metadata="0"
+          data-input-position="bottom"
+          data-theme="preferred_color_scheme"
+          data-lang="zh-CN"
+          data-loading="lazy"
+          crossorigin="anonymous"
+          async></script>
+</div>
+
+
                 
-                <!-- disqus comment end -->
             </div>
             
             <!-- Tabe of Content -->
@@ -381,11 +433,12 @@
         <div id="toc" class="toc-article">
         <strong class="toc-title">Contents</strong>
         
-          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#1-%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E6%97%A5%E5%BF%97"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">1 为什么需要日志</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#2-%E6%97%A5%E5%BF%97%E7%B3%BB%E7%BB%9F"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">2 日志系统</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#2-1-%E8%8C%83%E5%9B%B4%E4%B8%8E%E5%8A%9F%E8%83%BD"><span class="toc-nav-number">2.1.</span> <span class="toc-nav-text">2.1 范围与功能</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#2-2-%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84"><span class="toc-nav-number">2.2.</span> <span class="toc-nav-text">2.2 系统架构</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#3-%E6%9C%AC%E5%9C%B0%E6%97%A5%E5%BF%97"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">3 本地日志</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#3-1-%E4%B8%BA%E4%BB%80%E4%B9%88%E6%98%AFos-Logger"><span class="toc-nav-number">3.1.</span> <span class="toc-nav-text">3.1 为什么是os.Logger</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#3-2-%E9%99%84%E5%8A%A0%E5%8A%9F%E8%83%BD"><span class="toc-nav-number">3.2.</span> <span class="toc-nav-text">3.2 附加功能</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#4-%E8%BF%9C%E7%AB%AF%E6%97%A5%E5%BF%97%E4%B8%8E-OpenTelemetry"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">4 远端日志与 OpenTelemetry</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#4-1-OpenTelemetry-%E5%9C%A8%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%97%A5%E5%BF%97%E7%B3%BB%E7%BB%9F%E4%B8%AD%E7%9A%84%E4%BD%8D%E7%BD%AE"><span class="toc-nav-number">4.1.</span> <span class="toc-nav-text">4.1 OpenTelemetry 在客户端日志系统中的位置</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#4-1-1-Remote-Logger-%E7%9A%84%E6%9C%80%E5%B0%8F%E9%97%AD%E7%8E%AF"><span class="toc-nav-number">4.1.0.1.</span> <span class="toc-nav-text">4.1.1 Remote Logger 的最小闭环</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#4-1-2-%E7%BB%93%E6%9E%84%E5%8C%96%E4%B8%8E%E5%88%86%E7%BB%84%EF%BC%9A%E4%BB%8E-LogRecord-%E5%88%B0-OTel-Logs"><span class="toc-nav-number">4.1.0.2.</span> <span class="toc-nav-text">4.1.2 结构化与分组：从 LogRecord 到 OTel Logs</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#4-1-3-%E6%89%B9%E5%A4%84%E7%90%86%E4%B8%8E%E8%B0%83%E5%BA%A6%EF%BC%9AProcessor-%E7%9A%84%E8%81%8C%E8%B4%A3%E8%BE%B9%E7%95%8C"><span class="toc-nav-number">4.1.0.3.</span> <span class="toc-nav-text">4.1.3 批处理与调度：Processor 的职责边界</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#4-1-4-%E5%AF%BC%E5%87%BA%E8%BE%B9%E7%95%8C%EF%BC%9AExporter-%E4%BD%9C%E4%B8%BA%E5%8D%8F%E8%AE%AE%E9%80%82%E9%85%8D%E5%B1%82"><span class="toc-nav-number">4.1.0.4.</span> <span class="toc-nav-text">4.1.4 导出边界：Exporter 作为协议适配层</span></a></li></ol></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#4-2-RemoteLogger-%E6%9E%B6%E6%9E%84%E5%9B%BE"><span class="toc-nav-number">4.2.</span> <span class="toc-nav-text">4.2 RemoteLogger 架构图</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#5-%E4%B8%8A%E4%B8%8B%E6%96%87%E8%BE%B9%E7%95%8C"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">5 上下文边界</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#5-1-%E9%89%B4%E6%9D%83"><span class="toc-nav-number">5.1.</span> <span class="toc-nav-text">5.1 鉴权</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#5-1-1-%E5%BD%93%E9%89%B4%E6%9D%83%E8%A2%AB%E5%8D%B7%E5%85%A5%E4%B8%9A%E5%8A%A1%E6%B5%81%E7%A8%8B"><span class="toc-nav-number">5.1.1.</span> <span class="toc-nav-text">5.1.1 当鉴权被卷入业务流程</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#5-2-Traceparent"><span class="toc-nav-number">5.2.</span> <span class="toc-nav-text">5.2 Traceparent</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#5-2-1-%E6%9E%84%E9%80%A0%E4%B8%8E%E4%BC%A0%E9%80%92"><span class="toc-nav-number">5.2.1.</span> <span class="toc-nav-text">5.2.1 构造与传递</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#5-3-Context-%E7%9A%84%E8%A7%92%E8%89%B2"><span class="toc-nav-number">5.3.</span> <span class="toc-nav-text">5.3 Context 的角色</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#5-4-%E7%BB%93%E8%AF%AD"><span class="toc-nav-number">5.4.</span> <span class="toc-nav-text">5.4 结语</span></a></li></ol></li></ol>
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E4%B8%80%E3%80%81%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E6%97%A5%E5%BF%97"><span class="toc-nav-text">一、为什么需要日志</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E4%BA%8C%E3%80%81%E6%97%A5%E5%BF%97%E7%B3%BB%E7%BB%9F"><span class="toc-nav-text">二、日志系统</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#2-1-%E8%8C%83%E5%9B%B4%E4%B8%8E%E5%8A%9F%E8%83%BD"><span class="toc-nav-text">2.1 范围与功能</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#2-2-%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84"><span class="toc-nav-text">2.2 系统架构</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E4%B8%89%E3%80%81%E6%9C%AC%E5%9C%B0%E6%97%A5%E5%BF%97"><span class="toc-nav-text">三、本地日志</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#3-1-%E4%B8%BA%E4%BB%80%E4%B9%88%E6%98%AFos-Logger"><span class="toc-nav-text">3.1 为什么是os.Logger</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#3-2-%E9%99%84%E5%8A%A0%E5%8A%9F%E8%83%BD"><span class="toc-nav-text">3.2 附加功能</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E5%9B%9B%E3%80%81%E8%BF%9C%E7%AB%AF%E6%97%A5%E5%BF%97%E4%B8%8E-OpenTelemetry"><span class="toc-nav-text">四、远端日志与 OpenTelemetry</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#4-1-OpenTelemetry-%E5%9C%A8%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%97%A5%E5%BF%97%E7%B3%BB%E7%BB%9F%E4%B8%AD%E7%9A%84%E4%BD%8D%E7%BD%AE"><span class="toc-nav-text">4.1 OpenTelemetry 在客户端日志系统中的位置</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#4-2-RemoteLogger-%E6%9E%B6%E6%9E%84%E5%9B%BE"><span class="toc-nav-text">4.2 RemoteLogger 架构图</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E4%BA%94%E3%80%81%E4%B8%8A%E4%B8%8B%E6%96%87%E8%BE%B9%E7%95%8C"><span class="toc-nav-text">五、上下文边界</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#5-1-%E9%89%B4%E6%9D%83"><span class="toc-nav-text">5.1 鉴权</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#5-2-Traceparent"><span class="toc-nav-text">5.2 Traceparent</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#5-3-Context-%E7%9A%84%E8%A7%92%E8%89%B2"><span class="toc-nav-text">5.3 Context 的角色</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#5-4-%E7%BB%93%E8%AF%AD"><span class="toc-nav-text">5.4 结语</span></a></li></ol></li></ol>
         
         </div>
       </aside>
     
+
 
                 
             <!-- Sidebar Container -->
@@ -403,6 +456,7 @@
         </div>
     </div>
 </article>
+
 
 
 
@@ -466,6 +520,9 @@
 <script src="/js/hux-blog.min.js"></script>
 
 
+<script src="/js/theme-toggle.js"></script>
+
+
 
 <!-- async load function -->
 <script>
@@ -527,7 +584,6 @@
 
 
 <!-- Baidu Tongji -->
-
 
 
 

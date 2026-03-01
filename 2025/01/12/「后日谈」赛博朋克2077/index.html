@@ -3,22 +3,40 @@
 
 <!-- Head tag -->
 <head>
+    
+    
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="个人博客记录成长">
-    <meta name="keyword"  content="">
-    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <meta name="keywords"  content="iOS, Swift, Unity, 成长, 个人博客, 技术杂谈">
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
     <!-- Place this tag in your head or just before your close body tag. -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <title>
         
-          「后日谈」赛博朋克2077 - undefined
+          「后日谈」赛博朋克2077 - 伟兮の小屋
         
     </title>
 
     <link rel="canonical" href="https://weixi779.github.io/2025/01/12/「后日谈」赛博朋克2077/">
+    <meta name="color-scheme" content="light dark">
+
+    <script>
+      (function () {
+        var key = 'blog-theme';
+        var theme = null;
+        try {
+          theme = localStorage.getItem(key);
+        } catch (e) {}
+        if (theme !== 'light' && theme !== 'dark') {
+          var media = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)');
+          theme = media && media.matches ? 'dark' : 'light';
+        }
+        document.documentElement.setAttribute('data-theme', theme);
+      })();
+    </script>
 
     <!-- Bootstrap Core CSS -->
     
@@ -51,6 +69,14 @@
 <link rel="stylesheet" href="/css/toc.css">
 
 
+    
+<link rel="stylesheet" href="/css/theme.css">
+
+
+    
+<link rel="stylesheet" href="/css/markdown-skin.css">
+
+
     <!-- Custom Fonts -->
     <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
     <!-- Hux change font-awesome CDN to qiniu -->
@@ -80,13 +106,12 @@
 <body ontouchstart="">
 	<!-- Modified by Yu-Hsuan Yen -->
 <!-- Post Header -->
+
 <style type="text/css">
     header.intro-header{
-        
-            background-image: url('/images/cyberpunk2077.jpg')
-            /*post*/
-        
+        background-image: url('/images/cyberpunk2077.jpg')
     }
+    
     
 </style>
 
@@ -100,7 +125,7 @@
                     <div class="post-heading">
                         <div class="tags">
                             
-                              <a class="tag" href="/tags/#游戏人生" title="游戏人生">游戏人生</a>
+                              <a class="tag" href="/archive/?tag=%E6%B8%B8%E6%88%8F%E4%BA%BA%E7%94%9F" title="游戏人生">游戏人生</a>
                             
                         </div>
                         <h1>「后日谈」赛博朋克2077</h1>
@@ -148,24 +173,31 @@
                     </li>
 
                     
-
                         
                     
-
                         
                         <li>
-                            <a href="/archive/">Archives</a>
+                            <a href="/archive/">Archive</a>
                         </li>
                         
                     
-
                         
                         <li>
                             <a href="/about/">About</a>
                         </li>
                         
                     
-                    
+                    <li>
+                        <button
+                            id="theme-toggle"
+                            class="theme-toggle-btn"
+                            type="button"
+                            aria-label="Switch to dark mode"
+                            title="Toggle theme">
+                            <i class="fa fa-moon-o" aria-hidden="true"></i>
+                            <span class="theme-toggle-text">Dark</span>
+                        </button>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -247,13 +279,33 @@
                 
                 <!-- 多说 Share end-->
 
-                <!-- 多说评论框 start -->
                 
-                <!-- 多说评论框 end -->
+                
+                  
 
-                <!-- disqus comment start -->
+<div class="comment comment-giscus">
+  <div id="giscus-comments"
+       data-theme-light="light"
+       data-theme-dark="dark"></div>
+  <script src="https://giscus.app/client.js"
+          data-repo="Weixi779/Weixi779.github.io"
+          data-repo-id="MDEwOlJlcG9zaXRvcnkzODE5Nzk0MzA="
+          data-category="Announcements"
+          data-category-id="DIC_kwDOFsSLJs4C3eHH"
+          data-mapping="pathname"
+          data-strict="0"
+          data-reactions-enabled="1"
+          data-emit-metadata="0"
+          data-input-position="bottom"
+          data-theme="preferred_color_scheme"
+          data-lang="zh-CN"
+          data-loading="lazy"
+          crossorigin="anonymous"
+          async></script>
+</div>
+
+
                 
-                <!-- disqus comment end -->
             </div>
             
             <!-- Tabe of Content -->
@@ -264,11 +316,12 @@
         <div id="toc" class="toc-article">
         <strong class="toc-title">Contents</strong>
         
-          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E8%83%8C%E6%99%AF"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">背景</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E5%88%9D%E8%A7%81"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">初见</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E6%B8%90%E5%85%A5%E4%BD%B3%E5%A2%83"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">渐入佳境</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E9%80%90%E6%B8%90%E5%B9%B3%E6%B7%A1"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">逐渐平淡</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E5%BE%80%E6%97%A5%E4%B9%8B%E5%BD%B1"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">往日之影</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E5%90%8E%E8%AE%B0"><span class="toc-nav-number">6.</span> <span class="toc-nav-text">后记</span></a></li></ol>
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E8%83%8C%E6%99%AF"><span class="toc-nav-text">背景</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E5%88%9D%E8%A7%81"><span class="toc-nav-text">初见</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E6%B8%90%E5%85%A5%E4%BD%B3%E5%A2%83"><span class="toc-nav-text">渐入佳境</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E9%80%90%E6%B8%90%E5%B9%B3%E6%B7%A1"><span class="toc-nav-text">逐渐平淡</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E5%BE%80%E6%97%A5%E4%B9%8B%E5%BD%B1"><span class="toc-nav-text">往日之影</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E5%90%8E%E8%AE%B0"><span class="toc-nav-text">后记</span></a></li></ol>
         
         </div>
       </aside>
     
+
 
                 
             <!-- Sidebar Container -->
@@ -286,6 +339,7 @@
         </div>
     </div>
 </article>
+
 
 
 
@@ -349,6 +403,9 @@
 <script src="/js/hux-blog.min.js"></script>
 
 
+<script src="/js/theme-toggle.js"></script>
+
+
 
 <!-- async load function -->
 <script>
@@ -410,7 +467,6 @@
 
 
 <!-- Baidu Tongji -->
-
 
 
 

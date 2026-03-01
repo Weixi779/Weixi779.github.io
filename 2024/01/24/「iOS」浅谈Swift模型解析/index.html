@@ -3,22 +3,40 @@
 
 <!-- Head tag -->
 <head>
+    
+    
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="个人博客记录成长">
-    <meta name="keyword"  content="">
-    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <meta name="keywords"  content="iOS, Swift, Unity, 成长, 个人博客, 技术杂谈">
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
     <!-- Place this tag in your head or just before your close body tag. -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <title>
         
-          「iOS」浅谈Swift模型解析 - undefined
+          「iOS」浅谈Swift模型解析 - 伟兮の小屋
         
     </title>
 
     <link rel="canonical" href="https://weixi779.github.io/2024/01/24/「iOS」浅谈Swift模型解析/">
+    <meta name="color-scheme" content="light dark">
+
+    <script>
+      (function () {
+        var key = 'blog-theme';
+        var theme = null;
+        try {
+          theme = localStorage.getItem(key);
+        } catch (e) {}
+        if (theme !== 'light' && theme !== 'dark') {
+          var media = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)');
+          theme = media && media.matches ? 'dark' : 'light';
+        }
+        document.documentElement.setAttribute('data-theme', theme);
+      })();
+    </script>
 
     <!-- Bootstrap Core CSS -->
     
@@ -51,6 +69,14 @@
 <link rel="stylesheet" href="/css/toc.css">
 
 
+    
+<link rel="stylesheet" href="/css/theme.css">
+
+
+    
+<link rel="stylesheet" href="/css/markdown-skin.css">
+
+
     <!-- Custom Fonts -->
     <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
     <!-- Hux change font-awesome CDN to qiniu -->
@@ -80,13 +106,12 @@
 <body ontouchstart="">
 	<!-- Modified by Yu-Hsuan Yen -->
 <!-- Post Header -->
+
 <style type="text/css">
     header.intro-header{
-        
-            background-image: url('')
-            /*post*/
-        
+        background-image: url('/images/banner.jpg')
     }
+    
     
 </style>
 
@@ -100,11 +125,11 @@
                     <div class="post-heading">
                         <div class="tags">
                             
-                              <a class="tag" href="/tags/#心得" title="心得">心得</a>
+                              <a class="tag" href="/archive/?tag=%E5%BF%83%E5%BE%97" title="心得">心得</a>
                             
-                              <a class="tag" href="/tags/#变迁" title="变迁">变迁</a>
+                              <a class="tag" href="/archive/?tag=%E5%8F%98%E8%BF%81" title="变迁">变迁</a>
                             
-                              <a class="tag" href="/tags/#概括" title="概括">概括</a>
+                              <a class="tag" href="/archive/?tag=%E6%A6%82%E6%8B%AC" title="概括">概括</a>
                             
                         </div>
                         <h1>「iOS」浅谈Swift模型解析</h1>
@@ -152,24 +177,31 @@
                     </li>
 
                     
-
                         
                     
-
                         
                         <li>
-                            <a href="/archive/">Archives</a>
+                            <a href="/archive/">Archive</a>
                         </li>
                         
                     
-
                         
                         <li>
                             <a href="/about/">About</a>
                         </li>
                         
                     
-                    
+                    <li>
+                        <button
+                            id="theme-toggle"
+                            class="theme-toggle-btn"
+                            type="button"
+                            aria-label="Switch to dark mode"
+                            title="Toggle theme">
+                            <i class="fa fa-moon-o" aria-hidden="true"></i>
+                            <span class="theme-toggle-text">Dark</span>
+                        </button>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -393,13 +425,33 @@
                 
                 <!-- 多说 Share end-->
 
-                <!-- 多说评论框 start -->
                 
-                <!-- 多说评论框 end -->
+                
+                  
 
-                <!-- disqus comment start -->
+<div class="comment comment-giscus">
+  <div id="giscus-comments"
+       data-theme-light="light"
+       data-theme-dark="dark"></div>
+  <script src="https://giscus.app/client.js"
+          data-repo="Weixi779/Weixi779.github.io"
+          data-repo-id="MDEwOlJlcG9zaXRvcnkzODE5Nzk0MzA="
+          data-category="Announcements"
+          data-category-id="DIC_kwDOFsSLJs4C3eHH"
+          data-mapping="pathname"
+          data-strict="0"
+          data-reactions-enabled="1"
+          data-emit-metadata="0"
+          data-input-position="bottom"
+          data-theme="preferred_color_scheme"
+          data-lang="zh-CN"
+          data-loading="lazy"
+          crossorigin="anonymous"
+          async></script>
+</div>
+
+
                 
-                <!-- disqus comment end -->
             </div>
             
             <!-- Tabe of Content -->
@@ -410,11 +462,12 @@
         <div id="toc" class="toc-article">
         <strong class="toc-title">Contents</strong>
         
-          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E4%B8%80%E3%80%81%E8%83%8C%E6%99%AF%E4%BB%8B%E7%BB%8D"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">一、背景介绍</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E4%BA%8C%E3%80%81%E5%8F%91%E5%B1%95%E5%8E%86%E7%A8%8B"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">二、发展历程</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#2-1-%E7%81%B5%E9%AD%82%E7%83%99%E5%8D%B0"><span class="toc-nav-number">2.1.</span> <span class="toc-nav-text">2.1 灵魂烙印</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#2-2-%E6%9B%B4Swifty"><span class="toc-nav-number">2.2.</span> <span class="toc-nav-text">2.2  更Swifty</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E4%B8%89%E3%80%81%E5%AE%98%E6%96%B9%E5%87%BA%E6%89%8B"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">三、官方出手</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#3-1-%E9%97%AE%E9%A2%98%E4%BD%95%E5%9C%A8"><span class="toc-nav-number">3.1.</span> <span class="toc-nav-text">3.1 问题何在</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#3-1-1-%E6%95%B0%E6%8D%AE%E6%98%A0%E5%B0%84"><span class="toc-nav-number">3.1.1.</span> <span class="toc-nav-text">3.1.1 数据映射</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#3-1-2-%E5%85%B3%E4%BA%8E%E5%8F%AF%E9%80%89%E5%80%BC"><span class="toc-nav-number">3.1.2.</span> <span class="toc-nav-text">3.1.2 关于可选值</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#3-2-Property-Wrappers"><span class="toc-nav-number">3.2.</span> <span class="toc-nav-text">3.2 Property Wrappers</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E5%9B%9B%E3%80%81%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">四、使用教程</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#4-1-%E6%A1%86%E6%9E%B6%E4%BD%BF%E7%94%A8"><span class="toc-nav-number">4.1.</span> <span class="toc-nav-text">4.1 框架使用</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#4-2-%E6%A1%86%E6%9E%B6%E5%85%B6%E4%BB%96%E5%8A%9F%E8%83%BD"><span class="toc-nav-number">4.2.</span> <span class="toc-nav-text">4.2 框架其他功能</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#4-2-1-%E9%87%8D%E5%91%BD%E5%90%8D"><span class="toc-nav-number">4.2.1.</span> <span class="toc-nav-text">4.2.1 重命名</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#4-2-2-enum-rawValue"><span class="toc-nav-number">4.2.2.</span> <span class="toc-nav-text">4.2.2 enum rawValue</span></a></li></ol></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E4%BA%94%E3%80%81%E8%AE%BA%E5%A4%96"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">五、论外</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#5-1-Codable%E8%A7%A3%E6%9E%90%E6%A8%A1%E5%9E%8B%E6%95%B0%E7%BB%84"><span class="toc-nav-number">5.1.</span> <span class="toc-nav-text">5.1 Codable解析模型数组</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#5-2-%E5%85%B3%E4%BA%8EAny"><span class="toc-nav-number">5.2.</span> <span class="toc-nav-text">5.2 关于Any</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#5-3-%E5%85%B3%E4%BA%8E%E9%80%9F%E5%BA%A6"><span class="toc-nav-number">5.3.</span> <span class="toc-nav-text">5.3 关于速度</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#5-4-%E5%85%B3%E4%BA%8E%E6%A8%A1%E5%9E%8B%E5%B1%82%E5%85%B1%E7%94%A8"><span class="toc-nav-number">5.4.</span> <span class="toc-nav-text">5.4 关于模型层共用</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#5-4-1-%E5%A6%82%E4%BD%95%E6%B7%BB%E5%8A%A0"><span class="toc-nav-number">5.4.1.</span> <span class="toc-nav-text">5.4.1 如何添加</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#5-4-2-%E8%AE%A8%E8%AE%BASwift%E4%B8%AD%E4%BD%BF%E7%94%A8MJ"><span class="toc-nav-number">5.4.2.</span> <span class="toc-nav-text">5.4.2 讨论Swift中使用MJ</span></a></li></ol></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E5%85%AD%E3%80%81%E7%BB%93%E8%AF%AD"><span class="toc-nav-number">6.</span> <span class="toc-nav-text">六、结语</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="toc-nav-number">7.</span> <span class="toc-nav-text">参考链接</span></a></li></ol>
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E4%B8%80%E3%80%81%E8%83%8C%E6%99%AF%E4%BB%8B%E7%BB%8D"><span class="toc-nav-text">一、背景介绍</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E4%BA%8C%E3%80%81%E5%8F%91%E5%B1%95%E5%8E%86%E7%A8%8B"><span class="toc-nav-text">二、发展历程</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#2-1-%E7%81%B5%E9%AD%82%E7%83%99%E5%8D%B0"><span class="toc-nav-text">2.1 灵魂烙印</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#2-2-%E6%9B%B4Swifty"><span class="toc-nav-text">2.2  更Swifty</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E4%B8%89%E3%80%81%E5%AE%98%E6%96%B9%E5%87%BA%E6%89%8B"><span class="toc-nav-text">三、官方出手</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#3-1-%E9%97%AE%E9%A2%98%E4%BD%95%E5%9C%A8"><span class="toc-nav-text">3.1 问题何在</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#3-2-Property-Wrappers"><span class="toc-nav-text">3.2 Property Wrappers</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E5%9B%9B%E3%80%81%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B"><span class="toc-nav-text">四、使用教程</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#4-1-%E6%A1%86%E6%9E%B6%E4%BD%BF%E7%94%A8"><span class="toc-nav-text">4.1 框架使用</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#4-2-%E6%A1%86%E6%9E%B6%E5%85%B6%E4%BB%96%E5%8A%9F%E8%83%BD"><span class="toc-nav-text">4.2 框架其他功能</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E4%BA%94%E3%80%81%E8%AE%BA%E5%A4%96"><span class="toc-nav-text">五、论外</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#5-1-Codable%E8%A7%A3%E6%9E%90%E6%A8%A1%E5%9E%8B%E6%95%B0%E7%BB%84"><span class="toc-nav-text">5.1 Codable解析模型数组</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#5-2-%E5%85%B3%E4%BA%8EAny"><span class="toc-nav-text">5.2 关于Any</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#5-3-%E5%85%B3%E4%BA%8E%E9%80%9F%E5%BA%A6"><span class="toc-nav-text">5.3 关于速度</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#5-4-%E5%85%B3%E4%BA%8E%E6%A8%A1%E5%9E%8B%E5%B1%82%E5%85%B1%E7%94%A8"><span class="toc-nav-text">5.4 关于模型层共用</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E5%85%AD%E3%80%81%E7%BB%93%E8%AF%AD"><span class="toc-nav-text">六、结语</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="toc-nav-text">参考链接</span></a></li></ol>
         
         </div>
       </aside>
     
+
 
                 
             <!-- Sidebar Container -->
@@ -432,6 +485,7 @@
         </div>
     </div>
 </article>
+
 
 
 
@@ -495,6 +549,9 @@
 <script src="/js/hux-blog.min.js"></script>
 
 
+<script src="/js/theme-toggle.js"></script>
+
+
 
 <!-- async load function -->
 <script>
@@ -556,7 +613,6 @@
 
 
 <!-- Baidu Tongji -->
-
 
 
 

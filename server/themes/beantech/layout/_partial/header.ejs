@@ -9,11 +9,9 @@
     resolvedHeaderImg = pageHeaderImg;
   }
 
-  // Normalize relative local paths to respect Hexo root.
-  if (resolvedHeaderImg && !/^https?:\/\//.test(resolvedHeaderImg) && resolvedHeaderImg.indexOf('//') !== 0) {
-    if (resolvedHeaderImg.charAt(0) !== '/') {
-      resolvedHeaderImg = config.root + resolvedHeaderImg;
-    }
+  // Normalize local paths with Hexo root for subpath deployments.
+  if (resolvedHeaderImg && !/^([a-z]+:)?\/\//i.test(resolvedHeaderImg) && resolvedHeaderImg.indexOf('data:') !== 0) {
+    resolvedHeaderImg = url_for(resolvedHeaderImg);
   }
 %>
 <style type="text/css">

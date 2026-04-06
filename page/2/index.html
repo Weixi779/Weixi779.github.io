@@ -248,6 +248,60 @@
 
 <div class="post-preview">
 
+    <a href="/2024/07/29/「iOS」自定义TabView/">
+        <h2 class="post-title">
+            「iOS」自定义TabView
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            
+2025.05.25 更新 添加新内容 优化整体思路
+
+概述TabView 是在 SwiftUI 1.0 就引入的 View, 作为移动端的老牌设计风格, 在之后2.0有了一些新API之后, 基本没有API的大变动, 所以这个组件设计的还是算是比较成功的, 不过一些其他功能方面的API变更, 也会或多或少的稍微印象TabView的相关封装.
+下文将基于iOS16+, 对TabView进行二次封装使其能够支持完全自定义的底部效果展示以及一些扩展思路的想法.
+初见TabView正常使用来讲非常简单, 网上也是很多教程, 你可以直接写下类似这样内容.
+123456789101112131415161718192021222324252627struct ContentView: View &#123;    @State var selection = 1    var body: some View &#123;        …
+        </div>
+    </a>
+    
+        <p class="post-meta">
+            Posted by Weixi on
+            2024-07-29
+        </p>
+    
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2024/07/15/「后日谈」三年阶段总结/">
+        <h2 class="post-title">
+            「后日谈」三年阶段总结
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            起始距离2021年11月1日入职的第一天马上满三年,最近也一直没咋写东西,加上也到了这个时间节点,打算好好的记录一下.
+现在近23年中之后,部门一直在陆续走人,人员变动对一个公司来说属实正常.虽然说那些走的人确实有一些可恨之处(现在写代码看到他们遗留垃圾也会喷),但毕竟是曾经并肩作战的战友,也曾经一起努力过,奋斗过,一起加过班,一起喝过酒.他们有的是不满部门管理,有的是随着年限的提升回归了家庭,但看到与他们的聊天记录,或多或少还是会带点伤感在里面.
+其实每个季度走一个两个倒也无所谓,但是部门许久没有新鲜血液注入了,积少成多,现在业务也很难有再大力发展的势头了,现在我的其实也看到了几个月后的结局,在这里呆了三年难道没有一点怀念吗?不可能的,但我已经想象不到它下一个三年的样子了,现在就像一名癌症晚期的患者,平静的等待最后一天的到来而已.也许部门里所有的人都是这么想的, 但是你不知道哪天是最后一天,当事人、家属、医院我想在这期间都会…
+        </div>
+    </a>
+    
+        <p class="post-meta">
+            Posted by Weixi on
+            2024-07-15
+        </p>
+    
+
+</div>
+<hr>
+
+<div class="post-preview">
+
     <a href="/2024/05/04/「Unity」沙盒建造游戏设计(4)/">
         <h2 class="post-title">
             「Unity」沙盒建造游戏设计(4) - 搜索算法
@@ -488,62 +542,6 @@ Unity桥接也是用了网上比较大众流程的 Swift Package -&gt; XCode -&g
 </div>
 <hr>
 
-<div class="post-preview">
-
-    <a href="/2024/01/24/「iOS」浅谈Swift模型解析/">
-        <h2 class="post-title">
-            「iOS」浅谈Swift模型解析
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            一、背景介绍在移动应用开发领域，Android 和 iOS 构成了双分天下。
-对于安卓开发者而言，Kotlin 可被视为 Java 的精神传承。Kotlin 在完全兼容 Java 的基础上，引入了众多现代语法和特性，从而使开发变得更为简洁高效。
-然而，在 iOS 开发领域，情况略有不同。Swift 和 Objective-C 更像是逐渐演进的关系，前者在取代后者的过程中融合了传统与创新。
-这种渐进替代的格局，使得新老两代开发思想之间产生了碰撞，对于 iOS 开发者而言，语言转变并非一帆风顺的过程。
-二、发展历程在 iOS 开发中，Objective-C 的运行时特性起到了至关重要的作用，它允许动态派发消息、动态添加方法、交换方法实现等强大的功能。这为 Objective-C 带来了灵活性和可扩展性，但同时也带来了一些潜在的问题和复杂性。
-然而，在 Swift 中，为了追求更高的性能和更严格的类型安全性，设计者选择了将运行时特性…
-        </div>
-    </a>
-    
-        <p class="post-meta">
-            Posted by Weixi on
-            2024-01-24
-        </p>
-    
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2023/06/18/「iOS」关于CTMediator杂谈/">
-        <h2 class="post-title">
-            「iOS」关于CTMediator杂谈
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            一、组件化架构1.1 业界风向随着团队规模和应用版本的不断增长，项目的代码量也会不断膨胀，背负着越来越沉重的历史包袱。17、18年问题集中爆发了起来，在大厂号召下iOS开发领域掀起了一股“组件化”热潮。组件化是一种常见的应用架构设计，旨在提高代码的可重用性、可维护性和可扩展性，让并行开发更加高效。因此，越来越多的公司开始推行组件化架构，通过解耦和重组组件来提高开发效率。
-
-
-美团平台与点评平台，自2015年底合并以来，为了共建和沉淀公共服务，减少重复造轮子，提升研发效率，着手组建化架构[^1]
-2015年6月到年底，滴滴进行代号为 The One 的组件化框架开发，为了实现“代码治理”，可以“分而治之”的目标，在各个业务线各自开发的情况下防止代码大面积腐化，方便未来再做更加细致的架构重构，采用CocoaPods的方式进行拆分[^2]
-京东的 iOS 客户端从 2011 年 2 月发布至今已历经 6 年 + 的时间，研发团队也从…
-        </div>
-    </a>
-    
-        <p class="post-meta">
-            Posted by Weixi on
-            2023-06-18
-        </p>
-    
-
-</div>
-<hr>
-
 
 
 <!-- Pager -->
@@ -554,6 +552,10 @@ Unity桥接也是用了网上比较大众流程的 Swift Package -&gt; XCode -&g
             <a href="/">&larr; Newer Posts</a>
         </li>
     
+    
+        <li class="next">
+            <a href="/page/3/">Older Posts &rarr;</a>
+        </li>
     
 </ul>
 

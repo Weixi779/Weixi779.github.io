@@ -10,7 +10,17 @@ interface Props {
 }
 
 const { headings } = Astro.props;
-const visibleHeadings = headings.filter(({ depth }) => depth === 2 || depth === 3);
+const supportedHeadings = headings.filter(({ depth }) => depth >= 1 && depth <= 6);
+const baseDepth = supportedHeadings.reduce(
+  (shallowestDepth, { depth }) => Math.min(shallowestDepth, depth),
+  6,
+);
+const visibleHeadings = supportedHeadings
+  .filter(({ depth }) => depth <= baseDepth + 3)
+  .map((heading) => ({
+    ...heading,
+    level: heading.depth - baseDepth + 1,
+  }));
 ---
 
 {visibleHeadings.length > 0 && (
@@ -19,7 +29,7 @@ const visibleHeadings = headings.filter(({ depth }) => depth === 2 || depth === 
       <summary>目录</summary>
       <ol>
         {visibleHeadings.map((heading) => (
-          <li class:list={[`toc__level-${heading.depth}`]}>
+          <li class:list={[`toc__level-${heading.level}`]}>
             <a href={`#${heading.slug}`}>{heading.text}</a>
           </li>
         ))}

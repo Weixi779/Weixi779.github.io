@@ -461,8 +461,11 @@ input {
 }
 
 .toc a {
+  display: block;
   color: var(--color-text-secondary);
   font-size: 0.875rem;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
   text-decoration: none;
 }
 
@@ -471,8 +474,25 @@ input {
   font-weight: 700;
 }
 
+.toc__level-1:not(:first-child) {
+  margin-top: 14px;
+}
+
+.toc__level-1 > a {
+  color: var(--color-text-primary);
+  font-weight: 700;
+}
+
+.toc__level-2 {
+  padding-left: 12px;
+}
+
 .toc__level-3 {
-  padding-left: 16px;
+  padding-left: 24px;
+}
+
+.toc__level-4 {
+  padding-left: 36px;
 }
 
 .archive-year + .archive-year {

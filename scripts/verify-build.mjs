@@ -70,6 +70,17 @@ if (!existsSync(distRoot)) {
     if (!existsSync(routeOutputPath(route))) fail(`missing required route ${route}`);
   }
 
+  const archiveHtml = readFileSync(routeOutputPath('/archive/'), 'utf8');
+  for (const marker of [
+    'data-archive-search-input',
+    'data-archive-result-count',
+    'data-archive-item',
+    'data-search=',
+    'data-tag=',
+  ]) {
+    if (!archiveHtml.includes(marker)) fail(`archive is missing ${marker}`);
+  }
+
   for (const fontAsset of requiredFontAssets) {
     if (!existsSync(join(distRoot, 'fonts', fontAsset))) fail(`missing font asset ${fontAsset}`);
   }

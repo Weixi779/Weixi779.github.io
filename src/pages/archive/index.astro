@@ -1,16 +1,26 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getPostDate, getPostPath, getPublishedPosts } from '../../utils/posts';
+import { getPostDate, getPostExcerpt, getPostPath, getPublishedPosts } from '../../utils/posts';
+import '../../styles/archive.css';
 
 const posts = await getPublishedPosts();
-const years = new Map<string, typeof posts>();
+const archivePosts = posts.map((post) => {
+  const year = getPostDate(post).slice(0, 4);
+  const excerpt = post.data.summary ?? getPostExcerpt(post, 180);
+  const searchText = [post.data.title, excerpt, post.data.category, ...post.data.tags, year]
+    .join(' ')
+    .normalize('NFKC')
+    .toLocaleLowerCase('zh-CN');
+
+  return { post, year, searchText };
+});
+const years = new Map<string, typeof archivePosts>();
 const tags = Array.from(new Set(posts.flatMap((post) => post.data.tags))).sort((left, right) =>
   left.localeCompare(right, 'zh-CN'),
 );
 
-for (const post of posts) {
-  const year = getPostDate(post).slice(0, 4);
-  years.set(year, [...(years.get(year) ?? []), post]);
+for (const archivePost of archivePosts) {
+  years.set(archivePost.year, [...(years.get(archivePost.year) ?? []), archivePost]);
 }
 ---
 
@@ -23,7 +33,25 @@ for (const post of posts) {
       </div>
     </div>
   </header>
-  <div class="content-container archive-page">
+  <div class="content-container archive-page" data-archive-page>
+    <div class="archive-controls">
+      <form class="archive-search" role="search" data-archive-search>
+        <label class="visually-hidden" for="archive-search-input">搜索文章</label>
+        <input
+          id="archive-search-input"
+          type="search"
+          placeholder="搜索标题、摘要或标签"
+          autocomplete="off"
+          aria-controls="archive-results"
+          aria-describedby="archive-result-status"
+          data-archive-search-input
+        />
+        <button type="button" data-archive-search-clear hidden>清除</button>
+      </form>
+      <p id="archive-result-status" class="archive-result-status" aria-live="polite">
+        <span data-archive-result-count>{posts.length}</span> 篇文章
+      </p>
+    </div>
     <nav class="archive-tags" aria-label="按标签筛选文章">
       <a href="/archive/" data-tag="">全部 <sup>{posts.length}</sup></a>
       {tags.map((tag) => (
@@ -33,41 +61,184 @@ for (const post of posts) {
         </a>
       ))}
     </nav>
-    {Array.from(years.entries()).map(([year, yearPosts]) => (
-      <section class="archive-year" data-archive-year>
-        <h2>{year}</h2>
-        <ol>
-          {yearPosts.map((post) => (
-            <li data-archive-item data-tags={post.data.tags.join('|')}>
-              <a href={getPostPath(post)}>{post.data.title}</a>
-              <span>{post.data.tags.join(' / ')}</span>
-            </li>
-          ))}
-        </ol>
-      </section>
-    ))}
+    <div id="archive-results" data-archive-results>
+      {Array.from(years.entries()).map(([year, yearPosts]) => (
+        <section class="archive-year" data-archive-year>
+          <h2 style={`view-transition-name: archive-year-${year}`}>{year}</h2>
+          <ol>
+            {yearPosts.map(({ post, searchText }) => (
+              <li
+                class="archive-item"
+                data-archive-item
+                data-search={searchText}
+                data-tags={JSON.stringify(post.data.tags)}
+                style={`view-transition-name: archive-${post.data.slug}`}
+              >
+                <a class="archive-item__link" href={getPostPath(post)}>{post.data.title}</a>
+                <span class="archive-item__meta">
+                  {post.data.tags.length > 0 ? post.data.tags.join(' / ') : post.data.category}
+                </span>
+              </li>
+            ))}
+          </ol>
+        </section>
+      ))}
+      <p class="archive-empty" data-archive-empty hidden>没有找到匹配的文章。</p>
+    </div>
   </div>
   <script>
-    const params = new URLSearchParams(window.location.search);
-    const activeTag = params.get('tag') ?? '';
-    const tagLinks = document.querySelectorAll<HTMLAnchorElement>('[data-tag]');
-    const items = document.querySelectorAll<HTMLElement>('[data-archive-item]');
-    const years = document.querySelectorAll<HTMLElement>('[data-archive-year]');
-
-    for (const link of tagLinks) {
-      if ((link.dataset.tag ?? '') === activeTag) link.setAttribute('aria-current', 'page');
+    interface ArchiveViewTransition {
+      finished: Promise<unknown>;
     }
 
-    for (const item of items) {
-      const itemTags = (item.dataset.tags ?? '').split('|').filter(Boolean);
-      item.hidden = Boolean(activeTag) && !itemTags.includes(activeTag);
-    }
+    type ArchiveDocument = Document & {
+      startViewTransition?: (update: () => void) => ArchiveViewTransition;
+    };
 
-    for (const year of years) {
-      const hasVisiblePosts = Array.from(year.querySelectorAll<HTMLElement>('[data-archive-item]')).some(
-        (item) => !item.hidden,
+    function setupArchive() {
+      const page = document.querySelector<HTMLElement>('[data-archive-page]');
+      const form = page?.querySelector<HTMLFormElement>('[data-archive-search]');
+      const input = page?.querySelector<HTMLInputElement>('[data-archive-search-input]');
+      const clearButton = page?.querySelector<HTMLButtonElement>('[data-archive-search-clear]');
+      const resultCount = page?.querySelector<HTMLElement>('[data-archive-result-count]');
+      const emptyState = page?.querySelector<HTMLElement>('[data-archive-empty]');
+      const tagLinks = Array.from(page?.querySelectorAll<HTMLAnchorElement>('[data-tag]') ?? []);
+      const years = Array.from(page?.querySelectorAll<HTMLElement>('[data-archive-year]') ?? []);
+      const items = Array.from(page?.querySelectorAll<HTMLElement>('[data-archive-item]') ?? []).map(
+        (element) => ({
+          element,
+          searchText: element.dataset.search ?? '',
+          tags: new Set<string>(JSON.parse(element.dataset.tags ?? '[]')),
+        }),
       );
-      year.hidden = !hasVisiblePosts;
+
+      if (!page || !form || !input || !clearButton || !resultCount || !emptyState) return;
+
+      const archiveForm = form;
+      const searchInput = input;
+      const searchClearButton = clearButton;
+      const searchResultCount = resultCount;
+      const archiveEmptyState = emptyState;
+      const availableTags = new Set(tagLinks.map((link) => link.dataset.tag ?? ''));
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+      const archiveDocument = document as ArchiveDocument;
+      let activeTag = '';
+      let transitionSequence = 0;
+
+      const normalizeQuery = (value: string) =>
+        value.normalize('NFKC').trim().toLocaleLowerCase('zh-CN');
+
+      function readUrlState() {
+        const params = new URLSearchParams(window.location.search);
+        const requestedTag = params.get('tag') ?? '';
+        activeTag = availableTags.has(requestedTag) ? requestedTag : '';
+        searchInput.value = params.get('q') ?? '';
+      }
+
+      function writeUrl(mode: 'push' | 'replace') {
+        const url = new URL(window.location.href);
+        const query = searchInput.value.trim();
+
+        activeTag ? url.searchParams.set('tag', activeTag) : url.searchParams.delete('tag');
+        query ? url.searchParams.set('q', query) : url.searchParams.delete('q');
+
+        if (mode === 'push') {
+          window.history.pushState({}, '', url);
+        } else {
+          window.history.replaceState({}, '', url);
+        }
+      }
+
+      function applyFilters() {
+        const query = normalizeQuery(searchInput.value);
+        let visibleCount = 0;
+
+        for (const item of items) {
+          const matchesTag = !activeTag || item.tags.has(activeTag);
+          const matchesQuery = !query || item.searchText.includes(query);
+          item.element.hidden = !(matchesTag && matchesQuery);
+          if (!item.element.hidden) visibleCount += 1;
+        }
+
+        for (const year of years) {
+          year.hidden = !Array.from(year.querySelectorAll<HTMLElement>('[data-archive-item]')).some(
+            (item) => !item.hidden,
+          );
+        }
+
+        for (const link of tagLinks) {
+          if ((link.dataset.tag ?? '') === activeTag) {
+            link.setAttribute('aria-current', 'page');
+          } else {
+            link.removeAttribute('aria-current');
+          }
+        }
+
+        searchResultCount.textContent = String(visibleCount);
+        searchClearButton.hidden = searchInput.value.length === 0;
+        archiveEmptyState.hidden = visibleCount !== 0;
+      }
+
+      function updateResults(animate: boolean) {
+        const startViewTransition = archiveDocument.startViewTransition?.bind(archiveDocument);
+        if (!animate || reducedMotion.matches || !startViewTransition) {
+          applyFilters();
+          return;
+        }
+
+        const sequence = ++transitionSequence;
+        document.documentElement.classList.add('archive-is-transitioning');
+        const transition = startViewTransition(applyFilters);
+        transition.finished.finally(() => {
+          if (sequence === transitionSequence) {
+            document.documentElement.classList.remove('archive-is-transitioning');
+          }
+        });
+      }
+
+      for (const link of tagLinks) {
+        link.addEventListener('click', (event) => {
+          if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+          event.preventDefault();
+          const nextTag = link.dataset.tag ?? '';
+          if (nextTag === activeTag) return;
+          activeTag = nextTag;
+          writeUrl('push');
+          updateResults(true);
+        });
+      }
+
+      searchInput.addEventListener('input', () => {
+        writeUrl('replace');
+        updateResults(false);
+      });
+
+      searchInput.addEventListener('search', () => {
+        writeUrl('replace');
+        updateResults(false);
+      });
+
+      searchClearButton.addEventListener('click', () => {
+        searchInput.value = '';
+        writeUrl('replace');
+        updateResults(false);
+        searchInput.focus();
+      });
+
+      archiveForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        writeUrl('replace');
+      });
+
+      window.addEventListener('popstate', () => {
+        readUrlState();
+        updateResults(true);
+      });
+
+      readUrlState();
+      applyFilters();
     }
+
+    setupArchive();
   </script>
 </BaseLayout>

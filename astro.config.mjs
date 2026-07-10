@@ -4,4 +4,15 @@ export default defineConfig({
   site: 'https://weixi779.github.io',
   output: 'static',
   trailingSlash: 'always',
+  markdown: {
+    shikiConfig: {
+      themes: {
+        light: 'github-light',
+        dark: 'github-dark',
+      },
+      langAlias: {
+        objectivec: 'objective-c',
+      },
+    },
+  },
 });

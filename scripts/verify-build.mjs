@@ -6,6 +6,15 @@ const scriptDirectory = dirname(fileURLToPath(import.meta.url));
 const projectRoot = resolve(scriptDirectory, '..');
 const distRoot = join(projectRoot, 'dist');
 const requiredRoutes = ['/', '/404.html', '/about/', '/archive/', '/page/2/', '/page/3/'];
+const requiredFontAssets = [
+  'JetBrainsMono-Regular.woff2',
+  'JetBrainsMono-Bold.woff2',
+  'JetBrainsMono-Italic.woff2',
+  'JetBrainsMono-BoldItalic.woff2',
+  'lxgw-wenkai-gb-regular-subset.woff2',
+  'lxgw-wenkai-gb-medium-subset.woff2',
+  'lxgw-wenkai-mono-gb-regular-subset.woff2',
+];
 
 function fail(message) {
   console.error(`Build verification failed: ${message}`);
@@ -61,6 +70,10 @@ if (!existsSync(distRoot)) {
     if (!existsSync(routeOutputPath(route))) fail(`missing required route ${route}`);
   }
 
+  for (const fontAsset of requiredFontAssets) {
+    if (!existsSync(join(distRoot, 'fonts', fontAsset))) fail(`missing font asset ${fontAsset}`);
+  }
+
   const postPages = collectPostPages();
   if (postPages.length === 0) fail('no published post pages were generated');
 
@@ -92,7 +105,7 @@ if (!existsSync(distRoot)) {
 
   if (process.exitCode !== 1) {
     console.log(
-      `Verified ${postPages.length} post pages, ${requiredRoutes.length} required routes, the RSS feed, and internal links across ${htmlPages.length} HTML pages.`,
+      `Verified ${postPages.length} post pages, ${requiredRoutes.length} required routes, ${requiredFontAssets.length} font assets, the RSS feed, and internal links across ${htmlPages.length} HTML pages.`,
     );
   }
 }

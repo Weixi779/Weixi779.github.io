@@ -1,0 +1,55 @@
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('/fonts/JetBrainsMono-Regular.woff2') format('woff2');
+  font-display: swap;
+  font-style: normal;
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('/fonts/JetBrainsMono-Italic.woff2') format('woff2');
+  font-display: swap;
+  font-style: italic;
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('/fonts/JetBrainsMono-Bold.woff2') format('woff2');
+  font-display: swap;
+  font-style: normal;
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('/fonts/JetBrainsMono-BoldItalic.woff2') format('woff2');
+  font-display: swap;
+  font-style: italic;
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: 'LXGW WenKai GB';
+  src: url('/fonts/lxgw-wenkai-gb-regular-subset.woff2') format('woff2');
+  font-display: swap;
+  font-style: normal;
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: 'LXGW WenKai GB';
+  src: url('/fonts/lxgw-wenkai-gb-medium-subset.woff2') format('woff2');
+  font-display: swap;
+  font-style: normal;
+  font-weight: 500 900;
+}
+
+@font-face {
+  font-family: 'LXGW WenKai Mono GB';
+  src: url('/fonts/lxgw-wenkai-mono-gb-regular-subset.woff2') format('woff2');
+  font-display: swap;
+  font-style: normal;
+  font-weight: 400 900;
+}

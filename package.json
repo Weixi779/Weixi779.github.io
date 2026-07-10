@@ -4,8 +4,12 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "themes:generate": "node scripts/generate-themes.mjs",
+    "predev": "npm run themes:generate",
     "dev": "astro dev",
+    "precheck": "npm run themes:generate",
     "check": "astro check",
+    "prebuild": "npm run themes:generate",
     "build": "astro build",
     "verify": "node scripts/verify-build.mjs",
     "validate": "npm run check && npm run build && npm run verify",

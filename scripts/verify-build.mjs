@@ -5,6 +5,8 @@ import { fileURLToPath } from 'node:url';
 const scriptDirectory = dirname(fileURLToPath(import.meta.url));
 const projectRoot = resolve(scriptDirectory, '..');
 const distRoot = join(projectRoot, 'dist');
+const generatedThemeCssPath = join(projectRoot, 'src', 'styles', 'generated', 'themes.css');
+const themeFoundryCatalogPath = join(projectRoot, 'vendor', 'themefoundry', 'themes.json');
 const requiredRoutes = ['/', '/404.html', '/about/', '/archive/', '/page/2/', '/page/3/'];
 const requiredFontAssets = [
   'JetBrainsMono-Regular.woff2',
@@ -59,6 +61,22 @@ function localUrlOutputPath(url) {
 if (!existsSync(distRoot)) {
   fail('dist does not exist. Run astro build first.');
 } else {
+  let themeFoundryCatalog = null;
+  if (!existsSync(generatedThemeCssPath)) {
+    fail('generated ThemeFoundry CSS is missing');
+  } else if (!existsSync(themeFoundryCatalogPath)) {
+    fail('ThemeFoundry catalog is missing');
+  } else {
+    const generatedThemeCss = readFileSync(generatedThemeCssPath, 'utf8');
+    themeFoundryCatalog = JSON.parse(readFileSync(themeFoundryCatalogPath, 'utf8'));
+    for (const theme of themeFoundryCatalog.themes) {
+      for (const mode of ['light', 'dark']) {
+        const selector = `[data-theme-id='${theme.id}'][data-color-mode='${mode}']`;
+        if (!generatedThemeCss.includes(selector)) fail(`generated themes are missing ${theme.id}/${mode}`);
+      }
+    }
+  }
+
   const legacyYearDirectories = readdirSync(distRoot, { withFileTypes: true })
     .filter((entry) => entry.isDirectory() && /^\d{4}$/u.test(entry.name))
     .map((entry) => entry.name);
@@ -68,6 +86,25 @@ if (!existsSync(distRoot)) {
 
   for (const route of requiredRoutes) {
     if (!existsSync(routeOutputPath(route))) fail(`missing required route ${route}`);
+  }
+
+  const homeHtml = readFileSync(routeOutputPath('/'), 'utf8');
+  for (const marker of [
+    'data-theme-id="deepSeaMilk"',
+    'data-color-mode="light"',
+    'data-color-mode-preference="system"',
+    'data-theme-picker',
+    'data-theme-id-input',
+    'data-theme-mode-input',
+  ]) {
+    if (!homeHtml.includes(marker)) fail(`home page is missing ${marker}`);
+  }
+  if (themeFoundryCatalog) {
+    for (const theme of themeFoundryCatalog.themes) {
+      if (!homeHtml.includes(`value="${theme.id}"`)) {
+        fail(`theme picker is missing ${theme.id}`);
+      }
+    }
   }
 
   const archiveHtml = readFileSync(routeOutputPath('/archive/'), 'utf8');

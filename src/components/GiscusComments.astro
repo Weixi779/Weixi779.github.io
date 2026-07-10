@@ -21,16 +21,25 @@
 </section>
 
 <script>
-  type BlogThemeEvent = CustomEvent<{ theme: 'light' | 'dark' }>;
+  import type { ColorMode, ColorModePreference, ThemeId } from '../theme/semantic-colors';
 
-  function syncGiscusTheme(theme: 'light' | 'dark') {
+  type BlogThemeEvent = CustomEvent<{
+    themeId: ThemeId;
+    colorMode: ColorMode;
+    modePreference: ColorModePreference;
+  }>;
+
+  function syncGiscusTheme(colorMode: ColorMode) {
     const frame = document.querySelector<HTMLIFrameElement>('iframe.giscus-frame');
     if (!frame?.contentWindow) return;
-    frame.contentWindow.postMessage({ giscus: { setConfig: { theme } } }, 'https://giscus.app');
+    frame.contentWindow.postMessage(
+      { giscus: { setConfig: { theme: colorMode } } },
+      'https://giscus.app',
+    );
   }
 
   window.addEventListener('blog-theme-change', (event) => {
-    syncGiscusTheme((event as BlogThemeEvent).detail.theme);
+    syncGiscusTheme((event as BlogThemeEvent).detail.colorMode);
   });
 
   const comments = document.querySelector('.comments');
@@ -38,8 +47,8 @@
     const observer = new MutationObserver(() => {
       const frame = document.querySelector('iframe.giscus-frame');
       if (!frame) return;
-      const theme = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
-      syncGiscusTheme(theme);
+      const colorMode = document.documentElement.dataset.colorMode === 'dark' ? 'dark' : 'light';
+      syncGiscusTheme(colorMode);
       observer.disconnect();
     });
     observer.observe(comments, { childList: true, subtree: true });

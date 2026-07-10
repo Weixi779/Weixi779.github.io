@@ -1,55 +1,65 @@
 @import './fonts.css';
+@import './generated/themes.css';
 
 :root {
-  color-scheme: light;
   --font-site: 'JetBrains Mono', 'LXGW WenKai GB', 'PingFang SC', 'Hiragino Sans GB',
     'Microsoft YaHei', sans-serif;
   --font-code: 'JetBrains Mono', 'LXGW WenKai Mono GB', 'SFMono-Regular', Consolas, monospace;
-  --color-background-primary: #ffffff;
-  --color-background-secondary: #f5f7f9;
-  --color-surface-primary: #ffffff;
-  --color-surface-elevated: #ffffff;
-  --color-text-primary: #2f3a45;
-  --color-text-secondary: #6f7b86;
-  --color-accent-primary: #1b7fb6;
-  --color-accent-secondary: #e0f1fb;
-  --color-border-primary: rgb(0 0 0 / 12%);
-  --color-border-secondary: rgb(0 0 0 / 8%);
-  --shadow-elevated: 0 14px 40px rgb(31 45 61 / 10%);
-  --color-header-fallback: rgb(255 255 255 / 96%);
-  --color-header-glass-top: rgb(255 255 255 / 82%);
-  --color-header-glass-bottom: rgb(247 250 252 / 68%);
-  --color-header-border: rgb(31 45 61 / 10%);
-  --color-header-highlight: rgb(255 255 255 / 78%);
-  --color-header-control: rgb(255 255 255 / 38%);
-  --color-header-control-hover: rgb(255 255 255 / 72%);
-  --color-post-hover: rgb(27 127 182 / 5%);
-  --color-post-pressed: rgb(27 127 182 / 9%);
-  --shadow-header: 0 10px 32px rgb(31 45 61 / 10%);
+  --shadow-elevated: 0 14px 40px color-mix(in srgb, var(--color-text-primary) 10%, transparent);
+  --color-header-fallback: color-mix(
+    in srgb,
+    var(--color-background-primary) 96%,
+    transparent
+  );
+  --color-header-glass-top: color-mix(
+    in srgb,
+    var(--color-surface-elevated) 82%,
+    transparent
+  );
+  --color-header-glass-bottom: color-mix(
+    in srgb,
+    var(--color-background-secondary) 68%,
+    transparent
+  );
+  --color-header-border: color-mix(in srgb, var(--color-text-primary) 10%, transparent);
+  --color-header-highlight: color-mix(
+    in srgb,
+    var(--color-surface-elevated) 78%,
+    transparent
+  );
+  --color-header-control: color-mix(
+    in srgb,
+    var(--color-surface-elevated) 38%,
+    transparent
+  );
+  --color-header-control-hover: color-mix(
+    in srgb,
+    var(--color-surface-elevated) 72%,
+    transparent
+  );
+  --color-post-hover: color-mix(in srgb, var(--color-accent-primary) 5%, transparent);
+  --color-post-pressed: color-mix(in srgb, var(--color-accent-primary) 9%, transparent);
+  --shadow-header: 0 10px 32px color-mix(in srgb, var(--color-text-primary) 10%, transparent);
 }
 
-:root[data-theme='dark'] {
-  color-scheme: dark;
-  --color-background-primary: #0f141a;
-  --color-background-secondary: #131a22;
-  --color-surface-primary: #131a22;
-  --color-surface-elevated: #18202a;
-  --color-text-primary: #d2dae3;
-  --color-text-secondary: #9aa7b3;
-  --color-accent-primary: #62b0e8;
-  --color-accent-secondary: #18354a;
-  --color-border-primary: rgb(255 255 255 / 16%);
-  --color-border-secondary: rgb(255 255 255 / 10%);
+:root[data-color-mode='dark'] {
   --shadow-elevated: 0 16px 44px rgb(0 0 0 / 32%);
-  --color-header-fallback: rgb(15 20 26 / 96%);
-  --color-header-glass-top: rgb(22 29 38 / 78%);
-  --color-header-glass-bottom: rgb(12 17 23 / 64%);
-  --color-header-border: rgb(255 255 255 / 11%);
-  --color-header-highlight: rgb(255 255 255 / 10%);
-  --color-header-control: rgb(255 255 255 / 5%);
-  --color-header-control-hover: rgb(255 255 255 / 10%);
-  --color-post-hover: rgb(98 176 232 / 7%);
-  --color-post-pressed: rgb(98 176 232 / 12%);
+  --color-header-glass-top: color-mix(
+    in srgb,
+    var(--color-surface-elevated) 78%,
+    transparent
+  );
+  --color-header-glass-bottom: color-mix(
+    in srgb,
+    var(--color-background-primary) 64%,
+    transparent
+  );
+  --color-header-border: color-mix(in srgb, var(--color-text-primary) 11%, transparent);
+  --color-header-highlight: color-mix(in srgb, var(--color-text-primary) 10%, transparent);
+  --color-header-control: color-mix(in srgb, var(--color-text-primary) 5%, transparent);
+  --color-header-control-hover: color-mix(in srgb, var(--color-text-primary) 10%, transparent);
+  --color-post-hover: color-mix(in srgb, var(--color-accent-primary) 7%, transparent);
+  --color-post-pressed: color-mix(in srgb, var(--color-accent-primary) 12%, transparent);
   --shadow-header: 0 12px 36px rgb(0 0 0 / 28%);
 }
 
@@ -60,6 +70,12 @@
 html {
   background: var(--color-background-primary);
   scroll-behavior: smooth;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 220ms;
+  animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 body {
@@ -636,6 +652,11 @@ input {
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 1ms;
   }
 
   .site-header,

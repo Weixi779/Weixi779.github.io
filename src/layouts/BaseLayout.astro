@@ -1,6 +1,7 @@
 ---
 import SiteFooter from '../components/SiteFooter.astro';
 import SiteHeader from '../components/SiteHeader.astro';
+import { defaultThemeId, themeIds, themeStorageKey } from '../theme/semantic-colors';
 import '../styles/global.css';
 
 interface Props {
@@ -21,7 +22,12 @@ const socialImage = new URL(image, Astro.site);
 ---
 
 <!doctype html>
-<html lang="zh-CN" data-theme="light">
+<html
+  lang="zh-CN"
+  data-theme-id={defaultThemeId}
+  data-color-mode="light"
+  data-color-mode-preference="system"
+>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
@@ -37,15 +43,41 @@ const socialImage = new URL(image, Astro.site);
     <link rel="alternate" type="application/rss+xml" title={`${siteTitle} RSS`} href="/rss.xml" />
     <link rel="icon" href="/images/favicon.ico" />
     <title>{fullTitle}</title>
-    <script is:inline>
+    <script
+      is:inline
+      data-default-theme={defaultThemeId}
+      data-theme-ids={JSON.stringify(themeIds)}
+      data-storage-key={themeStorageKey}
+    >
       (() => {
-        let stored = null;
+        const bootstrap = document.currentScript;
+        const defaultThemeId = bootstrap?.dataset.defaultTheme ?? 'deepSeaMilk';
+        const themeIds = JSON.parse(bootstrap?.dataset.themeIds ?? '[]');
+        const themeStorageKey = bootstrap?.dataset.storageKey ?? 'blog-theme-preference';
+        let preference = null;
         try {
-          stored = localStorage.getItem('blog-theme');
+          const stored = localStorage.getItem(themeStorageKey);
+          preference = stored ? JSON.parse(stored) : null;
         } catch {}
+
+        const storedThemeId = preference?.themeId;
+        const storedMode = preference?.mode;
         const systemDark = window.matchMedia?.('(prefers-color-scheme: dark)').matches;
-        const theme = stored === 'light' || stored === 'dark' ? stored : systemDark ? 'dark' : 'light';
-        document.documentElement.dataset.theme = theme;
+        const themeId = themeIds.includes(storedThemeId) ? storedThemeId : defaultThemeId;
+        const colorModePreference =
+          storedMode === 'light' || storedMode === 'dark' || storedMode === 'system'
+            ? storedMode
+            : 'system';
+        const colorMode =
+          colorModePreference === 'light' || colorModePreference === 'dark'
+            ? colorModePreference
+            : systemDark
+              ? 'dark'
+              : 'light';
+
+        document.documentElement.dataset.themeId = themeId;
+        document.documentElement.dataset.colorModePreference = colorModePreference;
+        document.documentElement.dataset.colorMode = colorMode;
       })();
     </script>
   </head>

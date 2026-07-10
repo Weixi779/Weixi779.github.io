@@ -8,6 +8,7 @@
 ## 本地开发
 
 ```bash
+git submodule update --init --recursive
 npm ci
 npm run dev
 ```
@@ -25,3 +26,6 @@ npm run new -- post-slug "文章标题" "分类"
 ```
 
 文章位于 `src/content/posts/`，页面内容位于 `src/content/pages/`。技术实施与当前基线见 `docs/`。
+
+主题颜色来自 `vendor/themefoundry` 固定版本。`dev`、`check` 和 `build` 会先校验
+ThemeFoundry contract，并生成站点使用的 CSS 与主题目录。

@@ -1,0 +1,517 @@
+---
+import { defaultThemeId, themeCatalog } from '../theme/semantic-colors';
+
+const modeOptions = [
+  { value: 'system', label: '跟随系统' },
+  { value: 'light', label: '浅色' },
+  { value: 'dark', label: '深色' },
+] as const;
+---
+
+<div class="theme-picker" data-theme-picker>
+  <button
+    class="theme-toggle"
+    id="theme-toggle"
+    type="button"
+    aria-label="打开主题设置"
+    aria-haspopup="dialog"
+    aria-expanded="false"
+    aria-controls="theme-panel"
+    data-theme-toggle
+  >
+    <span aria-hidden="true" class="theme-toggle__icon">◐</span>
+    <span class="theme-toggle__label">主题</span>
+  </button>
+
+  <section
+    class="theme-panel"
+    id="theme-panel"
+    role="dialog"
+    aria-label="主题设置"
+    data-theme-panel
+    hidden
+  >
+    <header class="theme-panel__header">
+      <strong>主题设置</strong>
+      <small data-theme-current-name>
+        {themeCatalog.find(({ id }) => id === defaultThemeId)?.displayName}
+      </small>
+    </header>
+
+    <fieldset class="theme-panel__group">
+      <legend>配色</legend>
+      <div class="theme-options">
+        {
+          themeCatalog.map((theme) => {
+            const previewStyle = [
+              `--theme-light-background: ${theme.preview.light.background}`,
+              `--theme-light-surface: ${theme.preview.light.surface}`,
+              `--theme-light-accent: ${theme.preview.light.accent}`,
+              `--theme-dark-background: ${theme.preview.dark.background}`,
+              `--theme-dark-surface: ${theme.preview.dark.surface}`,
+              `--theme-dark-accent: ${theme.preview.dark.accent}`,
+            ].join(';');
+
+            return (
+              <label class="theme-option" style={previewStyle}>
+                <input
+                  type="radio"
+                  name="theme-id"
+                  value={theme.id}
+                  checked={theme.id === defaultThemeId}
+                  data-theme-id-input
+                />
+                <span class="theme-option__body">
+                  <span class="theme-option__preview" aria-hidden="true">
+                    <span class="theme-option__preview-mode theme-option__preview-mode--light" />
+                    <span class="theme-option__preview-mode theme-option__preview-mode--dark" />
+                  </span>
+                  <span class="theme-option__name">{theme.displayName}</span>
+                </span>
+              </label>
+            );
+          })
+        }
+      </div>
+    </fieldset>
+
+    <fieldset class="theme-panel__group theme-panel__group--mode">
+      <legend>显示模式</legend>
+      <div class="theme-modes">
+        {
+          modeOptions.map((option) => (
+            <label class="theme-mode">
+              <input
+                type="radio"
+                name="theme-mode"
+                value={option.value}
+                checked={option.value === 'system'}
+                data-theme-mode-input
+              />
+              <span>{option.label}</span>
+            </label>
+          ))
+        }
+      </div>
+    </fieldset>
+  </section>
+</div>
+
+<script>
+  import {
+    defaultThemeId,
+    isColorModePreference,
+    isThemeId,
+    themeCatalog,
+    themeStorageKey,
+    type ColorMode,
+    type ColorModePreference,
+    type ThemeId,
+  } from '../theme/semantic-colors';
+
+  interface ThemeViewTransition {
+    finished: Promise<unknown>;
+  }
+
+  type ThemeDocument = Document & {
+    startViewTransition?: (update: () => void) => ThemeViewTransition;
+  };
+
+  type ThemeChangeDetail = {
+    themeId: ThemeId;
+    colorMode: ColorMode;
+    modePreference: ColorModePreference;
+  };
+
+  const picker = document.querySelector<HTMLElement>('[data-theme-picker]');
+  const toggle = picker?.querySelector<HTMLButtonElement>('[data-theme-toggle]');
+  const panel = picker?.querySelector<HTMLElement>('[data-theme-panel]');
+  const currentName = picker?.querySelector<HTMLElement>('[data-theme-current-name]');
+  const themeInputs = Array.from(
+    picker?.querySelectorAll<HTMLInputElement>('[data-theme-id-input]') ?? [],
+  );
+  const modeInputs = Array.from(
+    picker?.querySelectorAll<HTMLInputElement>('[data-theme-mode-input]') ?? [],
+  );
+
+  if (picker && toggle && panel && currentName) {
+    const pickerRoot = picker;
+    const toggleButton = toggle;
+    const panelElement = panel;
+    const currentNameLabel = currentName;
+    const root = document.documentElement;
+    const themeDocument = document as ThemeDocument;
+    const systemScheme = window.matchMedia('(prefers-color-scheme: dark)');
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let activeThemeId = isThemeId(root.dataset.themeId) ? root.dataset.themeId : defaultThemeId;
+    let modePreference = isColorModePreference(root.dataset.colorModePreference)
+      ? root.dataset.colorModePreference
+      : 'system';
+
+    const resolveColorMode = (preference: ColorModePreference): ColorMode =>
+      preference === 'system' ? (systemScheme.matches ? 'dark' : 'light') : preference;
+
+    function syncControls() {
+      for (const input of themeInputs) input.checked = input.value === activeThemeId;
+      for (const input of modeInputs) input.checked = input.value === modePreference;
+      currentNameLabel.textContent =
+        themeCatalog.find(({ id }) => id === activeThemeId)?.displayName ?? activeThemeId;
+    }
+
+    function savePreference() {
+      try {
+        localStorage.setItem(
+          themeStorageKey,
+          JSON.stringify({ themeId: activeThemeId, mode: modePreference }),
+        );
+      } catch {}
+    }
+
+    function dispatchThemeChange(colorMode: ColorMode) {
+      const detail: ThemeChangeDetail = { themeId: activeThemeId, colorMode, modePreference };
+      window.dispatchEvent(new CustomEvent('blog-theme-change', { detail }));
+    }
+
+    function applyTheme(
+      nextThemeId: ThemeId,
+      nextModePreference: ColorModePreference,
+      options: { animate?: boolean; persist?: boolean } = {},
+    ) {
+      const nextColorMode = resolveColorMode(nextModePreference);
+      const changed =
+        activeThemeId !== nextThemeId ||
+        modePreference !== nextModePreference ||
+        root.dataset.colorMode !== nextColorMode;
+
+      activeThemeId = nextThemeId;
+      modePreference = nextModePreference;
+      if (options.persist !== false) savePreference();
+      if (!changed) {
+        syncControls();
+        return;
+      }
+
+      const update = () => {
+        root.dataset.themeId = activeThemeId;
+        root.dataset.colorModePreference = modePreference;
+        root.dataset.colorMode = nextColorMode;
+        syncControls();
+        dispatchThemeChange(nextColorMode);
+      };
+      const startViewTransition = themeDocument.startViewTransition?.bind(themeDocument);
+
+      if (options.animate !== false && !reducedMotion.matches && startViewTransition) {
+        startViewTransition(update).finished.catch(() => {});
+      } else {
+        update();
+      }
+    }
+
+    function setPanelOpen(open: boolean, returnFocus = false) {
+      panelElement.hidden = !open;
+      toggleButton.setAttribute('aria-expanded', String(open));
+      toggleButton.setAttribute('aria-label', open ? '关闭主题设置' : '打开主题设置');
+
+      if (open) {
+        window.requestAnimationFrame(() => {
+          themeInputs.find((input) => input.checked)?.focus();
+        });
+      } else if (returnFocus) {
+        toggleButton.focus();
+      }
+    }
+
+    toggleButton.addEventListener('click', () => setPanelOpen(panelElement.hasAttribute('hidden')));
+
+    for (const input of themeInputs) {
+      input.addEventListener('change', () => {
+        if (input.checked && isThemeId(input.value)) applyTheme(input.value, modePreference);
+      });
+    }
+
+    for (const input of modeInputs) {
+      input.addEventListener('change', () => {
+        if (input.checked && isColorModePreference(input.value)) {
+          applyTheme(activeThemeId, input.value);
+        }
+      });
+    }
+
+    document.addEventListener('pointerdown', (event) => {
+      if (
+        !panelElement.hasAttribute('hidden') &&
+        event.target instanceof Node &&
+        !pickerRoot.contains(event.target)
+      ) {
+        setPanelOpen(false);
+      }
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && !panelElement.hasAttribute('hidden')) {
+        event.preventDefault();
+        setPanelOpen(false, true);
+      }
+    });
+
+    systemScheme.addEventListener('change', () => {
+      if (modePreference === 'system') {
+        applyTheme(activeThemeId, modePreference, { persist: false });
+      }
+    });
+
+    syncControls();
+  }
+</script>
+
+<style>
+  .theme-picker {
+    position: relative;
+    flex: none;
+  }
+
+  .theme-toggle[aria-expanded='true'] {
+    border-color: var(--color-accent-primary);
+    background: var(--color-accent-secondary);
+    color: var(--color-accent-primary);
+  }
+
+  .theme-panel {
+    position: absolute;
+    z-index: 80;
+    top: calc(100% + 12px);
+    right: 0;
+    width: min(350px, calc(100vw - 24px));
+    padding: 16px;
+    border: 1px solid color-mix(in srgb, var(--color-border-primary) 72%, transparent);
+    border-radius: 16px;
+    background: color-mix(in srgb, var(--color-surface-elevated) 92%, transparent);
+    box-shadow: var(--shadow-elevated);
+    color: var(--color-text-primary);
+    animation: theme-panel-in 160ms ease-out;
+  }
+
+  .theme-panel[hidden] {
+    display: none;
+  }
+
+  .theme-panel__header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 14px;
+  }
+
+  .theme-panel__header strong {
+    font-size: 0.92rem;
+  }
+
+  .theme-panel__header small {
+    overflow: hidden;
+    color: var(--color-text-secondary);
+    font-size: 0.68rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .theme-panel__group {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .theme-panel__group + .theme-panel__group {
+    margin-top: 16px;
+  }
+
+  .theme-panel__group legend {
+    margin-bottom: 7px;
+    color: var(--color-text-secondary);
+    font-size: 0.7rem;
+    font-weight: 700;
+  }
+
+  .theme-options {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .theme-option,
+  .theme-mode {
+    position: relative;
+    cursor: pointer;
+  }
+
+  .theme-option input,
+  .theme-mode input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+  }
+
+  .theme-option__body {
+    display: grid;
+    min-height: 68px;
+    align-content: center;
+    gap: 7px;
+    padding: 9px;
+    border: 1px solid var(--color-border-secondary);
+    border-radius: 11px;
+    background: color-mix(in srgb, var(--color-surface-primary) 72%, transparent);
+    transition:
+      background-color 160ms ease,
+      border-color 160ms ease,
+      transform 120ms ease;
+  }
+
+  .theme-option:hover .theme-option__body {
+    border-color: var(--color-border-primary);
+    background: var(--color-surface-primary);
+  }
+
+  .theme-option:active .theme-option__body {
+    transform: scale(0.985);
+  }
+
+  .theme-option input:checked + .theme-option__body {
+    border-color: var(--color-accent-primary);
+    background: color-mix(in srgb, var(--color-accent-secondary) 58%, transparent);
+  }
+
+  .theme-option input:focus-visible + .theme-option__body,
+  .theme-mode input:focus-visible + span {
+    outline: 2px solid var(--color-accent-primary);
+    outline-offset: 2px;
+  }
+
+  .theme-option__preview {
+    display: flex;
+    width: 100%;
+    height: 24px;
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--color-border-primary) 56%, transparent);
+    border-radius: 7px;
+  }
+
+  .theme-option__preview-mode {
+    position: relative;
+    flex: 1;
+  }
+
+  .theme-option__preview-mode::after {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 7px;
+    height: 7px;
+    border-radius: 999px;
+    content: '';
+    transform: translate(-50%, -50%);
+  }
+
+  .theme-option__preview-mode--light {
+    background: var(--theme-light-background);
+  }
+
+  .theme-option__preview-mode--light::after {
+    background: var(--theme-light-accent);
+    box-shadow: 0 0 0 2px var(--theme-light-surface);
+  }
+
+  .theme-option__preview-mode--dark {
+    background: var(--theme-dark-background);
+  }
+
+  .theme-option__preview-mode--dark::after {
+    background: var(--theme-dark-accent);
+    box-shadow: 0 0 0 2px var(--theme-dark-surface);
+  }
+
+  .theme-option__name {
+    overflow: hidden;
+    font-size: 0.68rem;
+    font-weight: 700;
+    line-height: 1.35;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .theme-modes {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    padding: 3px;
+    border: 1px solid var(--color-border-secondary);
+    border-radius: 11px;
+    background: color-mix(in srgb, var(--color-background-secondary) 72%, transparent);
+  }
+
+  .theme-mode span {
+    display: grid;
+    min-height: 34px;
+    place-items: center;
+    border-radius: 8px;
+    color: var(--color-text-secondary);
+    font-size: 0.68rem;
+    font-weight: 700;
+    transition:
+      background-color 160ms ease,
+      color 160ms ease,
+      transform 120ms ease;
+  }
+
+  .theme-mode:hover span {
+    color: var(--color-text-primary);
+  }
+
+  .theme-mode:active span {
+    transform: scale(0.97);
+  }
+
+  .theme-mode input:checked + span {
+    background: var(--color-surface-elevated);
+    box-shadow: 0 1px 4px color-mix(in srgb, var(--color-text-primary) 12%, transparent);
+    color: var(--color-accent-primary);
+  }
+
+  @supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+    .theme-panel {
+      -webkit-backdrop-filter: saturate(180%) blur(24px);
+      backdrop-filter: saturate(180%) blur(24px);
+    }
+  }
+
+  @keyframes theme-panel-in {
+    from {
+      opacity: 0;
+      transform: translateY(-5px) scale(0.985);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  @media (prefers-reduced-transparency: reduce) {
+    .theme-panel {
+      background: var(--color-surface-elevated);
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .theme-panel {
+      animation: none;
+    }
+
+    .theme-option__body,
+    .theme-mode span {
+      transition: none;
+    }
+  }
+</style>

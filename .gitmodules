@@ -1,0 +1,3 @@
+[submodule "vendor/themefoundry"]
+	path = vendor/themefoundry
+	url = https://github.com/Weixi779/ThemeFoundry.git

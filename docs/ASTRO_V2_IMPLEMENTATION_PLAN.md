@@ -24,6 +24,7 @@ Astro V2 的首要目标是替代 Hexo，同时保留个人网站已经成立的
 ├── public/
 │   └── images/
 ├── scripts/
+│   ├── generate-themes.mjs
 │   ├── new-post.mjs
 │   └── verify-build.mjs
 ├── src/
@@ -37,6 +38,8 @@ Astro V2 的首要目标是替代 Hexo，同时保留个人网站已经成立的
 │   ├── theme/
 │   ├── utils/
 │   └── content.config.ts
+├── vendor/
+│   └── themefoundry/
 ├── astro.config.mjs
 ├── package.json
 ├── package-lock.json
@@ -76,6 +79,7 @@ About 等内容页面位于 `src/content/pages/`。页面只保存内容与展�
 
 ```json
 {
+  "themes:generate": "校验 ThemeFoundry contract 并生成站点主题产物",
   "dev": "启动本地开发服务",
   "check": "执行 Astro 类型和内容检查",
   "build": "生成 dist 静态网站",
@@ -117,14 +121,19 @@ npm run new -- my-post-slug "中文标题" "iOS"
 - [x] 删除旧 URL 兼容层。
 - [x] 标准新文章脚本。
 - [x] CI 验证脚本使用根目录工程。
+- [x] Archive 搜索、标签筛选和重组动画。
+- [x] Drake 风格 Markdown 与全站字体。
+- [x] ThemeFoundry 构建时数据源、contract 校验与主题 CSS 生成。
+- [x] ThemeFoundry 四主题选择面板与 system/light/dark 模式。
+- [x] 主题偏好持久化、系统外观响应和切换过渡。
 
 ## 7. 后续优先级
 
 后续功能仍按既定顺序推进，并各自使用独立提交：
 
-1. Archive 搜索。
-2. 自定义 Markdown 渲染与字体。
-3. 主题系统设计与 ThemeFoundry 接入。
+1. 四套主题在首页、文章、归档和 About 的视觉校准。
+2. 主题颜色对比度与可读性检查。
+3. Astro V2 部署流程。
 
 主题系统不反向阻塞 Astro 迁移，也不要求当前版本携带新的主题内容。
 

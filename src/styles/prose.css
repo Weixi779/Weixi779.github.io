@@ -140,8 +140,8 @@
   font-size: inherit;
 }
 
-:root[data-theme='dark'] .prose .astro-code,
-:root[data-theme='dark'] .prose .astro-code span {
+:root[data-color-mode='dark'] .prose .astro-code,
+:root[data-color-mode='dark'] .prose .astro-code span {
   color: var(--shiki-dark) !important;
   font-style: var(--shiki-dark-font-style) !important;
   font-weight: var(--shiki-dark-font-weight) !important;

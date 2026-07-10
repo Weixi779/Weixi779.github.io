@@ -1,5 +1,6 @@
 ---
 title: 「Unity」沙盒建造游戏设计(1) - 相机控制
+slug: unity-sandbox-building-camera-control
 catalog: true
 top: false
 mathjax: true

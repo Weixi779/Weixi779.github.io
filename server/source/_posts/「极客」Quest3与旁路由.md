@@ -1,6 +1,7 @@
 ---
 layout: post
 title: 「极客」Quest3与旁路由
+slug: quest-3-bypass-router
 catalog: true
 top: false
 mathjax: true

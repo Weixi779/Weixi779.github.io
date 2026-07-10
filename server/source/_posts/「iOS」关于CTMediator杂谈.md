@@ -1,5 +1,6 @@
 ---
 title: 「iOS」关于CTMediator杂谈
+slug: ios-ctmediator-notes
 catalog: true
 top: false
 cover: false

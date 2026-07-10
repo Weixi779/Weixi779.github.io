@@ -1,5 +1,6 @@
 ---
 title: 「iOS」谈谈iOS图片压缩
+slug: ios-image-compression
 catalog: true
 top: false
 mathjax: true

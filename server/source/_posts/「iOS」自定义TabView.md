@@ -1,5 +1,6 @@
 ---
 title: 「iOS」自定义TabView
+slug: swiftui-custom-tabview
 catalog: true
 top: false
 mathjax: true

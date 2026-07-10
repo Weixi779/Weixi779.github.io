@@ -1,0 +1,73 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getLegacyPostRouteParts, getPostPath, getPublishedPosts } from '../../utils/posts';
+
+const posts = await getPublishedPosts();
+const years = new Map<string, typeof posts>();
+const tags = Array.from(new Set(posts.flatMap((post) => post.data.tags))).sort((left, right) =>
+  left.localeCompare(right, 'zh-CN'),
+);
+
+for (const post of posts) {
+  const { year } = getLegacyPostRouteParts(post);
+  years.set(year, [...(years.get(year) ?? []), post]);
+}
+---
+
+<BaseLayout title="归档" description="一点一滴，直到汇聚成改变世界的力量">
+  <header class="page-hero page-hero--centered" style="--hero-image: url('/images/archive_banner.png')">
+    <div class="page-hero__overlay">
+      <div class="page-hero__content">
+        <h1>归档</h1>
+        <p>一点一滴，直到汇聚成改变世界的力量</p>
+      </div>
+    </div>
+  </header>
+  <div class="content-container archive-page">
+    <nav class="archive-tags" aria-label="按标签筛选文章">
+      <a href="/archive/" data-tag="">全部 <sup>{posts.length}</sup></a>
+      {tags.map((tag) => (
+        <a href={`/archive/?tag=${encodeURIComponent(tag)}`} data-tag={tag}>
+          {tag}
+          <sup>{posts.filter((post) => post.data.tags.includes(tag)).length}</sup>
+        </a>
+      ))}
+    </nav>
+    {Array.from(years.entries()).map(([year, yearPosts]) => (
+      <section class="archive-year" data-archive-year>
+        <h2>{year}</h2>
+        <ol>
+          {yearPosts.map((post) => (
+            <li data-archive-item data-tags={post.data.tags.join('|')}>
+              <a href={getPostPath(post)}>{post.data.title}</a>
+              <span>{post.data.tags.join(' / ')}</span>
+            </li>
+          ))}
+        </ol>
+      </section>
+    ))}
+  </div>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const activeTag = params.get('tag') ?? '';
+    const tagLinks = document.querySelectorAll<HTMLAnchorElement>('[data-tag]');
+    const items = document.querySelectorAll<HTMLElement>('[data-archive-item]');
+    const years = document.querySelectorAll<HTMLElement>('[data-archive-year]');
+
+    for (const link of tagLinks) {
+      if ((link.dataset.tag ?? '') === activeTag) link.setAttribute('aria-current', 'page');
+    }
+
+    for (const item of items) {
+      const itemTags = (item.dataset.tags ?? '').split('|').filter(Boolean);
+      item.hidden = Boolean(activeTag) && !itemTags.includes(activeTag);
+    }
+
+    for (const year of years) {
+      const hasVisiblePosts = Array.from(year.querySelectorAll<HTMLElement>('[data-archive-item]')).some(
+        (item) => !item.hidden,
+      );
+      year.hidden = !hasVisiblePosts;
+    }
+  </script>
+</BaseLayout>

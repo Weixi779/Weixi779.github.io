@@ -1,5 +1,6 @@
 ---
 title: 「iOS」SwiftUI自定义TextField
+slug: swiftui-custom-textfield
 catalog: true
 top: false
 mathjax: true
@@ -253,4 +254,3 @@ extension PTextField {
 TextField 是大部分开发者都会遇到的问题, 但是在网上相关搜索都没有对应的解决方法, 或者是 SwiftUI 使用面太小 也许可能是 国内iOS开发已死, 最终这篇是在日本网友的论坛找到的类似问题答案.
 
 还有一些禁止输入Emoji 或者 Emoji 换算字符的内容, 这些都直接搜索 UIKit 就行 一搜一大堆, 在这里就不做展开了, 愿有所收获, 祝各位 Coder Happy Coding.
-

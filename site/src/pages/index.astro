@@ -1,0 +1,23 @@
+---
+import HomeHero from '../components/HomeHero.astro';
+import PostList from '../components/PostList.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getPublishedPosts } from '../utils/posts';
+
+const pageSize = 10;
+const posts = await getPublishedPosts();
+const totalPages = Math.ceil(posts.length / pageSize);
+---
+
+<BaseLayout>
+  <HomeHero />
+  <section class="content-container" aria-label="文章列表">
+    <PostList posts={posts.slice(0, pageSize)} />
+    {totalPages > 1 && (
+      <nav class="pager" aria-label="文章分页">
+        <span></span>
+        <a href="/page/2/">更早文章 →</a>
+      </nav>
+    )}
+  </section>
+</BaseLayout>

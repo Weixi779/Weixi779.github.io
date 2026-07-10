@@ -1,5 +1,6 @@
 ---
 title: 「Unity」沙盒建造游戏设计(2) - 命令模式
+slug: unity-sandbox-building-command-pattern
 catalog: true
 top: false
 mathjax: true

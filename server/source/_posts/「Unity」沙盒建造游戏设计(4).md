@@ -1,5 +1,6 @@
 ---
 title: 「Unity」沙盒建造游戏设计(4) - 搜索算法
+slug: unity-sandbox-building-search-algorithms
 catalog: true
 top: false
 mathjax: true

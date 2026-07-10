@@ -1,0 +1,32 @@
+<button class="theme-toggle" id="theme-toggle" type="button" aria-label="切换到深色模式">
+  <span aria-hidden="true" class="theme-toggle__icon">◐</span>
+  <span class="theme-toggle__label">深色</span>
+</button>
+
+<script>
+  const button = document.querySelector<HTMLButtonElement>('#theme-toggle');
+
+  function updateButton(theme: 'light' | 'dark') {
+    if (!button) return;
+    const nextLabel = theme === 'dark' ? '浅色' : '深色';
+    button.dataset.theme = theme;
+    button.setAttribute('aria-label', `切换到${nextLabel}模式`);
+    const label = button.querySelector<HTMLElement>('.theme-toggle__label');
+    if (label) label.textContent = nextLabel;
+  }
+
+  if (button) {
+    const current = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
+    updateButton(current);
+    button.addEventListener('click', () => {
+      const active = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
+      const next = active === 'dark' ? 'light' : 'dark';
+      document.documentElement.dataset.theme = next;
+      try {
+        localStorage.setItem('blog-theme', next);
+      } catch {}
+      updateButton(next);
+      window.dispatchEvent(new CustomEvent('blog-theme-change', { detail: { theme: next } }));
+    });
+  }
+</script>

@@ -1,5 +1,6 @@
 ---
 title: 「iOS」浅谈Swift模型解析
+slug: swift-model-decoding
 catalog: true
 top: false
 cover: false

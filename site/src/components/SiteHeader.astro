@@ -1,0 +1,51 @@
+---
+import ThemeToggle from './ThemeToggle.astro';
+
+const navigation = [
+  { href: '/', label: '首页' },
+  { href: '/archive/', label: '归档' },
+  { href: '/about/', label: '关于' },
+];
+
+const pathname = Astro.url.pathname;
+const isCurrentPage = (href: string) =>
+  href === '/' ? pathname === '/' || pathname.startsWith('/page/') : pathname.startsWith(href);
+---
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="site-brand" href="/">伟兮の小屋</a>
+    <nav aria-label="主导航">
+      {
+        navigation.map((item) => (
+          <a href={item.href} aria-current={isCurrentPage(item.href) ? 'page' : undefined}>
+            {item.label}
+          </a>
+        ))
+      }
+    </nav>
+    <ThemeToggle />
+  </div>
+</header>
+
+<script>
+  const header = document.querySelector<HTMLElement>('.site-header');
+
+  if (header) {
+    let updateScheduled = false;
+
+    const updateMaterial = () => {
+      header.toggleAttribute('data-elevated', window.scrollY > 8);
+      updateScheduled = false;
+    };
+
+    const scheduleUpdate = () => {
+      if (updateScheduled) return;
+      updateScheduled = true;
+      window.requestAnimationFrame(updateMaterial);
+    };
+
+    updateMaterial();
+    window.addEventListener('scroll', scheduleUpdate, { passive: true });
+  }
+</script>

@@ -1,5 +1,6 @@
 ---
 title: 「iOS」网络层工程范式迁移
+slug: ios-network-layer-evolution
 catalog: true
 top: false
 mathjax: true

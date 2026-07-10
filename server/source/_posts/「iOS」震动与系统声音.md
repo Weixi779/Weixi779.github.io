@@ -1,5 +1,6 @@
 ---
 title: 「iOS」震动与系统声音
+slug: ios-haptics-system-sounds
 catalog: true
 top: false
 cover: false

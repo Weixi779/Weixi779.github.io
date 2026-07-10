@@ -1,0 +1,77 @@
+---
+interface Heading {
+  depth: number;
+  slug: string;
+  text: string;
+}
+
+interface Props {
+  headings: Heading[];
+}
+
+const { headings } = Astro.props;
+const visibleHeadings = headings.filter(({ depth }) => depth === 2 || depth === 3);
+---
+
+{visibleHeadings.length > 0 && (
+  <nav class="toc" aria-label="文章目录">
+    <details open>
+      <summary>目录</summary>
+      <ol>
+        {visibleHeadings.map((heading) => (
+          <li class:list={[`toc__level-${heading.depth}`]}>
+            <a href={`#${heading.slug}`}>{heading.text}</a>
+          </li>
+        ))}
+      </ol>
+    </details>
+  </nav>
+)}
+
+<script>
+  const toc = document.querySelector<HTMLElement>('.toc');
+  const details = toc?.querySelector<HTMLDetailsElement>('details');
+  const links = Array.from(toc?.querySelectorAll<HTMLAnchorElement>('a[href^="#"]') ?? []);
+
+  if (details && window.matchMedia('(max-width: 820px)').matches) {
+    details.open = false;
+  }
+
+  const headingById = new Map(
+    links
+      .map((link) => {
+        const id = decodeURIComponent(link.hash.slice(1));
+        const heading = document.getElementById(id);
+        return heading ? [id, heading] as const : null;
+      })
+      .filter((entry): entry is readonly [string, HTMLElement] => entry !== null),
+  );
+
+  function markActive(id: string) {
+    for (const link of links) {
+      if (decodeURIComponent(link.hash.slice(1)) === id) {
+        link.setAttribute('aria-current', 'location');
+      } else {
+        link.removeAttribute('aria-current');
+      }
+    }
+  }
+
+  if (headingById.size > 0) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((left, right) => left.boundingClientRect.top - right.boundingClientRect.top);
+        const first = visible[0]?.target as HTMLElement | undefined;
+        if (first?.id) markActive(first.id);
+      },
+      { rootMargin: '-88px 0px -70% 0px', threshold: [0, 1] },
+    );
+
+    for (const heading of headingById.values()) observer.observe(heading);
+
+    const initialId = decodeURIComponent(window.location.hash.slice(1));
+    if (initialId && headingById.has(initialId)) markActive(initialId);
+  }
+</script>

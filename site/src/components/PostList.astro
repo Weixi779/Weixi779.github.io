@@ -1,0 +1,40 @@
+---
+import type { PostEntry } from '../utils/posts';
+import { getPostDate, getPostExcerpt, getPostPath } from '../utils/posts';
+
+interface Props {
+  posts: PostEntry[];
+}
+
+const { posts } = Astro.props;
+---
+
+<div class="post-list">
+  {posts.map((post) => {
+    const publishedDate = getPostDate(post);
+    const excerpt = getPostExcerpt(post);
+    return (
+      <article class="post-card">
+        <a class="post-card__link" href={getPostPath(post)}>
+          <h2>{post.data.title}</h2>
+          <p class="post-card__excerpt">{excerpt || '查看文章'}</p>
+        </a>
+        <div class="post-card__meta">
+          <div class="post-card__primary-meta">
+            <time datetime={publishedDate}>{publishedDate.replaceAll('-', '/')}</time>
+            {
+              post.data.tags.length > 0 && (
+                <span class="post-card__tags">
+                  {post.data.tags.map((tag) => (
+                    <a href={`/archive/?tag=${encodeURIComponent(tag)}`}>#{tag}</a>
+                  ))}
+                </span>
+              )
+            }
+          </div>
+          {post.data.summary && <small class="post-card__aside">{post.data.summary}</small>}
+        </div>
+      </article>
+    );
+  })}
+</div>

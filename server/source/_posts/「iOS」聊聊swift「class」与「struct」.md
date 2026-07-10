@@ -1,5 +1,6 @@
 ---
 title: 「iOS」聊聊swift「class」与「struct」
+slug: swift-class-vs-struct
 catalog: true
 top: false
 mathjax: true
@@ -82,6 +83,5 @@ class 倒是也能写, 但是可以很负责任的跟你说, 很卡手. 值类�
 # 总结
 
 文章简单聊了聊swift中的引用类型与值类型, 主要是提及在实际开发中的相关处理, 算作是开发的经验之谈, 这部分属于swift基础中的基础, 但不积跬步无以至千里. 愿有所收获, 祝 Coder 能 Happy Coding.
-
 
 

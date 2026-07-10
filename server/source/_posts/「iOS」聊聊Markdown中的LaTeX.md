@@ -1,5 +1,6 @@
 ---
 title: 「iOS」聊聊Markdown中的LaTeX
+slug: markdown-latex-rendering-ios
 catalog: true
 top: false
 mathjax: true

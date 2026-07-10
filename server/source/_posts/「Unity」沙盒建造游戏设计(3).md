@@ -1,5 +1,6 @@
 ---
 title: 「Unity」沙盒建造游戏设计(3) - 状态模式
+slug: unity-sandbox-building-state-pattern
 catalog: true
 top: false
 mathjax: true

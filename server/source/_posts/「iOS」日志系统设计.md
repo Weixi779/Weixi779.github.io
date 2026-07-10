@@ -1,5 +1,6 @@
 ---
 title: 「iOS」日志系统设计
+slug: ios-logging-system-design
 catalog: true
 top: false
 mathjax: true

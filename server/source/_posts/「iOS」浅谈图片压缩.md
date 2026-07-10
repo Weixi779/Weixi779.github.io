@@ -1,5 +1,6 @@
 ---
 title: 「iOS」浅谈图片压缩
+slug: image-compression-fundamentals
 catalog: true
 layout: post
 top: false

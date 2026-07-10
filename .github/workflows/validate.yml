@@ -1,0 +1,35 @@
+name: Validate Astro Site
+
+on:
+  push:
+    branches:
+      - file
+      - codex/astro-v2-migration
+  pull_request:
+    branches:
+      - file
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      ASTRO_TELEMETRY_DISABLED: 1
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate Astro V2
+        run: npm run validate

@@ -1,0 +1,23 @@
+{
+  "name": "weixi779-astro-site",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "check": "astro check",
+    "build": "astro build",
+    "verify": "node scripts/verify-build.mjs",
+    "validate": "npm run check && npm run build && npm run verify",
+    "new": "node scripts/new-post.mjs",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "astro": "7.0.7"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.9",
+    "@types/node": "26.1.1",
+    "typescript": "6.0.3"
+  }
+}

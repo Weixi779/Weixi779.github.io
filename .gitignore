@@ -13,3 +13,8 @@ xcuserdata/
 
 # Podfiles
 Pods/
+
+# Astro
+node_modules/
+dist/
+.astro/

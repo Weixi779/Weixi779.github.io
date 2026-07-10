@@ -1,0 +1,29 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import '../styles/prose.css';
+
+const pages = await getCollection('pages');
+const about = pages[0];
+
+if (!about) {
+  throw new Error('About page content was not found.');
+}
+
+const { Content } = await render(about);
+const heroImage = about.data.hero || '/images/about_banner.jpg';
+---
+
+<BaseLayout title={about.data.title} description={about.data.description} image={heroImage}>
+  <header class="page-hero page-hero--centered" style={`--hero-image: url('${heroImage}')`}>
+    <div class="page-hero__overlay">
+      <div class="page-hero__content">
+        <h1>{about.data.title}</h1>
+        <p>{about.data.description}</p>
+      </div>
+    </div>
+  </header>
+  <article class="prose prose--page">
+    <Content />
+  </article>
+</BaseLayout>

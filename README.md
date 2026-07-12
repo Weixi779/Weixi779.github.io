@@ -5,6 +5,9 @@
 - `file`：源码分支。
 - `main`：部署分支。
 
+推送到 `file` 后，GitHub Actions 会先运行完整校验，再把生成的 `dist` 发布到
+`main`。针对 `file` 的 Pull Request 只执行校验，不会触发部署。
+
 ## 本地开发
 
 ```bash

@@ -1,10 +1,9 @@
-name: Validate Astro Site
+name: Validate and Deploy Astro Site
 
 on:
   push:
     branches:
       - file
-      - codex/astro-v2-migration
   pull_request:
     branches:
       - file
@@ -35,3 +34,32 @@ jobs:
 
       - name: Validate Astro V2
         run: npm run validate
+
+      - name: Upload site artifact
+        if: github.event_name == 'push' && github.ref == 'refs/heads/file'
+        uses: actions/upload-artifact@v4
+        with:
+          name: astro-dist
+          path: dist
+          if-no-files-found: error
+          retention-days: 1
+
+  deploy:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/file'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download site artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: astro-dist
+          path: dist
+
+      - name: Publish dist to main
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: main
+          publish_dir: ./dist

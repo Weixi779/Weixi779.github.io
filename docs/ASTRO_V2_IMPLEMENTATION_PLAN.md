@@ -1,7 +1,7 @@
 # Astro V2 技术实施文档
 
-> 当前阶段：Astro 原生结构已完成
-> 发布策略：暂不部署，继续在同一开发分支迭代
+> 当前阶段：Astro V2 初版已完成
+> 发布策略：`file` 校验通过后自动发布 `dist` 到 `main`
 > 回退基线：`36486ba`
 
 ## 1. 目标
@@ -100,15 +100,11 @@ npm run new -- my-post-slug "中文标题" "iOS"
 ## 5. 分支与部署
 
 - `file`：源码分支。
-- `main`：当前部署分支。
-- `codex/astro-v2-migration`：本轮开发分支。
+- `main`：GitHub Pages 部署产物分支。
 
-当前阶段只持续开发和提交，不部署。目录与功能稳定后，再单独决定：
-
-1. 保留 `file → main` 的构建产物发布方式；或
-2. 改用 GitHub Pages Actions 直接发布 `dist`。
-
-部署方式不得与大规模内容迁移放在同一个提交中。
+推送到 `file` 后，GitHub Actions 执行 `npm ci` 与 `npm run validate`，保存
+`dist` 构建产物，并在校验成功后发布到 `main`。Pull Request 只执行校验；也可
+通过重新运行对应的 push workflow 再次部署。
 
 ## 6. 已完成
 
@@ -121,11 +117,12 @@ npm run new -- my-post-slug "中文标题" "iOS"
 - [x] 删除旧 URL 兼容层。
 - [x] 标准新文章脚本。
 - [x] CI 验证脚本使用根目录工程。
-- [x] Archive 搜索、标签筛选和重组动画。
+- [x] Archive 搜索、分类筛选和重组动画。
 - [x] Drake 风格 Markdown 与全站字体。
 - [x] ThemeFoundry 构建时数据源、contract 校验与主题 CSS 生成。
 - [x] ThemeFoundry 四主题选择面板与 system/light/dark 模式。
 - [x] 主题偏好持久化、系统外观响应和切换过渡。
+- [x] `file → main` 自动校验与部署。
 
 ## 7. 后续优先级
 
@@ -133,7 +130,6 @@ npm run new -- my-post-slug "中文标题" "iOS"
 
 1. 四套主题在首页、文章、归档和 About 的视觉校准。
 2. 主题颜色对比度与可读性检查。
-3. Astro V2 部署流程。
 
 主题系统不反向阻塞 Astro 迁移，也不要求当前版本携带新的主题内容。
 

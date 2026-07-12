@@ -2,8 +2,8 @@
 title: 「后日谈」在 AI 浪潮与现实引力之间：第四年的后日谈
 slug: developer-journey-year-4
 publishedAt: "2026-03-29 13:27:14"
-summary: 记录从 2025 到 2026 的思维剧变：关于 Agent 集群对工作流的重构、架构设计的早熟，以及在一场“追逐希望”的跳槽中的挣扎与觉醒。
-tags: [代码人生]
+summary: "记录第四年里 AI、架构、工作与选择带来的变化，以及一次重新出发。"
+tags: [代码人生, AI]
 category: "后日谈"
 toc: true
 math: false

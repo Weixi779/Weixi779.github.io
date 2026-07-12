@@ -2,7 +2,8 @@
 title: 「Unity」沙盒建造游戏设计(3) - 状态模式
 slug: unity-sandbox-building-state-pattern
 publishedAt: "2024-04-27 19:20:13"
-tags: [技巧, 心得]
+summary: "用状态模式组织沙盒建造交互，并处理 UI 切换与监听周期中的问题。"
+tags: [沙盒建造, 设计模式, 状态模式]
 category: "Unity"
 hero: /images/StardewValley.jpg
 toc: true

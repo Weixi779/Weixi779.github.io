@@ -276,6 +276,15 @@ input {
   line-height: 1.2;
 }
 
+.page-hero__summary {
+  max-width: 760px;
+  margin: 14px 0 0;
+  color: rgb(255 255 255 / 82%);
+  font-size: clamp(0.95rem, 1.8vw, 1.1rem);
+  line-height: 1.7;
+  text-wrap: balance;
+}
+
 .content-container,
 .post-shell {
   width: min(1120px, calc(100% - 32px));
@@ -378,23 +387,11 @@ input {
 .post-card__tags {
   position: relative;
   gap: 4px 8px;
-  pointer-events: auto;
 }
 
-.post-card__tags a {
+.post-card__tags span {
   color: inherit;
   font-size: 0.75rem;
-  text-decoration: none;
-}
-
-.post-card__tags a:hover {
-  color: var(--color-accent-primary);
-}
-
-.post-card__tags a:focus-visible {
-  border-radius: 4px;
-  outline: 2px solid var(--color-accent-primary);
-  outline-offset: 2px;
 }
 
 @media (hover: hover) {

@@ -15,8 +15,14 @@ const archivePosts = posts.map((post) => {
   return { post, year, searchText };
 });
 const years = new Map<string, typeof archivePosts>();
-const tags = Array.from(new Set(posts.flatMap((post) => post.data.tags))).sort((left, right) =>
-  left.localeCompare(right, 'zh-CN'),
+const categoryCounts = posts.reduce((counts, post) => {
+  counts.set(post.data.category, (counts.get(post.data.category) ?? 0) + 1);
+  return counts;
+}, new Map<string, number>());
+const categories = Array.from(categoryCounts.keys()).sort(
+  (left, right) =>
+    (categoryCounts.get(right) ?? 0) - (categoryCounts.get(left) ?? 0) ||
+    left.localeCompare(right, 'zh-CN'),
 );
 
 for (const archivePost of archivePosts) {
@@ -40,7 +46,7 @@ for (const archivePost of archivePosts) {
         <input
           id="archive-search-input"
           type="search"
-          placeholder="搜索标题、摘要或标签"
+          placeholder="搜索标题、摘要、分类或标签"
           autocomplete="off"
           aria-controls="archive-results"
           aria-describedby="archive-result-status"
@@ -52,12 +58,12 @@ for (const archivePost of archivePosts) {
         <span data-archive-result-count>{posts.length}</span> 篇文章
       </p>
     </div>
-    <nav class="archive-tags" aria-label="按标签筛选文章">
-      <a href="/archive/" data-tag="">全部 <sup>{posts.length}</sup></a>
-      {tags.map((tag) => (
-        <a href={`/archive/?tag=${encodeURIComponent(tag)}`} data-tag={tag}>
-          {tag}
-          <sup>{posts.filter((post) => post.data.tags.includes(tag)).length}</sup>
+    <nav class="archive-categories" aria-label="按分类筛选文章">
+      <a href="/archive/" data-category="">全部 <sup>{posts.length}</sup></a>
+      {categories.map((category) => (
+        <a href={`/archive/?category=${encodeURIComponent(category)}`} data-category={category}>
+          {category}
+          <sup>{categoryCounts.get(category)}</sup>
         </a>
       ))}
     </nav>
@@ -71,7 +77,7 @@ for (const archivePost of archivePosts) {
                 class="archive-item"
                 data-archive-item
                 data-search={searchText}
-                data-tags={JSON.stringify(post.data.tags)}
+                data-category={post.data.category}
                 style={`view-transition-name: archive-${post.data.slug}`}
               >
                 <a class="archive-item__link" href={getPostPath(post)}>{post.data.title}</a>
@@ -102,13 +108,15 @@ for (const archivePost of archivePosts) {
       const clearButton = page?.querySelector<HTMLButtonElement>('[data-archive-search-clear]');
       const resultCount = page?.querySelector<HTMLElement>('[data-archive-result-count]');
       const emptyState = page?.querySelector<HTMLElement>('[data-archive-empty]');
-      const tagLinks = Array.from(page?.querySelectorAll<HTMLAnchorElement>('[data-tag]') ?? []);
+      const categoryLinks = Array.from(
+        page?.querySelectorAll<HTMLAnchorElement>('[data-category]') ?? [],
+      );
       const years = Array.from(page?.querySelectorAll<HTMLElement>('[data-archive-year]') ?? []);
       const items = Array.from(page?.querySelectorAll<HTMLElement>('[data-archive-item]') ?? []).map(
         (element) => ({
           element,
           searchText: element.dataset.search ?? '',
-          tags: new Set<string>(JSON.parse(element.dataset.tags ?? '[]')),
+          category: element.dataset.category ?? '',
         }),
       );
 
@@ -119,10 +127,12 @@ for (const archivePost of archivePosts) {
       const searchClearButton = clearButton;
       const searchResultCount = resultCount;
       const archiveEmptyState = emptyState;
-      const availableTags = new Set(tagLinks.map((link) => link.dataset.tag ?? ''));
+      const availableCategories = new Set(
+        categoryLinks.map((link) => link.dataset.category ?? ''),
+      );
       const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
       const archiveDocument = document as ArchiveDocument;
-      let activeTag = '';
+      let activeCategory = '';
       let transitionSequence = 0;
 
       const normalizeQuery = (value: string) =>
@@ -130,8 +140,8 @@ for (const archivePost of archivePosts) {
 
       function readUrlState() {
         const params = new URLSearchParams(window.location.search);
-        const requestedTag = params.get('tag') ?? '';
-        activeTag = availableTags.has(requestedTag) ? requestedTag : '';
+        const requestedCategory = params.get('category') ?? '';
+        activeCategory = availableCategories.has(requestedCategory) ? requestedCategory : '';
         searchInput.value = params.get('q') ?? '';
       }
 
@@ -139,7 +149,10 @@ for (const archivePost of archivePosts) {
         const url = new URL(window.location.href);
         const query = searchInput.value.trim();
 
-        activeTag ? url.searchParams.set('tag', activeTag) : url.searchParams.delete('tag');
+        activeCategory
+          ? url.searchParams.set('category', activeCategory)
+          : url.searchParams.delete('category');
+        url.searchParams.delete('tag');
         query ? url.searchParams.set('q', query) : url.searchParams.delete('q');
 
         if (mode === 'push') {
@@ -154,9 +167,9 @@ for (const archivePost of archivePosts) {
         let visibleCount = 0;
 
         for (const item of items) {
-          const matchesTag = !activeTag || item.tags.has(activeTag);
+          const matchesCategory = !activeCategory || item.category === activeCategory;
           const matchesQuery = !query || item.searchText.includes(query);
-          item.element.hidden = !(matchesTag && matchesQuery);
+          item.element.hidden = !(matchesCategory && matchesQuery);
           if (!item.element.hidden) visibleCount += 1;
         }
 
@@ -166,8 +179,8 @@ for (const archivePost of archivePosts) {
           );
         }
 
-        for (const link of tagLinks) {
-          if ((link.dataset.tag ?? '') === activeTag) {
+        for (const link of categoryLinks) {
+          if ((link.dataset.category ?? '') === activeCategory) {
             link.setAttribute('aria-current', 'page');
           } else {
             link.removeAttribute('aria-current');
@@ -196,13 +209,13 @@ for (const archivePost of archivePosts) {
         });
       }
 
-      for (const link of tagLinks) {
+      for (const link of categoryLinks) {
         link.addEventListener('click', (event) => {
           if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
           event.preventDefault();
-          const nextTag = link.dataset.tag ?? '';
-          if (nextTag === activeTag) return;
-          activeTag = nextTag;
+          const nextCategory = link.dataset.category ?? '';
+          if (nextCategory === activeCategory) return;
+          activeCategory = nextCategory;
           writeUrl('push');
           updateResults(true);
         });

@@ -113,7 +113,7 @@ if (!existsSync(distRoot)) {
     'data-archive-result-count',
     'data-archive-item',
     'data-search=',
-    'data-tag=',
+    'data-category=',
   ]) {
     if (!archiveHtml.includes(marker)) fail(`archive is missing ${marker}`);
   }
@@ -127,6 +127,9 @@ if (!existsSync(distRoot)) {
 
   for (const postPage of postPages) {
     const html = readFileSync(postPage, 'utf8');
+    if (!html.includes('class="page-hero__summary"')) {
+      fail(`post summary is missing from the banner in ${postPage}`);
+    }
     if (!html.includes('data-mapping="pathname"')) fail(`Giscus is missing from ${postPage}`);
     if (!html.includes('class="post-navigation"')) fail(`post navigation is missing from ${postPage}`);
   }

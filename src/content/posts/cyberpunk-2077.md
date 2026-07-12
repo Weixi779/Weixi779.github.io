@@ -2,8 +2,8 @@
 title: 「后日谈」赛博朋克2077
 slug: cyberpunk-2077
 publishedAt: "2025-01-12 23:21:19"
-summary: 你是愿意当个无名之辈，一辈子安生，插着尿管死在床上？还是就算活不到三十岁，也要名留青史呢？
-tags: [游戏人生]
+summary: "一段关于《赛博朋克 2077》、选择、遗憾与夜之城的通关后记。"
+tags: [游戏]
 category: "后日谈"
 hero: /images/cyberpunk2077.jpg
 toc: true

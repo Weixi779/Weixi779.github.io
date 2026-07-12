@@ -2,7 +2,8 @@
 title: 「iOS」关于CTMediator杂谈
 slug: ios-ctmediator-notes
 publishedAt: "2023-06-18 16:39:29"
-tags: [变迁, 总结]
+summary: "从 iOS 组件化的历史与现实出发，重新理解 CTMediator 的设计取舍。"
+tags: [技术演进, 组件化, 路由]
 category: "iOS"
 toc: true
 math: true

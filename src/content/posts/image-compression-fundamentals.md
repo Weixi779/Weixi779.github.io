@@ -2,7 +2,8 @@
 title: 「iOS」浅谈图片压缩
 slug: image-compression-fundamentals
 publishedAt: "2024-03-07 19:28:08"
-tags: [图片压缩, 算法]
+summary: "从图像大小与编码原理出发，梳理二分法、Luban 与融合压缩算法。"
+tags: [图片压缩, 图像处理, 算法]
 category: "iOS"
 toc: true
 math: true

@@ -2,6 +2,7 @@
 title: 「iOS」日志系统设计
 slug: ios-logging-system-design
 publishedAt: "2026-01-09 15:59:03"
+summary: "面向真实生产环境，设计一套覆盖本地、远端与上下文传播的 iOS 日志系统。"
 tags: [架构, 日志]
 category: "iOS"
 hero: /images/opentelemetry.png

@@ -2,7 +2,7 @@
 title: 「后日谈」日本出差随笔
 slug: japan-business-trip-notes
 publishedAt: "2025-08-04 13:50:04"
-summary: 去思考, 去感悟世界
+summary: "记录一次日本出差中的通勤、饮食与群像，以及对异地生活的观察。"
 tags: [出差, 旅行, 文化]
 category: "后日谈"
 hero: /images/japen.jpg

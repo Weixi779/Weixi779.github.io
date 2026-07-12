@@ -2,7 +2,8 @@
 title: 「iOS」网络层工程范式迁移
 slug: ios-network-layer-evolution
 publishedAt: "2026-01-05 14:27:32"
-tags: [架构, 网络请求]
+summary: "回顾从 Objective-C 到 Swift 的网络层演进，并重新思考抽象与控制权。"
+tags: [架构, 网络, 技术演进]
 category: "iOS"
 toc: true
 math: true

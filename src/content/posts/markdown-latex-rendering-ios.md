@@ -2,8 +2,8 @@
 title: 「iOS」聊聊Markdown中的LaTeX
 slug: markdown-latex-rendering-ios
 publishedAt: "2025-09-06 22:32:48"
-summary: 此后如竟没有炬火，我便是唯一的光。
-tags: [Markdown, LaTeX]
+summary: "梳理 iOS Markdown 中的 LaTeX 提取、解析、渲染与双引擎兜底方案。"
+tags: [Markdown, LaTeX, 渲染]
 category: "iOS"
 hero: /images/latex.jpg
 toc: true

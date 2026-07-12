@@ -2,7 +2,8 @@
 title: 「极客」Quest3与旁路由
 slug: quest-3-bypass-router
 publishedAt: "2024-04-06 12:53:55"
-tags: []
+summary: "记录用 Mac mini 搭建旁路由，为 Quest 3 提供稳定网络的完整过程。"
+tags: [VR, 网络, 旁路由]
 category: "极客"
 toc: true
 math: true

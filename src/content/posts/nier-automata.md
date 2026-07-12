@@ -2,8 +2,8 @@
 title: 「后日谈」尼尔机械纪元
 slug: nier-automata
 publishedAt: "2024-04-21 09:06:18"
-summary: 「贯穿到底的悲剧」
-tags: [游戏人生]
+summary: "一篇关于《尼尔：机械纪元》三周目体验、悲剧与选择的通关后记。"
+tags: [游戏]
 category: "后日谈"
 hero: /images/NierAutomata.jpg
 toc: true

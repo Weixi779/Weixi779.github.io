@@ -2,7 +2,8 @@
 title: 「iOS」自定义TabView
 slug: swiftui-custom-tabview
 publishedAt: "2024-07-29 13:15:07"
-tags: [SwiftUI, 技巧]
+summary: "从状态建模、页面路由到事件流，设计一个可扩展的 SwiftUI TabView。"
+tags: [SwiftUI, 自定义组件]
 category: "iOS"
 toc: true
 math: true

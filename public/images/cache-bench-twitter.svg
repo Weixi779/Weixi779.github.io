@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="360" viewBox="0 0 960 360" role="img" aria-label="Twitter Cluster 基准">
+
+  <style>
+    /* light (default) — clear-water-navy-ish figure */
+    .bg { fill: #F8FEFF; }
+    .panel { fill: #FFFFFF; stroke: #C8E0E5; }
+    .title { fill: #0D223B; font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; font-size: 16px; font-weight: 700; }
+    .subtitle { fill: #4E667A; font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; font-size: 12px; }
+    .title-sm { fill: #0D223B; font-family: ui-sans-serif, system-ui, sans-serif; font-size: 13px; font-weight: 600; }
+    .tick { fill: #4E667A; font-family: ui-sans-serif, system-ui, sans-serif; font-size: 10px; }
+    .legend { fill: #0D223B; font-family: ui-sans-serif, system-ui, sans-serif; font-size: 12px; }
+    .grid { stroke: #C8E0E5; stroke-width: 1; }
+    .axis { stroke: #9BBBC6; stroke-width: 1.2; }
+    .series-ref { stroke: #113056; }
+    .series-idx { stroke: #0E8A7A; }
+    .series-nsc { stroke: #C45C26; }
+    .series-ref-dot { fill: #FFFFFF; stroke: #113056; stroke-width: 1.75; }
+    .series-idx-dot { fill: #FFFFFF; stroke: #0E8A7A; stroke-width: 1.75; }
+    .series-nsc-dot { fill: #FFFFFF; stroke: #C45C26; stroke-width: 1.75; }
+
+    @media (prefers-color-scheme: dark) {
+      .bg { fill: #0B1220; }
+      .panel { fill: #121A2A; stroke: #2A3A4F; }
+      .title { fill: #E8EEF6; }
+      .subtitle { fill: #9AA8BA; }
+      .title-sm { fill: #E8EEF6; }
+      .tick { fill: #9AA8BA; }
+      .legend { fill: #E8EEF6; }
+      .grid { stroke: #243246; }
+      .axis { stroke: #3A4D66; }
+      .series-ref { stroke: #93C5FD; }
+      .series-idx { stroke: #2DD4BF; }
+      .series-nsc { stroke: #FB923C; }
+      .series-ref-dot { fill: #121A2A; stroke: #93C5FD; }
+      .series-idx-dot { fill: #121A2A; stroke: #2DD4BF; }
+      .series-nsc-dot { fill: #121A2A; stroke: #FB923C; }
+    }
+  </style>
+  <rect class="bg" width="100%" height="100%" rx="12"/>
+  <text class="title" x="16" y="26">Twitter Cluster 52 · 1,000 万次请求</text>
+  <text class="subtitle" x="16" y="44">横轴容量 1,024 / 16,384 / 65,536 · 左延迟越低越好 · 右命中率越高越好 · 两组严格 LRU 命中率重合</text>
+  <rect class="panel" x="16.0" y="52.0" width="458.0" height="256.0" rx="8"/>
+  <text class="title-sm" x="68.0" y="70.0">请求延迟</text>
+  <line class="grid" x1="68.0" y1="272.0" x2="462.0" y2="272.0"/>
+  <text class="tick" x="62.0" y="275.5" text-anchor="end">0</text>
+  <line class="grid" x1="68.0" y1="235.5" x2="462.0" y2="235.5"/>
+  <text class="tick" x="62.0" y="239.0" text-anchor="end">50</text>
+  <line class="grid" x1="68.0" y1="198.9" x2="462.0" y2="198.9"/>
+  <text class="tick" x="62.0" y="202.4" text-anchor="end">100</text>
+  <line class="grid" x1="68.0" y1="162.4" x2="462.0" y2="162.4"/>
+  <text class="tick" x="62.0" y="165.9" text-anchor="end">150</text>
+  <line class="grid" x1="68.0" y1="125.8" x2="462.0" y2="125.8"/>
+  <text class="tick" x="62.0" y="129.3" text-anchor="end">200</text>
+  <line class="axis" x1="68.0" y1="80.0" x2="68.0" y2="272.0"/>
+  <line class="axis" x1="68.0" y1="272.0" x2="462.0" y2="272.0"/>
+  <text class="tick" x="28.0" y="176.0" text-anchor="middle" transform="rotate(-90 28.0 176.0)">ns/req</text>
+  <line class="axis" x1="68.0" y1="272.0" x2="68.0" y2="276.0"/>
+  <text class="tick" x="68.0" y="288.0" text-anchor="middle">1,024</text>
+  <line class="axis" x1="265.0" y1="272.0" x2="265.0" y2="276.0"/>
+  <text class="tick" x="265.0" y="288.0" text-anchor="middle">16,384</text>
+  <line class="axis" x1="462.0" y1="272.0" x2="462.0" y2="276.0"/>
+  <text class="tick" x="462.0" y="288.0" text-anchor="middle">65,536</text>
+  <polyline class="series series-ref" fill="none" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" points="68.0,121.9 265.0,119.8 462.0,113.0"/>
+  <circle class="dot series-ref-dot" cx="68.0" cy="121.9" r="3.2"/>
+  <circle class="dot series-ref-dot" cx="265.0" cy="119.8" r="3.2"/>
+  <circle class="dot series-ref-dot" cx="462.0" cy="113.0" r="3.2"/>
+  <polyline class="series series-idx" fill="none" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" points="68.0,244.7 265.0,250.9 462.0,253.2"/>
+  <circle class="dot series-idx-dot" cx="68.0" cy="244.7" r="3.2"/>
+  <circle class="dot series-idx-dot" cx="265.0" cy="250.9" r="3.2"/>
+  <circle class="dot series-idx-dot" cx="462.0" cy="253.2" r="3.2"/>
+  <polyline class="series series-nsc" fill="none" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" points="68.0,103.6 265.0,117.8 462.0,105.0"/>
+  <circle class="dot series-nsc-dot" cx="68.0" cy="103.6" r="3.2"/>
+  <circle class="dot series-nsc-dot" cx="265.0" cy="117.8" r="3.2"/>
+  <circle class="dot series-nsc-dot" cx="462.0" cy="105.0" r="3.2"/>
+  <rect class="panel" x="486.0" y="52.0" width="458.0" height="256.0" rx="8"/>
+  <text class="title-sm" x="538.0" y="70.0">命中率</text>
+  <line class="grid" x1="538.0" y1="272.0" x2="932.0" y2="272.0"/>
+  <text class="tick" x="532.0" y="275.5" text-anchor="end">0</text>
+  <line class="grid" x1="538.0" y1="233.6" x2="932.0" y2="233.6"/>
+  <text class="tick" x="532.0" y="237.1" text-anchor="end">20</text>
+  <line class="grid" x1="538.0" y1="195.2" x2="932.0" y2="195.2"/>
+  <text class="tick" x="532.0" y="198.7" text-anchor="end">40</text>
+  <line class="grid" x1="538.0" y1="156.8" x2="932.0" y2="156.8"/>
+  <text class="tick" x="532.0" y="160.3" text-anchor="end">60</text>
+  <line class="grid" x1="538.0" y1="118.4" x2="932.0" y2="118.4"/>
+  <text class="tick" x="532.0" y="121.9" text-anchor="end">80</text>
+  <line class="grid" x1="538.0" y1="80.0" x2="932.0" y2="80.0"/>
+  <text class="tick" x="532.0" y="83.5" text-anchor="end">100</text>
+  <line class="axis" x1="538.0" y1="80.0" x2="538.0" y2="272.0"/>
+  <line class="axis" x1="538.0" y1="272.0" x2="932.0" y2="272.0"/>
+  <text class="tick" x="498.0" y="176.0" text-anchor="middle" transform="rotate(-90 498.0 176.0)">%</text>
+  <line class="axis" x1="538.0" y1="272.0" x2="538.0" y2="276.0"/>
+  <text class="tick" x="538.0" y="288.0" text-anchor="middle">1,024</text>
+  <line class="axis" x1="735.0" y1="272.0" x2="735.0" y2="276.0"/>
+  <text class="tick" x="735.0" y="288.0" text-anchor="middle">16,384</text>
+  <line class="axis" x1="932.0" y1="272.0" x2="932.0" y2="276.0"/>
+  <text class="tick" x="932.0" y="288.0" text-anchor="middle">65,536</text>
+  <polyline class="series series-ref" fill="none" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" points="538.0,151.2 735.0,119.1 932.0,108.0"/>
+  <circle class="dot series-ref-dot" cx="538.0" cy="151.2" r="3.2"/>
+  <circle class="dot series-ref-dot" cx="735.0" cy="119.1" r="3.2"/>
+  <circle class="dot series-ref-dot" cx="932.0" cy="108.0" r="3.2"/>
+  <polyline class="series series-idx" fill="none" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" points="538.0,151.2 735.0,119.1 932.0,108.0"/>
+  <circle class="dot series-idx-dot" cx="538.0" cy="151.2" r="3.2"/>
+  <circle class="dot series-idx-dot" cx="735.0" cy="119.1" r="3.2"/>
+  <circle class="dot series-idx-dot" cx="932.0" cy="108.0" r="3.2"/>
+  <polyline class="series series-nsc" fill="none" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" points="538.0,148.1 735.0,117.4 932.0,106.6"/>
+  <circle class="dot series-nsc-dot" cx="538.0" cy="148.1" r="3.2"/>
+  <circle class="dot series-nsc-dot" cx="735.0" cy="117.4" r="3.2"/>
+  <circle class="dot series-nsc-dot" cx="932.0" cy="106.6" r="3.2"/>
+  <line class="series series-ref" x1="16.0" y1="342.0" x2="32.0" y2="342.0" stroke-width="2.25"/>
+  <circle class="dot series-ref-dot" cx="24.0" cy="342.0" r="3"/>
+  <text class="legend" x="38.0" y="346.0">引用节点 LRU</text>
+  <line class="series series-idx" x1="152.0" y1="342.0" x2="168.0" y2="342.0" stroke-width="2.25"/>
+  <circle class="dot series-idx-dot" cx="160.0" cy="342.0" r="3"/>
+  <text class="legend" x="174.0" y="346.0">索引驱动 LRU</text>
+  <line class="series series-nsc" x1="288.0" y1="342.0" x2="304.0" y2="342.0" stroke-width="2.25"/>
+  <circle class="dot series-nsc-dot" cx="296.0" cy="342.0" r="3"/>
+  <text class="legend" x="310.0" y="346.0">NSCache</text>
+</svg>

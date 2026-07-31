@@ -5,8 +5,18 @@
     <link>https://weixi779.github.io/</link>
     <description>个人博客记录成长</description>
     <language>zh-CN</language>
-    <lastBuildDate>Sat, 04 Jul 2026 06:01:00 GMT</lastBuildDate>
+    <lastBuildDate>Fri, 24 Jul 2026 06:00:00 GMT</lastBuildDate>
     <atom:link href="https://weixi779.github.io/rss.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>「iOS」现代缓存体系探索</title>
+      <link>https://weixi779.github.io/posts/caffeine-moka-cache-notes/</link>
+      <guid isPermaLink="true">https://weixi779.github.io/posts/caffeine-moka-cache-notes/</guid>
+      <pubDate>Fri, 24 Jul 2026 06:00:00 GMT</pubDate>
+      <description>顺着咖啡系缓存谱系走一遭: 从惊喜到碰壁, 再到自己动手写 Swift 库时的收敛.</description>
+      <category>缓存</category>
+      <category>架构</category>
+      <category>技术演进</category>
+    </item>
     <item>
       <title>「后日谈」《旁观者》</title>
       <link>https://weixi779.github.io/posts/observer/</link>

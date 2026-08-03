@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="820" viewBox="0 0 1200 820" role="img" aria-labelledby="title desc">
+  <title id="title">WICompress 2.0 transition pipeline</title>
+  <desc id="desc">ImageIO, Raster, Domain, and ImagePipeline exist, while the old resolvers, plan, solver, and source still share execution ownership.</desc>
+  <style>
+    .bg { fill: #F6F8FA; }
+    .edge-label { fill: #59636E; font: 400 14px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    .node text { font: 650 16px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; text-anchor: middle; dominant-baseline: middle; }
+    .node .detail { font-size: 13px; font-weight: 450; }
+    .request rect { fill: #F1EDFF; stroke: #6750A4; }
+    .request text { fill: #2D1B4E; }
+    .legacy rect { fill: #FFF1ED; stroke: #B42318; }
+    .legacy text { fill: #64140E; }
+    .owner rect { fill: #FFF7E6; stroke: #C77700; }
+    .owner text { fill: #5C3900; }
+    .capability rect { fill: #EAF5FF; stroke: #1769AA; }
+    .capability text { fill: #103B5D; }
+    .value rect { fill: #EAF8F2; stroke: #147D64; }
+    .value text { fill: #0B4437; }
+    .node rect { stroke-width: 1.7; }
+    .arrow { fill: none; stroke: #57606A; stroke-width: 1.8; marker-end: url(#arrow); }
+    .feedback { fill: none; stroke: #B42318; stroke-width: 1.7; stroke-dasharray: 7 6; marker-end: url(#legacy-arrow); }
+    .arrow-fill { fill: #57606A; }
+    .legacy-fill { fill: #B42318; }
+
+    @media (prefers-color-scheme: dark) {
+      .bg { fill: #0D1117; }
+      .edge-label { fill: #8B949E; }
+      .request rect { fill: #251C3D; stroke: #A78BFA; }
+      .request text { fill: #EDE9FE; }
+      .legacy rect { fill: #3B1D20; stroke: #F87171; }
+      .legacy text { fill: #FEE2E2; }
+      .owner rect { fill: #342810; stroke: #FBBF24; }
+      .owner text { fill: #FEF3C7; }
+      .capability rect { fill: #10283B; stroke: #60A5FA; }
+      .capability text { fill: #DBEAFE; }
+      .value rect { fill: #102E29; stroke: #34D399; }
+      .value text { fill: #D1FAE5; }
+      .arrow { stroke: #8B949E; }
+      .feedback { stroke: #F87171; }
+      .arrow-fill { fill: #8B949E; }
+      .legacy-fill { fill: #F87171; }
+    }
+  </style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path class="arrow-fill" d="M 0 0 L 10 5 L 0 10 z"/>
+    </marker>
+    <marker id="legacy-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path class="legacy-fill" d="M 0 0 L 10 5 L 0 10 z"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" width="1200" height="820" rx="16"/>
+  <g transform="translate(0 -60)">
+
+  <path class="arrow" d="M600 164 V186 H245 V205"/>
+  <path class="arrow" d="M600 164 V186 H955 V205"/>
+  <path class="arrow" d="M245 273 V310"/>
+  <path class="arrow" d="M955 273 V290 H840 V310"/>
+  <path class="arrow" d="M955 273 V290 H1080 V310"/>
+  <path class="arrow" d="M245 378 V400 H430 V420"/>
+  <path class="arrow" d="M840 378 V400 H500 V420"/>
+  <path class="arrow" d="M245 378 V454 H570"/>
+  <path class="arrow" d="M840 378 V454 H810"/>
+  <path class="arrow" d="M550 454 H570"/>
+  <path class="arrow" d="M650 488 V540"/>
+  <path class="arrow" d="M1080 378 V574 H760"/>
+  <path class="feedback" d="M970 344 H930"/>
+  <path class="arrow" d="M290 574 H440"/>
+  <path class="arrow" d="M600 608 V680 H360"/>
+  <path class="arrow" d="M600 608 V680 H840"/>
+  <path class="arrow" d="M360 748 V780"/>
+  <path class="arrow" d="M840 748 V780"/>
+  <text class="edge-label" x="940" y="555" text-anchor="end">still owns execution</text>
+
+  <g class="node request">
+    <rect x="470" y="96" width="260" height="68" rx="12"/>
+    <text x="600" y="130">WICompressor</text>
+  </g>
+  <g class="node request">
+    <rect x="125" y="205" width="240" height="68" rx="12"/>
+    <text x="245" y="239">WIImageProcess</text>
+  </g>
+  <g class="node request">
+    <rect x="835" y="205" width="240" height="68" rx="12"/>
+    <text x="955" y="239">WICompressionTarget</text>
+  </g>
+  <g class="node legacy">
+    <rect x="125" y="310" width="240" height="68" rx="12"/>
+    <text x="245" y="344">ProcessResolver</text>
+  </g>
+  <g class="node legacy">
+    <rect x="730" y="310" width="220" height="68" rx="12"/>
+    <text x="840" y="344">TargetResolver</text>
+  </g>
+  <g class="node legacy">
+    <rect x="970" y="310" width="220" height="68" rx="12"/>
+    <text x="1080" y="336">CompressionSolver</text>
+    <text class="detail" x="1080" y="360">search + execution</text>
+  </g>
+  <g class="node legacy">
+    <rect x="310" y="420" width="240" height="68" rx="12"/>
+    <text x="430" y="454">OutputResolver</text>
+  </g>
+  <g class="node legacy">
+    <rect x="570" y="420" width="240" height="68" rx="12"/>
+    <text x="690" y="454">WIExecutionPlan</text>
+  </g>
+  <g class="node legacy">
+    <rect x="50" y="540" width="240" height="68" rx="12"/>
+    <text x="170" y="574">WIImageSource</text>
+  </g>
+  <g class="node owner">
+    <rect x="440" y="540" width="320" height="68" rx="12"/>
+    <text x="600" y="566">ImagePipeline</text>
+    <text class="detail" x="600" y="590">one more execution owner</text>
+  </g>
+  <g class="node capability">
+    <rect x="240" y="680" width="240" height="68" rx="12"/>
+    <text x="360" y="706">WIImageIO.Source</text>
+    <text class="detail" x="360" y="730">ImageIO extracted</text>
+  </g>
+  <g class="node capability">
+    <rect x="720" y="680" width="240" height="68" rx="12"/>
+    <text x="840" y="706">WIImageRaster</text>
+    <text class="detail" x="840" y="730">rendering extracted</text>
+  </g>
+  <g class="node value">
+    <rect x="240" y="780" width="240" height="68" rx="12"/>
+    <text x="360" y="814">Descriptor</text>
+  </g>
+  <g class="node value">
+    <rect x="720" y="780" width="240" height="68" rx="12"/>
+    <text x="840" y="814">CGImage</text>
+  </g>
+  </g>
+</svg>

@@ -1,0 +1,247 @@
+<!DOCTYPE html><html lang="en" data-theme-id="deepSeaMilk" data-color-mode="light" data-color-mode-preference="system"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><meta name="generator" content="Astro v7.0.7"><meta name="description" content="How a 204-line image compression utility became WICompress 2.0—and what that taught me about authorship in AI-assisted engineering."><meta name="color-scheme" content="light dark"><meta property="og:title" content="Deconstructing and Rebuilding WICompress 2.0 in the Age of AI - 伟兮の小屋"><meta property="og:description" content="How a 204-line image compression utility became WICompress 2.0—and what that taught me about authorship in AI-assisted engineering."><meta property="og:type" content="website"><meta property="og:locale" content="en_US"><meta property="og:url" content="https://weixi779.github.io/en/posts/wicompress-2-architecture-ai/"><meta property="og:image" content="https://weixi779.github.io/images/banner.jpg"><link rel="canonical" href="https://weixi779.github.io/en/posts/wicompress-2-architecture-ai/"><link rel="alternate" hreflang="zh-CN" href="https://weixi779.github.io/posts/wicompress-2-architecture-ai/"><link rel="alternate" hreflang="en" href="https://weixi779.github.io/en/posts/wicompress-2-architecture-ai/"><link rel="alternate" hreflang="x-default" href="https://weixi779.github.io/posts/wicompress-2-architecture-ai/"><link rel="alternate" type="application/rss+xml" title="伟兮の小屋 RSS" href="/rss.xml"><link rel="icon" href="/images/favicon.ico"><title>Deconstructing and Rebuilding WICompress 2.0 in the Age of AI - 伟兮の小屋</title><script data-default-theme="deepSeaMilk" data-theme-ids="[&quot;deepSeaMilk&quot;,&quot;cinderCandy&quot;,&quot;wisteriaMatcha&quot;,&quot;clearWaterNavy&quot;]" data-storage-key="blog-theme-preference">
+      (() => {
+        const bootstrap = document.currentScript;
+        const defaultThemeId = bootstrap?.dataset.defaultTheme ?? 'deepSeaMilk';
+        const themeIds = JSON.parse(bootstrap?.dataset.themeIds ?? '[]');
+        const themeStorageKey = bootstrap?.dataset.storageKey ?? 'blog-theme-preference';
+        let preference = null;
+        try {
+          const stored = localStorage.getItem(themeStorageKey);
+          preference = stored ? JSON.parse(stored) : null;
+        } catch {}
+
+        const storedThemeId = preference?.themeId;
+        const storedMode = preference?.mode;
+        const systemDark = window.matchMedia?.('(prefers-color-scheme: dark)').matches;
+        const themeId = themeIds.includes(storedThemeId) ? storedThemeId : defaultThemeId;
+        const colorModePreference =
+          storedMode === 'light' || storedMode === 'dark' || storedMode === 'system'
+            ? storedMode
+            : 'system';
+        const colorMode =
+          colorModePreference === 'light' || colorModePreference === 'dark'
+            ? colorModePreference
+            : systemDark
+              ? 'dark'
+              : 'light';
+
+        document.documentElement.dataset.themeId = themeId;
+        document.documentElement.dataset.colorModePreference = colorModePreference;
+        document.documentElement.dataset.colorMode = colorMode;
+      })();
+    </script><link rel="stylesheet" href="/assets/prose.L3rFJHHg.css"><link rel="stylesheet" href="/assets/BaseLayout.DOBQhnoK.css"></head><body><header class="site-header"><div class="site-header__inner"><a class="site-brand" href="/">伟兮の小屋</a><nav aria-label="主导航"><a href="/">首页</a><a href="/archive/">归档</a><a href="/about/">关于</a></nav><div class="theme-picker" data-theme-picker data-astro-cid-hcqnpaxe><button class="theme-toggle" id="theme-toggle" type="button" aria-label="打开主题设置" aria-haspopup="dialog" aria-expanded="false" aria-controls="theme-panel" data-theme-toggle data-astro-cid-hcqnpaxe><span aria-hidden="true" class="theme-toggle__icon" data-astro-cid-hcqnpaxe>◐</span><span class="theme-toggle__label" data-astro-cid-hcqnpaxe>主题</span></button><section class="theme-panel" id="theme-panel" role="dialog" aria-label="主题设置" data-theme-panel hidden data-astro-cid-hcqnpaxe><header class="theme-panel__header" data-astro-cid-hcqnpaxe><strong data-astro-cid-hcqnpaxe>主题设置</strong><small data-theme-current-name data-astro-cid-hcqnpaxe>Deep Sea Milk</small></header><fieldset class="theme-panel__group" data-astro-cid-hcqnpaxe><legend data-astro-cid-hcqnpaxe>配色</legend><div class="theme-options" data-astro-cid-hcqnpaxe><label class="theme-option" style="--theme-light-background: rgb(96.08% 93.73% 91.76% / 1);--theme-light-surface: rgb(100% 99.22% 97.25% / 1);--theme-light-accent: rgb(7.06% 18.04% 54.12% / 1);--theme-dark-background: rgb(3.14% 6.67% 14.9% / 1);--theme-dark-surface: rgb(7.84% 14.12% 29.02% / 1);--theme-dark-accent: rgb(61.18% 70.59% 100% / 1)" data-astro-cid-hcqnpaxe><input type="radio" name="theme-id" value="deepSeaMilk" checked data-theme-id-input data-astro-cid-hcqnpaxe><span class="theme-option__body" data-astro-cid-hcqnpaxe><span class="theme-option__preview" aria-hidden="true" data-astro-cid-hcqnpaxe><span class="theme-option__preview-mode theme-option__preview-mode--light" data-astro-cid-hcqnpaxe></span><span class="theme-option__preview-mode theme-option__preview-mode--dark" data-astro-cid-hcqnpaxe></span></span><span class="theme-option__name" data-astro-cid-hcqnpaxe>Deep Sea Milk</span></span></label><label class="theme-option" style="--theme-light-background: rgb(100% 96.86% 98.04% / 1);--theme-light-surface: rgb(100% 100% 100% / 1);--theme-light-accent: rgb(77.25% 11.37% 38.82% / 1);--theme-dark-background: rgb(6.67% 6.67% 7.84% / 1);--theme-dark-surface: rgb(12.55% 12.55% 15.29% / 1);--theme-dark-accent: rgb(100% 43.53% 65.88% / 1)" data-astro-cid-hcqnpaxe><input type="radio" name="theme-id" value="cinderCandy" data-theme-id-input data-astro-cid-hcqnpaxe><span class="theme-option__body" data-astro-cid-hcqnpaxe><span class="theme-option__preview" aria-hidden="true" data-astro-cid-hcqnpaxe><span class="theme-option__preview-mode theme-option__preview-mode--light" data-astro-cid-hcqnpaxe></span><span class="theme-option__preview-mode theme-option__preview-mode--dark" data-astro-cid-hcqnpaxe></span></span><span class="theme-option__name" data-astro-cid-hcqnpaxe>Cinder Candy</span></span></label><label class="theme-option" style="--theme-light-background: rgb(96.47% 97.25% 92.94% / 1);--theme-light-surface: rgb(100% 99.61% 96.86% / 1);--theme-light-accent: rgb(37.25% 33.33% 63.53% / 1);--theme-dark-background: rgb(7.84% 7.06% 14.12% / 1);--theme-dark-surface: rgb(14.12% 12.55% 24.71% / 1);--theme-dark-accent: rgb(72.55% 69.41% 100% / 1)" data-astro-cid-hcqnpaxe><input type="radio" name="theme-id" value="wisteriaMatcha" data-theme-id-input data-astro-cid-hcqnpaxe><span class="theme-option__body" data-astro-cid-hcqnpaxe><span class="theme-option__preview" aria-hidden="true" data-astro-cid-hcqnpaxe><span class="theme-option__preview-mode theme-option__preview-mode--light" data-astro-cid-hcqnpaxe></span><span class="theme-option__preview-mode theme-option__preview-mode--dark" data-astro-cid-hcqnpaxe></span></span><span class="theme-option__name" data-astro-cid-hcqnpaxe>Wisteria Matcha</span></span></label><label class="theme-option" style="--theme-light-background: rgb(91.76% 97.25% 98.04% / 1);--theme-light-surface: rgb(97.25% 99.61% 100% / 1);--theme-light-accent: rgb(6.67% 18.82% 33.73% / 1);--theme-dark-background: rgb(2.75% 8.24% 13.33% / 1);--theme-dark-surface: rgb(6.67% 18.82% 33.73% / 1);--theme-dark-accent: rgb(56.86% 81.18% 83.53% / 1)" data-astro-cid-hcqnpaxe><input type="radio" name="theme-id" value="clearWaterNavy" data-theme-id-input data-astro-cid-hcqnpaxe><span class="theme-option__body" data-astro-cid-hcqnpaxe><span class="theme-option__preview" aria-hidden="true" data-astro-cid-hcqnpaxe><span class="theme-option__preview-mode theme-option__preview-mode--light" data-astro-cid-hcqnpaxe></span><span class="theme-option__preview-mode theme-option__preview-mode--dark" data-astro-cid-hcqnpaxe></span></span><span class="theme-option__name" data-astro-cid-hcqnpaxe>Clear Water Navy</span></span></label></div></fieldset><fieldset class="theme-panel__group theme-panel__group--mode" data-astro-cid-hcqnpaxe><legend data-astro-cid-hcqnpaxe>显示模式</legend><div class="theme-modes" data-astro-cid-hcqnpaxe><label class="theme-mode" data-astro-cid-hcqnpaxe><input type="radio" name="theme-mode" value="system" checked data-theme-mode-input data-astro-cid-hcqnpaxe><span data-astro-cid-hcqnpaxe>跟随系统</span></label><label class="theme-mode" data-astro-cid-hcqnpaxe><input type="radio" name="theme-mode" value="light" data-theme-mode-input data-astro-cid-hcqnpaxe><span data-astro-cid-hcqnpaxe>浅色</span></label><label class="theme-mode" data-astro-cid-hcqnpaxe><input type="radio" name="theme-mode" value="dark" data-theme-mode-input data-astro-cid-hcqnpaxe><span data-astro-cid-hcqnpaxe>深色</span></label></div></fieldset></section></div><script type="module">var e=`deepSeaMilk`,t=[{id:`deepSeaMilk`,displayName:`Deep Sea Milk`,modes:[`light`,`dark`],preview:{light:{background:`rgb(96.08% 93.73% 91.76% / 1)`,surface:`rgb(100% 99.22% 97.25% / 1)`,accent:`rgb(7.06% 18.04% 54.12% / 1)`},dark:{background:`rgb(3.14% 6.67% 14.9% / 1)`,surface:`rgb(7.84% 14.12% 29.02% / 1)`,accent:`rgb(61.18% 70.59% 100% / 1)`}}},{id:`cinderCandy`,displayName:`Cinder Candy`,modes:[`light`,`dark`],preview:{light:{background:`rgb(100% 96.86% 98.04% / 1)`,surface:`rgb(100% 100% 100% / 1)`,accent:`rgb(77.25% 11.37% 38.82% / 1)`},dark:{background:`rgb(6.67% 6.67% 7.84% / 1)`,surface:`rgb(12.55% 12.55% 15.29% / 1)`,accent:`rgb(100% 43.53% 65.88% / 1)`}}},{id:`wisteriaMatcha`,displayName:`Wisteria Matcha`,modes:[`light`,`dark`],preview:{light:{background:`rgb(96.47% 97.25% 92.94% / 1)`,surface:`rgb(100% 99.61% 96.86% / 1)`,accent:`rgb(37.25% 33.33% 63.53% / 1)`},dark:{background:`rgb(7.84% 7.06% 14.12% / 1)`,surface:`rgb(14.12% 12.55% 24.71% / 1)`,accent:`rgb(72.55% 69.41% 100% / 1)`}}},{id:`clearWaterNavy`,displayName:`Clear Water Navy`,modes:[`light`,`dark`],preview:{light:{background:`rgb(91.76% 97.25% 98.04% / 1)`,surface:`rgb(97.25% 99.61% 100% / 1)`,accent:`rgb(6.67% 18.82% 33.73% / 1)`},dark:{background:`rgb(2.75% 8.24% 13.33% / 1)`,surface:`rgb(6.67% 18.82% 33.73% / 1)`,accent:`rgb(56.86% 81.18% 83.53% / 1)`}}}],n=`blog-theme-preference`,r=t.map(({id:e})=>e);function i(e){return typeof e==`string`&&r.some(t=>t===e)}function a(e){return e===`light`||e===`dark`}function o(e){return e===`system`||a(e)}var s=document.querySelector(`[data-theme-picker]`),c=s?.querySelector(`[data-theme-toggle]`),l=s?.querySelector(`[data-theme-panel]`),u=s?.querySelector(`[data-theme-current-name]`),d=Array.from(s?.querySelectorAll(`[data-theme-id-input]`)??[]),f=Array.from(s?.querySelectorAll(`[data-theme-mode-input]`)??[]);if(s&&c&&l&&u){let r=s,a=c,p=l,m=u,h=document.documentElement,g=document,_=window.matchMedia(`(prefers-color-scheme: dark)`),v=window.matchMedia(`(prefers-reduced-motion: reduce)`),y=i(h.dataset.themeId)?h.dataset.themeId:e,b=o(h.dataset.colorModePreference)?h.dataset.colorModePreference:`system`,x=e=>e===`system`?_.matches?`dark`:`light`:e;function S(){for(let e of d)e.checked=e.value===y;for(let e of f)e.checked=e.value===b;m.textContent=t.find(({id:e})=>e===y)?.displayName??y}function C(){try{localStorage.setItem(n,JSON.stringify({themeId:y,mode:b}))}catch{}}function w(e){let t={themeId:y,colorMode:e,modePreference:b};window.dispatchEvent(new CustomEvent(`blog-theme-change`,{detail:t}))}function T(e,t,n={}){let r=x(t),i=y!==e||b!==t||h.dataset.colorMode!==r;if(y=e,b=t,n.persist!==!1&&C(),!i){S();return}let a=()=>{h.dataset.themeId=y,h.dataset.colorModePreference=b,h.dataset.colorMode=r,S(),w(r)},o=g.startViewTransition?.bind(g);n.animate!==!1&&!v.matches&&o?o(a).finished.catch(()=>{}):a()}function E(e,t=!1){p.hidden=!e,a.setAttribute(`aria-expanded`,String(e)),a.setAttribute(`aria-label`,e?`关闭主题设置`:`打开主题设置`),e?window.requestAnimationFrame(()=>{d.find(e=>e.checked)?.focus()}):t&&a.focus()}a.addEventListener(`click`,()=>E(p.hasAttribute(`hidden`)));for(let e of d)e.addEventListener(`change`,()=>{e.checked&&i(e.value)&&T(e.value,b)});for(let e of f)e.addEventListener(`change`,()=>{e.checked&&o(e.value)&&T(y,e.value)});document.addEventListener(`pointerdown`,e=>{!p.hasAttribute(`hidden`)&&e.target instanceof Node&&!r.contains(e.target)&&E(!1)}),document.addEventListener(`keydown`,e=>{e.key===`Escape`&&!p.hasAttribute(`hidden`)&&(e.preventDefault(),E(!1,!0))}),_.addEventListener(`change`,()=>{b===`system`&&T(y,b,{persist:!1})}),S()}</script></div></header><script type="module">var e=document.querySelector(`.site-header`);if(e){let t=!1,n=()=>{e.toggleAttribute(`data-elevated`,window.scrollY>8),t=!1};n(),window.addEventListener(`scroll`,()=>{t||(t=!0,window.requestAnimationFrame(n))},{passive:!0})}</script><main><header class="page-hero" style="--hero-image: url('/images/banner.jpg')"><div class="page-hero__overlay"><div class="page-hero__content"><h1>Deconstructing and Rebuilding WICompress 2.0 in the Age of AI</h1><p class="page-hero__summary">How a 204-line image compression utility became WICompress 2.0—and what that taught me about authorship in AI-assisted engineering.</p><nav class="post-language-switch" aria-label="Article language"><a href="/posts/wicompress-2-architecture-ai/" lang="zh-CN">中文</a><span aria-hidden="true">/</span><a href="/en/posts/wicompress-2-architecture-ai/" lang="en" aria-current="page">English</a></nav></div></div></header><div class="post-shell"><nav class="toc" aria-label="Table of contents"><details open><summary>Contents</summary><ol><li class="toc__level-1"><a href="#before">Before</a></li><li class="toc__level-1"><a href="#when-the-storm-hit">When the Storm Hit</a></li><li class="toc__level-1"><a href="#two-roads-forced-into-one-answer">Two Roads Forced Into One Answer</a></li><li class="toc__level-1"><a href="#we-only-moved-things-around">We Only Moved Things Around</a></li><li class="toc__level-1"><a href="#tearing-it-down">Tearing It Down</a></li><li class="toc__level-2"><a href="#process-and-target">Process and Target</a></li><li class="toc__level-2"><a href="#imageio-and-rendering">ImageIO and Rendering</a></li><li class="toc__level-1"><a href="#keeping-one-orchestrator">Keeping One Orchestrator</a></li><li class="toc__level-1"><a href="#the-author-in-the-age-of-ai">The Author in the Age of AI</a></li><li class="toc__level-1"><a href="#20">2.0</a></li><li class="toc__level-1"><a href="#footnote-label">Footnotes</a></li></ol></details></nav><script type="module">var e=document.querySelector(`.toc`),t=e?.querySelector(`details`),n=Array.from(e?.querySelectorAll(`a[href^="#"]`)??[]);t&&window.matchMedia(`(max-width: 820px)`).matches&&(t.open=!1);var r=new Map(n.map(e=>{let t=decodeURIComponent(e.hash.slice(1)),n=document.getElementById(t);return n?[t,n]:null}).filter(e=>e!==null));function i(e){for(let t of n)decodeURIComponent(t.hash.slice(1))===e?t.setAttribute(`aria-current`,`location`):t.removeAttribute(`aria-current`)}if(r.size>0){let e=new IntersectionObserver(e=>{let t=e.filter(e=>e.isIntersecting).sort((e,t)=>e.boundingClientRect.top-t.boundingClientRect.top)[0]?.target;t?.id&&i(t.id)},{rootMargin:`-88px 0px -70% 0px`,threshold:[0,1]});for(let t of r.values())e.observe(t);let t=decodeURIComponent(window.location.hash.slice(1));t&&r.has(t)&&i(t)}</script><article class="prose"><h2 id="before">Before</h2>
+<p>WICompress<sup><a href="#user-content-fn-1" id="user-content-fnref-1" data-footnote-ref aria-describedby="footnote-label">1</a></sup> did not begin with an architecture diagram. It grew out of one very specific problem.</p>
+<p>Photos captured by an iPhone are often stored as HEIC, a format that already compresses efficiently. If an upload service does not accept HEIC, re-encoding the image as JPEG can produce a file larger than the original. I had performed a “compression” operation and ended up with a bigger image. That was the problem I originally wanted to solve.</p>
+<p>I started from what I knew best: <code>UIImage</code>. I used its resizing and encoding capabilities first, then reached down into <code>ImageIO</code> only when <code>UIImage</code> could no longer answer the question. It was not an elegant route, but it reflected how an iOS developer new to image processing actually learns: begin with familiar tools, then extend the road one piece at a time.</p>
+<p>The first WICompress really was small. In <code>v0.2.2</code>, the production Swift code consisted of four files and 204 physical lines. It solved a real problem, had a few tests, and was useful enough that I kept it around.</p>
+<p>If the story had ended there, this article probably would not exist.</p>
+<h2 id="when-the-storm-hit">When the Storm Hit</h2>
+<p>Much later, while preparing a technical talk, I asked AI to review the library I had left untouched for some time. I wrote about part of that experience in <em>The Observer</em>.<sup><a href="#user-content-fn-2" id="user-content-fnref-2" data-footnote-ref aria-describedby="footnote-label">2</a></sup> AI did not have to retrace my learning path. It could begin directly from <code>ImageIO</code> and work backward from what encoded image data could actually support.</p>
+<p>Why did the input have to be <code>UIImage</code>? It could just as naturally be <code>Data</code> or a file <code>URL</code>.</p>
+<p>Why were format, orientation, metadata, and color space handled in separate paths? They could all be inspected at the encoded-data boundary.</p>
+<p>Why were resizing and quality fixed together? Pixel dimensions, output representation, Alpha, canvas geometry, and final byte count are different dimensions of the problem.</p>
+<p>Then came HDR, animation, progressive decoding, and incremental sessions. Within a few hours, an entire world I had barely examined was laid out in front of me.</p>
+<p>At first I was impressed. The deeper the discussion went, the more clearly I could see how narrow my previous boundary of knowledge had been.</p>
+<blockquote>
+<p>“AI described a very tempting capability.”</p>
+<p>“That sounds powerful. Can we build it?”</p>
+<p>“Yes.”</p>
+</blockquote>
+<p>And then it created a type for every stage.</p>
+<p>As the requirements grew, <code>Policy</code>, <code>Resolver</code>, <code>ExecutionPlan</code>, and <code>Executor</code> appeared one after another. Every name sounded professional. Each could be explained in isolation. But they had not grown naturally from stable responsibilities. More often, they gave me—someone still unfamiliar with the lower-level APIs—a sense of safety: if the names looked enough like architecture, perhaps the code could keep moving forward.</p>
+<p>The code grew from 780 physical lines in <code>v1.0.0</code> to 2,979 in <code>v1.4.0</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Version</th>
+<th style="text-align: right">Production files</th>
+<th style="text-align: right">Physical lines</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>v0.2.2</code></td>
+<td style="text-align: right">4</td>
+<td style="text-align: right">204</td>
+</tr>
+<tr>
+<td><code>v1.0.0</code></td>
+<td style="text-align: right">14</td>
+<td style="text-align: right">780</td>
+</tr>
+<tr>
+<td><code>v1.2.1</code></td>
+<td style="text-align: right">15</td>
+<td style="text-align: right">1,122</td>
+</tr>
+<tr>
+<td><code>v1.4.0</code></td>
+<td style="text-align: right">27</td>
+<td style="text-align: right">2,979</td>
+</tr>
+</tbody>
+</table>
+<p>Every production-code count in this article measures physical lines in Swift files under <code>Sources/</code> at the corresponding commit. Tests, the Example app, benchmarks, and documentation are excluded.</p>
+<p>More code was not the real problem. The problem was that I could no longer explain, through one coherent flow, why the library had taken this shape.</p>
+<h2 id="two-roads-forced-into-one-answer">Two Roads Forced Into One Answer</h2>
+<p>When I formally began work on 2.0, I still did not have an answer.</p>
+<p>The first step was to ask AI to list every existing capability. We produced a long table: resize, quality, target bytes, format, Alpha, crop, metadata, color space, passthrough, file URL, and more. Every item was accurate, but the table could only prove that those capabilities or historical behaviors existed. It could not tell us which ones still belonged in 2.0, let alone how they should compose.</p>
+<p>So I reversed the question: if we ignored the existing types and policies, what was a caller actually trying to accomplish when they came to this library?</p>
+<p>That was when I saw that <code>v1.4.0</code> appeared to have one compression flow but was really serving two very different needs.</p>
+<p>The first was Process. The caller already knew what they wanted: whether to crop, the target dimensions, compression quality, output format, metadata, and color space. The library only needed to execute those explicit requirements.</p>
+<p>The second was Target. The caller only knew that the final file had to be smaller than 500 KB. How far to lower quality, how much to reduce dimensions, and how many attempts to make all had to be searched internally.</p>
+<p>Once those two intentions were drawn back onto the existing code, the first architecture diagram finally appeared.</p>
+<p><img src="/images/wicompress-v1-pipeline.svg" alt="WICompress 1.4: Process and Target forced through the same policy pipeline"></p>
+<p>The diagram made the problem visible. We had never really treated them as separate flows. Target passed through a validator and resolver, then was translated back into the old <code>WICompressOptions</code>. Capabilities that could not be expressed there—such as <code>fill</code>, <code>exactCanvas</code>, and placement—were pushed into <code>WIWritePlan</code>. Both roads eventually had to pass through the same <code>WritePlanResolver</code> and <code>ImageEncoder</code>.</p>
+<p>Several files kept absorbing responsibilities that did not belong to them:</p>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th style="text-align: right">Lines in <code>v1.4.0</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>WICompressionSolver.swift</code></td>
+<td style="text-align: right">537</td>
+</tr>
+<tr>
+<td><code>WIImageEncoder.swift</code></td>
+<td style="text-align: right">451</td>
+</tr>
+<tr>
+<td><code>WIWritePlanResolver.swift</code></td>
+<td style="text-align: right">385</td>
+</tr>
+</tbody>
+</table>
+<p>Together, those three files accounted for 46.1% of the production library. <code>Solver</code> searched quality, dimensions, and PNG candidates. <code>Encoder</code> did far more than encoding: decode, thumbnail generation, resize, crop, canvas drawing, Alpha handling, orientation, metadata, and color-space conversion. <code>WritePlanResolver</code> interpreted every policy and decided whether to return the original, copy from the source, or render again.</p>
+<p>The terminology borrowed from UI frameworks made things worse. <code>fit</code>, <code>fill</code>, <code>fitInside</code>, and <code>alignment</code> are not inherently wrong concepts, but WICompress is not an image presentation library. When I returned as the author, I could no longer explain their exact semantics without reading the implementation. A first-time user had even less chance.</p>
+<p>Adding capabilities was not the mistake. The system had lost the language it needed to keep growing.</p>
+<p>The diagram still did not tell me what 2.0 should look like, but it completed the first restart. After the analysis, the capability table, and repeated attempts to classify things, we could finally name the problem: two different roads had been forced into one answer.</p>
+<p>Recognizing the problem did not mean we had found the solution. The first refactor only moved code into more targets and folders. ImageIO was extracted. Raster was extracted. Process got its own type. But none of the old resolvers, plans, solvers, or encoders truly disappeared.</p>
+<h2 id="we-only-moved-things-around">We Only Moved Things Around</h2>
+<p><img src="/images/wicompress-transition-pipeline.svg" alt="WICompress 2.0 under construction: new modules appeared while the old execution owners remained"></p>
+<p>This diagram comes from the point where the request-scoped <code>ImagePipeline</code> had just appeared. There was a new <code>WIImageIO</code>, a new <code>WIImageRaster</code>, and early discussion of Domain and Pipeline boundaries. Yet execution still required <code>ProcessResolver</code>, <code>TargetResolver</code>, <code>OutputResolver</code>, <code>ExecutionPlan</code>, and <code>CompressionSolver</code> to hand work from one to another.</p>
+<p>The new Pipeline had not replaced the old owners. It had merely joined them.</p>
+<p>At this point the production code contained 41 files and 4,056 physical lines. <code>WIImageIO.Source</code> had 589 lines, <code>ImagePipeline</code> had 430, and <code>CompressionSolver</code> had 431. During construction, production code peaked at 4,856 lines and 49 files.</p>
+<p>Several logic-heavy files also approached or exceeded 500 lines at different points. These are their individual historical peaks, not measurements from a single commit:</p>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th style="text-align: right">Historical peak</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>WIImageIO.swift</code></td>
+<td style="text-align: right">798</td>
+</tr>
+<tr>
+<td><code>WICompressionSolver.swift</code></td>
+<td style="text-align: right">673</td>
+</tr>
+<tr>
+<td><code>ImagePipeline+Target.swift</code></td>
+<td style="text-align: right">615</td>
+</tr>
+<tr>
+<td><code>Source.swift</code></td>
+<td style="text-align: right">589</td>
+</tr>
+<tr>
+<td><code>ImagePipeline.swift</code></td>
+<td style="text-align: right">495</td>
+</tr>
+<tr>
+<td><code>WIImageEncoder.swift</code></td>
+<td style="text-align: right">487</td>
+</tr>
+</tbody>
+</table>
+<p>File length was not the most important issue. An 800-line file may simply be unfinished cleanup, while a 100-line type may have no reason to exist. What bothered me was that the diagram was full of “interpreters.” One object interpreted the request and produced a plan. Another interpreted the plan and chose an executor. Then an executor was needed to reconnect everything the previous layers had explained.</p>
+<p>We had separated the files without reducing anyone’s cognitive load.</p>
+<h2 id="tearing-it-down">Tearing It Down</h2>
+<p>The turning point was not another attempt to design a more complete architecture. It was asking what each existing name actually contributed.</p>
+<p>Why did <code>Inspector</code> exist? If inspection was an action, it could return a <code>Descriptor</code> directly.</p>
+<p>Why did every helper need to know about <code>Source</code>? If decoding only required encoded data, and rendering only required a <code>CGImage</code> plus resolved geometry, neither operation should be polluted by an outer business container.</p>
+<p>What pressure did <code>Resolver</code>, <code>ExecutionPlan</code>, and <code>Executor</code> actually remove? If a type merely moved a switch statement from one file to another, the number of types increased while the amount of work stayed the same.</p>
+<p>For me, one of the most important forms of courage in programming is the willingness to discard the previous answer.</p>
+<p>So instead of preserving the existing types, we returned to the needs the library actually served.</p>
+<h3 id="process-and-target">Process and Target</h3>
+<p>Process and Target became two explicit entry points.</p>
+<p>Process accepts a known intent. <code>WIImageResizing</code> only needs to perform <code>PixelSize → PixelSize</code>. A caller can use Luban or provide a custom sizing algorithm. Crop, output, metadata, and color space are explicit inputs; the Pipeline no longer guesses at UI semantics.</p>
+<p>Target accepts a hard byte limit. It maps to real production constraints: sharing SDKs, attachment uploads, and API fields with fixed limits. The caller provides <code>maxBytes</code>, and the library searches quality and dimensions internally. A successful result must satisfy the limit; if it cannot, the operation fails explicitly.</p>
+<pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="swift"><code><span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">let</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> processed </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#D73A49;--shiki-dark:#F97583"> try</span><span style="color:#D73A49;--shiki-dark:#F97583"> await</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> WICompressor.</span><span style="color:#005CC5;--shiki-dark:#79B8FF">process</span><span style="color:#24292E;--shiki-dark:#E1E4E8">(imageData)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">let</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> target </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#D73A49;--shiki-dark:#F97583"> try</span><span style="color:#005CC5;--shiki-dark:#79B8FF"> WICompressionTarget</span><span style="color:#24292E;--shiki-dark:#E1E4E8">(</span><span style="color:#005CC5;--shiki-dark:#79B8FF">maxBytes</span><span style="color:#24292E;--shiki-dark:#E1E4E8">: </span><span style="color:#005CC5;--shiki-dark:#79B8FF">500_000</span><span style="color:#24292E;--shiki-dark:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">let</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> constrained </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#D73A49;--shiki-dark:#F97583"> try</span><span style="color:#D73A49;--shiki-dark:#F97583"> await</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> WICompressor.</span><span style="color:#005CC5;--shiki-dark:#79B8FF">compress</span><span style="color:#24292E;--shiki-dark:#E1E4E8">(imageData, </span><span style="color:#005CC5;--shiki-dark:#79B8FF">to</span><span style="color:#24292E;--shiki-dark:#E1E4E8">: target)</span></span></code></pre>
+<p>The two flows share <code>WIImageOutput</code> and the same lower-level execution capabilities, but they no longer pretend to be one policy model.</p>
+<h3 id="imageio-and-rendering">ImageIO and Rendering</h3>
+<p>Once the compression domain was separated, the lower-level boundaries became clearer as well.</p>
+<p>ImageIO owns inspection, decode, thumbnail generation, transcode, and encode for encoded image data. <code>WIImageRendering</code> uses Core Graphics to perform crop, resize, canvas drawing, background and Alpha handling, and color-space conversion. <code>CGImage</code> is the exchange value between those modules, not a new business center.</p>
+<p><code>WIImageIO</code> is not intended to be an all-encompassing ImageIO framework. It does not attempt to own the full world of animation, progressive decoding, or HDR; that was never the core purpose of WICompress. But for the static-image path, it wraps <code>CGImageSource</code>, <code>CGImageDestination</code>, property dictionaries, and finalization behind an API that reads naturally.</p>
+<pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="swift"><code><span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">let</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> encoded </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#D73A49;--shiki-dark:#F97583"> try</span><span style="color:#005CC5;--shiki-dark:#79B8FF"> ImageReader</span><span style="color:#24292E;--shiki-dark:#E1E4E8">(imageData)</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    .</span><span style="color:#005CC5;--shiki-dark:#79B8FF">thumbnail</span><span style="color:#24292E;--shiki-dark:#E1E4E8">(</span><span style="color:#005CC5;--shiki-dark:#79B8FF">options</span><span style="color:#24292E;--shiki-dark:#E1E4E8">: .</span><span style="color:#D73A49;--shiki-dark:#F97583">init</span><span style="color:#24292E;--shiki-dark:#E1E4E8">(</span><span style="color:#005CC5;--shiki-dark:#79B8FF">maximumPixelSize</span><span style="color:#24292E;--shiki-dark:#E1E4E8">: </span><span style="color:#005CC5;--shiki-dark:#79B8FF">1_200</span><span style="color:#24292E;--shiki-dark:#E1E4E8">))</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    .</span><span style="color:#005CC5;--shiki-dark:#79B8FF">encode</span><span style="color:#24292E;--shiki-dark:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#005CC5;--shiki-dark:#79B8FF">        as</span><span style="color:#24292E;--shiki-dark:#E1E4E8">: .jpeg,</span></span>
+<span class="line"><span style="color:#005CC5;--shiki-dark:#79B8FF">        options</span><span style="color:#24292E;--shiki-dark:#E1E4E8">: .</span><span style="color:#D73A49;--shiki-dark:#F97583">init</span><span style="color:#24292E;--shiki-dark:#E1E4E8">(</span><span style="color:#005CC5;--shiki-dark:#79B8FF">compressionQuality</span><span style="color:#24292E;--shiki-dark:#E1E4E8">: </span><span style="color:#005CC5;--shiki-dark:#79B8FF">0.75</span><span style="color:#24292E;--shiki-dark:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    )</span></span></code></pre>
+<p>At least for this static-image boundary, the API has reached the readability I wanted: state transitions are explicit, and ImageIO details do not leak back into high-level compression code. Some larger image libraries have much richer animation, caching, and progressive-decoding systems, yet their ImageIO use is still distributed across processors, serializers, or helpers. WIImageIO does less, which gives it the opportunity to describe this smaller path more clearly.</p>
+<p>The chain API I had wanted for years survived only here. Not because chaining looks elegant, but because <code>ImageReader → ImageFrame → encoded Data</code> represents real state transitions. The high-level compression API remains a set of ordinary terminals. Turning every parameter into a chain does not reduce the cost of understanding the domain.</p>
+<p>Rendering remains package-only for now. It can reliably render a single image, but it has not yet formed a public API worth publishing independently. A capability being wrappable does not mean it must be exposed. That restraint became part of 2.0 as well.</p>
+<p>The commit that removed the old policy pipeline marked the construction phase’s temporary low point: production code fell from a peak of 4,856 lines to 3,880, a reduction of 976. Those lines did not disappear because large files were mechanically split. They disappeared because old paths and duplicate execution owners were actually removed.</p>
+<p>But <code>3,880</code> was not the finish line. We then established the shared Domain, published the <code>WIImageIO</code> Reader and Frame API, completed selective metadata handling, rebuilt Rendering, separated TargetSearch, and added Luban 2 and async terminals. Production code grew again as real capabilities took their final shape.</p>
+<h2 id="keeping-one-orchestrator">Keeping One Orchestrator</h2>
+<p><img src="/images/wicompress-v2-pipeline.svg" alt="WICompress 2.0: the capabilities remain, but execution has one orchestrator"></p>
+<p>The final structure is surprisingly plain.</p>
+<p><code>WIImageProcess</code> and <code>WICompressionTarget</code> describe two public intentions. Once a request enters <code>ImagePipeline</code>, the original input, descriptor, working image, and candidate search state exist only for that request. The Pipeline is the only component that understands the complete flow.</p>
+<p>ImageIO provides inspection, decode, transcode, and encode. Rendering performs pixel drawing. <code>TargetSearch</code> only maintains feedback for candidate search. Each receives the inputs it actually needs and returns a definite result. None knows about an outer container or tries to understand the complete compression business.</p>
+<p>The final <code>v2.0.0</code> contained 40 production Swift files and 4,713 physical lines—833 more than the temporary low point and also more than <code>v1.4.0</code>. Its largest file, <code>ImagePipeline.swift</code>, still had 474 lines, but no production file exceeded 500.</p>
+<p>The code did not return to 204 lines, nor should it have. Real capabilities require real code. The Target benchmark, Example app, Chinese and English DocC, migration guide, and architecture documents sit outside this production-code count; together, they gave this small library a complete engineering boundary.</p>
+<p>The change was not that the code became smaller. It was that I could now open any module and explain why it existed.</p>
+<h2 id="the-author-in-the-age-of-ai">The Author in the Age of AI</h2>
+<p>This refactor could not have happened without AI.</p>
+<p>It helped me relearn ImageIO and Core Graphics, study Nuke<sup><a href="#user-content-fn-3" id="user-content-fnref-3" data-footnote-ref aria-describedby="footnote-label">3</a></sup>, Kingfisher<sup><a href="#user-content-fn-4" id="user-content-fnref-4" data-footnote-ref aria-describedby="footnote-label">4</a></sup>, SDWebImage<sup><a href="#user-content-fn-5" id="user-content-fnref-5" data-footnote-ref aria-describedby="footnote-label">5</a></sup>, and Signal<sup><a href="#user-content-fn-6" id="user-content-fnref-6" data-footnote-ref aria-describedby="footnote-label">6</a></sup>, compare sizing APIs from Android and the Web, verify Swift 6.2 concurrency semantics, and build tests, benchmarks, documentation, and migration guides. Much of the implementation arrived quickly. Review also stopped being a single pass: one agent wrote code, while another challenged its error semantics, memory lifetime, platform builds, and public API.</p>
+<p>That workflow pushed the output of one person far beyond what I had previously considered possible.</p>
+<p>But AI is equally good at something else: producing a complete proposal for every possibility. If you keep asking, it can always add another service, protocol, registry, or extension point. Every proposal can be explained, and most of them can genuinely work.</p>
+<p>The problem is that a proposal is not a requirement. The fact that something can be built does not qualify it to enter the work.</p>
+<p>Unless someone keeps asking, “Who does this serve?”, “What state does it own?”, “Which old path does it remove?”, and “Do we need it now?”, AI will naturally fill every available space. The architecture becomes more complete while the work becomes less recognizably your own.</p>
+<p>So I cannot summarize the experience as “AI adds, humans delete.” AI proposed many of the good designs that survived, and I made wrong decisions too. The real distinction is that someone must ultimately own the boundary: why Process and Target are separate, why the Pipeline is not public, why Rendering is not yet published, why animation is deferred, why 2.0 requires Swift 6.2, and why some historical capabilities were intentionally left behind.</p>
+<p>None of those decisions emerged automatically from adding another type.</p>
+<p>A large refactor was not a full rewrite triggered by one moment of insight either. ImageIO, Rendering, Domain, Pipeline, and TargetSearch found their places through many small changes. Each time, we removed one piece of duplicate ownership, ran the tests, committed, and looked at the entire diagram again. The decisions from the morning were challenged again in the afternoon, until no name remained that even the author could not explain.</p>
+<p>AI accelerated the implementation. The author still had to take responsibility for the shape that remained.</p>
+<h2 id="20">2.0</h2>
+<p>On August 2, 2026, WICompress 2.0 was released.<sup><a href="#user-content-fn-7" id="user-content-fnref-7" data-footnote-ref aria-describedby="footnote-label">7</a></sup></p>
+<p>It is now a UIKit- and AppKit-free Swift 6.2 image processing and compression library for Apple platforms. It exposes explicit Process and Target flows, while publishing <code>WIImageIO</code> as an independent product for callers who need the lower-level image boundary. The Example app, benchmark, bilingual DocC, migration guide, and architecture documentation are part of the release as well.</p>
+<p>It is not a complete answer to the image world. Animation, progressive decoding, and comprehensive HDR handling remain outside the current boundary, and the Target algorithm still has room for continued benchmarking and optimization. None of those capabilities needs to enter the code merely to make 2.0 look complete. When a real requirement arrives, the boundary can be reconsidered.</p>
+<p>When I wrote <em>The Observer</em>,<sup><a href="#user-content-fn-2" id="user-content-fnref-2-2" data-footnote-ref aria-describedby="footnote-label">2</a></sup> I wondered what remained for an author once AI had compressed both exploration and implementation. WICompress 2.0 did not make time move slowly again, but it gave me a practical answer: AI can produce many answers quickly; deciding which one remains still belongs to the author.</p>
+<p>This time, I was not only an observer.</p>
+<section data-footnotes class="footnotes"><h2 class="sr-only" id="footnote-label">Footnotes</h2>
+<ol>
+<li id="user-content-fn-1">
+<p><a href="https://github.com/Weixi779/WICompress">WICompress</a> <a href="#user-content-fnref-1" data-footnote-backref="" aria-label="Back to reference 1" class="data-footnote-backref">↩</a></p>
+</li>
+<li id="user-content-fn-2">
+<p><a href="https://weixi779.github.io/posts/observer/">The Observer</a> <a href="#user-content-fnref-2" data-footnote-backref="" aria-label="Back to reference 2" class="data-footnote-backref">↩</a> <a href="#user-content-fnref-2-2" data-footnote-backref="" aria-label="Back to reference 2-2" class="data-footnote-backref">↩<sup>2</sup></a></p>
+</li>
+<li id="user-content-fn-3">
+<p><a href="https://github.com/kean/Nuke">Nuke</a> <a href="#user-content-fnref-3" data-footnote-backref="" aria-label="Back to reference 3" class="data-footnote-backref">↩</a></p>
+</li>
+<li id="user-content-fn-4">
+<p><a href="https://github.com/onevcat/Kingfisher">Kingfisher</a> <a href="#user-content-fnref-4" data-footnote-backref="" aria-label="Back to reference 4" class="data-footnote-backref">↩</a></p>
+</li>
+<li id="user-content-fn-5">
+<p><a href="https://github.com/SDWebImage/SDWebImage">SDWebImage</a> <a href="#user-content-fnref-5" data-footnote-backref="" aria-label="Back to reference 5" class="data-footnote-backref">↩</a></p>
+</li>
+<li id="user-content-fn-6">
+<p><a href="https://github.com/signalapp/Signal-iOS">Signal-iOS</a> <a href="#user-content-fnref-6" data-footnote-backref="" aria-label="Back to reference 6" class="data-footnote-backref">↩</a></p>
+</li>
+<li id="user-content-fn-7">
+<p><a href="https://github.com/Weixi779/WICompress/releases/tag/v2.0.0">WICompress 2.0 Release</a> <a href="#user-content-fnref-7" data-footnote-backref="" aria-label="Back to reference 7" class="data-footnote-backref">↩</a></p>
+</li>
+</ol>
+</section>
+<nav class="post-navigation" aria-label="Adjacent posts"><span></span><span></span></nav><section class="comments" aria-label="Comments"><div id="giscus-comments" data-theme-light="light" data-theme-dark="dark"></div><script src="https://giscus.app/client.js" data-repo="Weixi779/Weixi779.github.io" data-repo-id="MDEwOlJlcG9zaXRvcnkzODE5Nzk0MzA=" data-category="Announcements" data-category-id="DIC_kwDOFsSLJs4C3eHH" data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="bottom" data-theme="preferred_color_scheme" data-lang="en" data-loading="lazy" crossorigin="anonymous" async></script></section><script type="module">function e(e){let t=document.querySelector(`iframe.giscus-frame`);t?.contentWindow&&t.contentWindow.postMessage({giscus:{setConfig:{theme:e}}},`https://giscus.app`)}window.addEventListener(`blog-theme-change`,t=>{e(t.detail.colorMode)});var t=document.querySelector(`.comments`);if(t){let n=new MutationObserver(()=>{document.querySelector(`iframe.giscus-frame`)&&(e(document.documentElement.dataset.colorMode===`dark`?`dark`:`light`),n.disconnect())});n.observe(t,{childList:!0,subtree:!0})}</script></article></div></main><footer class="site-footer"><nav class="site-footer__links" aria-label="找到我"><a class="site-footer__link" href="https://github.com/Weixi779" target="_blank" rel="me noopener noreferrer" aria-label="在 GitHub 找到我" title="GitHub"><svg class="site-footer__icon site-footer__icon--fill" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.61-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.89 1.53 2.34 1.09 2.91.83.09-.65.35-1.09.64-1.34-2.22-.25-4.56-1.11-4.56-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.03A9.6 9.6 0 0 1 12 6.84c.85 0 1.71.12 2.5.34 1.91-1.3 2.75-1.03 2.75-1.03.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.69-4.57 4.94.36.31.68.92.68 1.85v2.74c0 .27.18.58.69.48A10 10 0 0 0 12 2Z"></path></svg></a><a class="site-footer__link" href="https://leetcode.cn/u/wei-xi-d/" target="_blank" rel="noopener noreferrer" aria-label="查看我的 LeetCode 主页" title="LeetCode"><svg class="site-footer__icon site-footer__icon--fill" aria-hidden="true" viewBox="0 0 24 24"><path d="M13.483 0a1.374 1.374 0 0 0-.961.438L7.116 6.226l-3.854 4.126a5.266 5.266 0 0 0-1.209 2.104 5.35 5.35 0 0 0-.125.513 5.527 5.527 0 0 0 .062 2.362 5.83 5.83 0 0 0 .349 1.017 5.938 5.938 0 0 0 1.271 1.818l4.277 4.193.039.038c2.248 2.165 5.852 2.133 8.063-.074l2.396-2.392c.54-.54.54-1.414.003-1.955a1.378 1.378 0 0 0-1.951-.003l-2.396 2.392a3.021 3.021 0 0 1-4.205.038l-.02-.019-4.276-4.193c-.652-.64-.972-1.469-.948-2.263a2.68 2.68 0 0 1 .066-.523 2.545 2.545 0 0 1 .619-1.164L9.13 8.114c1.058-1.134 3.204-1.27 4.43-.278l3.501 2.831c.593.48 1.461.387 1.94-.207a1.384 1.384 0 0 0-.207-1.943l-3.5-2.831c-.8-.647-1.766-1.045-2.774-1.202l2.015-2.158A1.384 1.384 0 0 0 13.483 0zm-2.866 12.815a1.38 1.38 0 0 0-1.38 1.382 1.38 1.38 0 0 0 1.38 1.382H20.79a1.38 1.38 0 0 0 1.38-1.382 1.38 1.38 0 0 0-1.38-1.382z"></path></svg></a><a class="site-footer__link" href="https://space.bilibili.com/6450245" target="_blank" rel="noopener noreferrer" aria-label="查看我的哔哩哔哩主页" title="Bilibili"><svg class="site-footer__icon site-footer__icon--fill" aria-hidden="true" viewBox="0 0 24 24"><path d="M17.813 4.653h.854c1.51.054 2.769.578 3.773 1.574 1.004.995 1.524 2.249 1.56 3.76v7.36c-.036 1.51-.556 2.769-1.56 3.773s-2.262 1.524-3.773 1.56H5.333c-1.51-.036-2.769-.556-3.773-1.56S.036 18.858 0 17.347v-7.36c.036-1.511.556-2.765 1.56-3.76 1.004-.996 2.262-1.52 3.773-1.574h.774l-1.174-1.12a1.234 1.234 0 0 1-.373-.906c0-.356.124-.658.373-.907l.027-.027c.267-.249.573-.373.92-.373.347 0 .653.124.92.373L9.653 4.44c.071.071.134.142.187.213h4.267a.836.836 0 0 1 .16-.213l2.853-2.747c.267-.249.573-.373.92-.373.347 0 .662.151.929.4.267.249.391.551.391.907 0 .355-.124.657-.373.906zM5.333 7.24c-.746.018-1.373.276-1.88.773-.506.498-.769 1.13-.786 1.894v7.52c.017.764.28 1.395.786 1.893.507.498 1.134.756 1.88.773h13.334c.746-.017 1.373-.275 1.88-.773.506-.498.769-1.129.786-1.893v-7.52c-.017-.765-.28-1.396-.786-1.894-.507-.497-1.134-.755-1.88-.773zM8 11.107c.373 0 .684.124.933.373.25.249.383.569.4.96v1.173c-.017.391-.15.711-.4.96-.249.25-.56.374-.933.374s-.684-.125-.933-.374c-.25-.249-.383-.569-.4-.96V12.44c0-.373.129-.689.386-.947.258-.257.574-.386.947-.386zm8 0c.373 0 .684.124.933.373.25.249.383.569.4.96v1.173c-.017.391-.15.711-.4.96-.249.25-.56.374-.933.374s-.684-.125-.933-.374c-.25-.249-.383-.569-.4-.96V12.44c.017-.391.15-.711.4-.96.249-.249.56-.373.933-.373Z"></path></svg></a><a class="site-footer__link" href="mailto:sunshiwei418@126.com" aria-label="给我发送邮件" title="Email"><svg class="site-footer__icon site-footer__icon--stroke" aria-hidden="true" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="m4 7 8 6 8-6"></path></svg></a><a class="site-footer__link" href="/rss.xml" aria-label="订阅 RSS" title="RSS"><svg class="site-footer__icon site-footer__icon--stroke" aria-hidden="true" viewBox="0 0 24 24"><circle cx="5" cy="19" r="1"></circle><path d="M5 11a8 8 0 0 1 8 8M5 5a14 14 0 0 1 14 14"></path></svg></a></nav><p>© 2026 Weixi</p></footer></body></html>

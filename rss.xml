@@ -5,8 +5,19 @@
     <link>https://weixi779.github.io/</link>
     <description>个人博客记录成长</description>
     <language>zh-CN</language>
-    <lastBuildDate>Fri, 24 Jul 2026 06:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Sun, 02 Aug 2026 04:00:00 GMT</lastBuildDate>
     <atom:link href="https://weixi779.github.io/rss.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>「iOS」解构与重组：AI 时代下的 WICompress 2.0</title>
+      <link>https://weixi779.github.io/posts/wicompress-2-architecture-ai/</link>
+      <guid isPermaLink="true">https://weixi779.github.io/posts/wicompress-2-architecture-ai/</guid>
+      <pubDate>Sun, 02 Aug 2026 04:00:00 GMT</pubDate>
+      <description>从 204 行的图片压缩工具到 WICompress 2.0，也重新理解人在 AI 编程中的位置。</description>
+      <category>架构</category>
+      <category>图像处理</category>
+      <category>AI</category>
+      <category>技术演进</category>
+    </item>
     <item>
       <title>「iOS」现代缓存体系探索</title>
       <link>https://weixi779.github.io/posts/caffeine-moka-cache-notes/</link>

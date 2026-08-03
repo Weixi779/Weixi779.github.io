@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">WICompress 1.4 execution pipeline</title>
+  <desc id="desc">Process and Target follow different paths but are forced through the same options, write plan resolver, and encoder.</desc>
+  <style>
+    .bg { fill: #F6F8FA; }
+    .edge-label { fill: #59636E; font: 400 14px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    .node text { font: 650 16px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; text-anchor: middle; dominant-baseline: middle; }
+    .node .detail { font-size: 13px; font-weight: 450; }
+    .request rect { fill: #F1EDFF; stroke: #6750A4; }
+    .request text { fill: #2D1B4E; }
+    .decision rect { fill: #FFF1ED; stroke: #C2410C; }
+    .decision text { fill: #5F1D0B; }
+    .capability rect { fill: #EAF5FF; stroke: #1769AA; }
+    .capability text { fill: #103B5D; }
+    .value rect { fill: #EAF8F2; stroke: #147D64; }
+    .value text { fill: #0B4437; }
+    .node rect { stroke-width: 1.7; }
+    .arrow { fill: none; stroke: #57606A; stroke-width: 1.8; marker-end: url(#arrow); }
+    .arrow-fill { fill: #57606A; }
+
+    @media (prefers-color-scheme: dark) {
+      .bg { fill: #0D1117; }
+      .edge-label { fill: #8B949E; }
+      .request rect { fill: #251C3D; stroke: #A78BFA; }
+      .request text { fill: #EDE9FE; }
+      .decision rect { fill: #3A211B; stroke: #FB923C; }
+      .decision text { fill: #FFEDD5; }
+      .capability rect { fill: #10283B; stroke: #60A5FA; }
+      .capability text { fill: #DBEAFE; }
+      .value rect { fill: #102E29; stroke: #34D399; }
+      .value text { fill: #D1FAE5; }
+      .arrow { stroke: #8B949E; }
+      .arrow-fill { fill: #8B949E; }
+    }
+  </style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path class="arrow-fill" d="M 0 0 L 10 5 L 0 10 z"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" width="1200" height="760" rx="16"/>
+  <g transform="translate(0 -70)">
+
+  <path class="arrow" d="M215 174 V220"/>
+  <path class="arrow" d="M985 174 V190"/>
+  <path class="arrow" d="M985 258 V280"/>
+  <path class="arrow" d="M865 314 H760 V255 H330"/>
+  <text class="edge-label" x="594" y="244" text-anchor="middle">translated back</text>
+  <path class="arrow" d="M985 348 V390"/>
+  <path class="arrow" d="M215 288 V424 H520 V470"/>
+  <path class="arrow" d="M215 448 V480"/>
+  <path class="arrow" d="M330 514 H450"/>
+  <path class="arrow" d="M865 424 H750 V514"/>
+  <path class="arrow" d="M600 558 V600"/>
+  <path class="arrow" d="M600 668 V700"/>
+  <path class="arrow" d="M750 734 H870"/>
+  <path class="arrow" d="M95 414 H54 V734 H450"/>
+  <path class="arrow" d="M985 458 V734 H750"/>
+
+  <g class="node request">
+    <rect x="95" y="106" width="240" height="68" rx="12"/>
+    <text x="215" y="140">Process</text>
+  </g>
+  <g class="node request">
+    <rect x="865" y="106" width="240" height="68" rx="12"/>
+    <text x="985" y="140">WICompressionTarget</text>
+  </g>
+  <g class="node request">
+    <rect x="95" y="220" width="240" height="68" rx="12"/>
+    <text x="215" y="246">WICompressOptions</text>
+    <text class="detail" x="215" y="270">8 Policies</text>
+  </g>
+  <g class="node decision">
+    <rect x="865" y="190" width="240" height="68" rx="12"/>
+    <text x="985" y="224">TargetValidator</text>
+  </g>
+  <g class="node decision">
+    <rect x="865" y="280" width="240" height="68" rx="12"/>
+    <text x="985" y="314">TargetResolver</text>
+  </g>
+  <g class="node decision">
+    <rect x="865" y="390" width="240" height="68" rx="12"/>
+    <text x="985" y="424">CompressionSolver</text>
+  </g>
+  <g class="node capability">
+    <rect x="95" y="380" width="240" height="68" rx="12"/>
+    <text x="215" y="414">WIImageSource</text>
+  </g>
+  <g class="node value">
+    <rect x="95" y="480" width="240" height="68" rx="12"/>
+    <text x="215" y="514">WIImageInfo</text>
+  </g>
+  <g class="node decision">
+    <rect x="450" y="470" width="300" height="88" rx="12"/>
+    <text x="600" y="504">WritePlanResolver</text>
+    <text class="detail" x="600" y="530">interprets policies and search results</text>
+  </g>
+  <g class="node decision">
+    <rect x="450" y="600" width="300" height="68" rx="12"/>
+    <text x="600" y="634">WIWritePlan</text>
+  </g>
+  <g class="node capability">
+    <rect x="450" y="700" width="300" height="68" rx="12"/>
+    <text x="600" y="726">WIImageEncoder</text>
+    <text class="detail" x="600" y="750">decode · crop · render · encode</text>
+  </g>
+  <g class="node value">
+    <rect x="870" y="700" width="250" height="68" rx="12"/>
+    <text x="995" y="726">Data</text>
+    <text class="detail" x="995" y="750">CompressionResult</text>
+  </g>
+  </g>
+</svg>

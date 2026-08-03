@@ -1,0 +1,247 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme-id="deepSeaMilk" data-color-mode="light" data-color-mode-preference="system"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><meta name="generator" content="Astro v7.0.7"><meta name="description" content="从 204 行的图片压缩工具到 WICompress 2.0，也重新理解人在 AI 编程中的位置。"><meta name="color-scheme" content="light dark"><meta property="og:title" content="「iOS」解构与重组：AI 时代下的 WICompress 2.0 - 伟兮の小屋"><meta property="og:description" content="从 204 行的图片压缩工具到 WICompress 2.0，也重新理解人在 AI 编程中的位置。"><meta property="og:type" content="website"><meta property="og:locale" content="zh_CN"><meta property="og:url" content="https://weixi779.github.io/posts/wicompress-2-architecture-ai/"><meta property="og:image" content="https://weixi779.github.io/images/banner.jpg"><link rel="canonical" href="https://weixi779.github.io/posts/wicompress-2-architecture-ai/"><link rel="alternate" hreflang="zh-CN" href="https://weixi779.github.io/posts/wicompress-2-architecture-ai/"><link rel="alternate" hreflang="en" href="https://weixi779.github.io/en/posts/wicompress-2-architecture-ai/"><link rel="alternate" hreflang="x-default" href="https://weixi779.github.io/posts/wicompress-2-architecture-ai/"><link rel="alternate" type="application/rss+xml" title="伟兮の小屋 RSS" href="/rss.xml"><link rel="icon" href="/images/favicon.ico"><title>「iOS」解构与重组：AI 时代下的 WICompress 2.0 - 伟兮の小屋</title><script data-default-theme="deepSeaMilk" data-theme-ids="[&quot;deepSeaMilk&quot;,&quot;cinderCandy&quot;,&quot;wisteriaMatcha&quot;,&quot;clearWaterNavy&quot;]" data-storage-key="blog-theme-preference">
+      (() => {
+        const bootstrap = document.currentScript;
+        const defaultThemeId = bootstrap?.dataset.defaultTheme ?? 'deepSeaMilk';
+        const themeIds = JSON.parse(bootstrap?.dataset.themeIds ?? '[]');
+        const themeStorageKey = bootstrap?.dataset.storageKey ?? 'blog-theme-preference';
+        let preference = null;
+        try {
+          const stored = localStorage.getItem(themeStorageKey);
+          preference = stored ? JSON.parse(stored) : null;
+        } catch {}
+
+        const storedThemeId = preference?.themeId;
+        const storedMode = preference?.mode;
+        const systemDark = window.matchMedia?.('(prefers-color-scheme: dark)').matches;
+        const themeId = themeIds.includes(storedThemeId) ? storedThemeId : defaultThemeId;
+        const colorModePreference =
+          storedMode === 'light' || storedMode === 'dark' || storedMode === 'system'
+            ? storedMode
+            : 'system';
+        const colorMode =
+          colorModePreference === 'light' || colorModePreference === 'dark'
+            ? colorModePreference
+            : systemDark
+              ? 'dark'
+              : 'light';
+
+        document.documentElement.dataset.themeId = themeId;
+        document.documentElement.dataset.colorModePreference = colorModePreference;
+        document.documentElement.dataset.colorMode = colorMode;
+      })();
+    </script><link rel="stylesheet" href="/assets/prose.L3rFJHHg.css"><link rel="stylesheet" href="/assets/BaseLayout.DOBQhnoK.css"></head><body><header class="site-header"><div class="site-header__inner"><a class="site-brand" href="/">伟兮の小屋</a><nav aria-label="主导航"><a href="/">首页</a><a href="/archive/">归档</a><a href="/about/">关于</a></nav><div class="theme-picker" data-theme-picker data-astro-cid-hcqnpaxe><button class="theme-toggle" id="theme-toggle" type="button" aria-label="打开主题设置" aria-haspopup="dialog" aria-expanded="false" aria-controls="theme-panel" data-theme-toggle data-astro-cid-hcqnpaxe><span aria-hidden="true" class="theme-toggle__icon" data-astro-cid-hcqnpaxe>◐</span><span class="theme-toggle__label" data-astro-cid-hcqnpaxe>主题</span></button><section class="theme-panel" id="theme-panel" role="dialog" aria-label="主题设置" data-theme-panel hidden data-astro-cid-hcqnpaxe><header class="theme-panel__header" data-astro-cid-hcqnpaxe><strong data-astro-cid-hcqnpaxe>主题设置</strong><small data-theme-current-name data-astro-cid-hcqnpaxe>Deep Sea Milk</small></header><fieldset class="theme-panel__group" data-astro-cid-hcqnpaxe><legend data-astro-cid-hcqnpaxe>配色</legend><div class="theme-options" data-astro-cid-hcqnpaxe><label class="theme-option" style="--theme-light-background: rgb(96.08% 93.73% 91.76% / 1);--theme-light-surface: rgb(100% 99.22% 97.25% / 1);--theme-light-accent: rgb(7.06% 18.04% 54.12% / 1);--theme-dark-background: rgb(3.14% 6.67% 14.9% / 1);--theme-dark-surface: rgb(7.84% 14.12% 29.02% / 1);--theme-dark-accent: rgb(61.18% 70.59% 100% / 1)" data-astro-cid-hcqnpaxe><input type="radio" name="theme-id" value="deepSeaMilk" checked data-theme-id-input data-astro-cid-hcqnpaxe><span class="theme-option__body" data-astro-cid-hcqnpaxe><span class="theme-option__preview" aria-hidden="true" data-astro-cid-hcqnpaxe><span class="theme-option__preview-mode theme-option__preview-mode--light" data-astro-cid-hcqnpaxe></span><span class="theme-option__preview-mode theme-option__preview-mode--dark" data-astro-cid-hcqnpaxe></span></span><span class="theme-option__name" data-astro-cid-hcqnpaxe>Deep Sea Milk</span></span></label><label class="theme-option" style="--theme-light-background: rgb(100% 96.86% 98.04% / 1);--theme-light-surface: rgb(100% 100% 100% / 1);--theme-light-accent: rgb(77.25% 11.37% 38.82% / 1);--theme-dark-background: rgb(6.67% 6.67% 7.84% / 1);--theme-dark-surface: rgb(12.55% 12.55% 15.29% / 1);--theme-dark-accent: rgb(100% 43.53% 65.88% / 1)" data-astro-cid-hcqnpaxe><input type="radio" name="theme-id" value="cinderCandy" data-theme-id-input data-astro-cid-hcqnpaxe><span class="theme-option__body" data-astro-cid-hcqnpaxe><span class="theme-option__preview" aria-hidden="true" data-astro-cid-hcqnpaxe><span class="theme-option__preview-mode theme-option__preview-mode--light" data-astro-cid-hcqnpaxe></span><span class="theme-option__preview-mode theme-option__preview-mode--dark" data-astro-cid-hcqnpaxe></span></span><span class="theme-option__name" data-astro-cid-hcqnpaxe>Cinder Candy</span></span></label><label class="theme-option" style="--theme-light-background: rgb(96.47% 97.25% 92.94% / 1);--theme-light-surface: rgb(100% 99.61% 96.86% / 1);--theme-light-accent: rgb(37.25% 33.33% 63.53% / 1);--theme-dark-background: rgb(7.84% 7.06% 14.12% / 1);--theme-dark-surface: rgb(14.12% 12.55% 24.71% / 1);--theme-dark-accent: rgb(72.55% 69.41% 100% / 1)" data-astro-cid-hcqnpaxe><input type="radio" name="theme-id" value="wisteriaMatcha" data-theme-id-input data-astro-cid-hcqnpaxe><span class="theme-option__body" data-astro-cid-hcqnpaxe><span class="theme-option__preview" aria-hidden="true" data-astro-cid-hcqnpaxe><span class="theme-option__preview-mode theme-option__preview-mode--light" data-astro-cid-hcqnpaxe></span><span class="theme-option__preview-mode theme-option__preview-mode--dark" data-astro-cid-hcqnpaxe></span></span><span class="theme-option__name" data-astro-cid-hcqnpaxe>Wisteria Matcha</span></span></label><label class="theme-option" style="--theme-light-background: rgb(91.76% 97.25% 98.04% / 1);--theme-light-surface: rgb(97.25% 99.61% 100% / 1);--theme-light-accent: rgb(6.67% 18.82% 33.73% / 1);--theme-dark-background: rgb(2.75% 8.24% 13.33% / 1);--theme-dark-surface: rgb(6.67% 18.82% 33.73% / 1);--theme-dark-accent: rgb(56.86% 81.18% 83.53% / 1)" data-astro-cid-hcqnpaxe><input type="radio" name="theme-id" value="clearWaterNavy" data-theme-id-input data-astro-cid-hcqnpaxe><span class="theme-option__body" data-astro-cid-hcqnpaxe><span class="theme-option__preview" aria-hidden="true" data-astro-cid-hcqnpaxe><span class="theme-option__preview-mode theme-option__preview-mode--light" data-astro-cid-hcqnpaxe></span><span class="theme-option__preview-mode theme-option__preview-mode--dark" data-astro-cid-hcqnpaxe></span></span><span class="theme-option__name" data-astro-cid-hcqnpaxe>Clear Water Navy</span></span></label></div></fieldset><fieldset class="theme-panel__group theme-panel__group--mode" data-astro-cid-hcqnpaxe><legend data-astro-cid-hcqnpaxe>显示模式</legend><div class="theme-modes" data-astro-cid-hcqnpaxe><label class="theme-mode" data-astro-cid-hcqnpaxe><input type="radio" name="theme-mode" value="system" checked data-theme-mode-input data-astro-cid-hcqnpaxe><span data-astro-cid-hcqnpaxe>跟随系统</span></label><label class="theme-mode" data-astro-cid-hcqnpaxe><input type="radio" name="theme-mode" value="light" data-theme-mode-input data-astro-cid-hcqnpaxe><span data-astro-cid-hcqnpaxe>浅色</span></label><label class="theme-mode" data-astro-cid-hcqnpaxe><input type="radio" name="theme-mode" value="dark" data-theme-mode-input data-astro-cid-hcqnpaxe><span data-astro-cid-hcqnpaxe>深色</span></label></div></fieldset></section></div><script type="module">var e=`deepSeaMilk`,t=[{id:`deepSeaMilk`,displayName:`Deep Sea Milk`,modes:[`light`,`dark`],preview:{light:{background:`rgb(96.08% 93.73% 91.76% / 1)`,surface:`rgb(100% 99.22% 97.25% / 1)`,accent:`rgb(7.06% 18.04% 54.12% / 1)`},dark:{background:`rgb(3.14% 6.67% 14.9% / 1)`,surface:`rgb(7.84% 14.12% 29.02% / 1)`,accent:`rgb(61.18% 70.59% 100% / 1)`}}},{id:`cinderCandy`,displayName:`Cinder Candy`,modes:[`light`,`dark`],preview:{light:{background:`rgb(100% 96.86% 98.04% / 1)`,surface:`rgb(100% 100% 100% / 1)`,accent:`rgb(77.25% 11.37% 38.82% / 1)`},dark:{background:`rgb(6.67% 6.67% 7.84% / 1)`,surface:`rgb(12.55% 12.55% 15.29% / 1)`,accent:`rgb(100% 43.53% 65.88% / 1)`}}},{id:`wisteriaMatcha`,displayName:`Wisteria Matcha`,modes:[`light`,`dark`],preview:{light:{background:`rgb(96.47% 97.25% 92.94% / 1)`,surface:`rgb(100% 99.61% 96.86% / 1)`,accent:`rgb(37.25% 33.33% 63.53% / 1)`},dark:{background:`rgb(7.84% 7.06% 14.12% / 1)`,surface:`rgb(14.12% 12.55% 24.71% / 1)`,accent:`rgb(72.55% 69.41% 100% / 1)`}}},{id:`clearWaterNavy`,displayName:`Clear Water Navy`,modes:[`light`,`dark`],preview:{light:{background:`rgb(91.76% 97.25% 98.04% / 1)`,surface:`rgb(97.25% 99.61% 100% / 1)`,accent:`rgb(6.67% 18.82% 33.73% / 1)`},dark:{background:`rgb(2.75% 8.24% 13.33% / 1)`,surface:`rgb(6.67% 18.82% 33.73% / 1)`,accent:`rgb(56.86% 81.18% 83.53% / 1)`}}}],n=`blog-theme-preference`,r=t.map(({id:e})=>e);function i(e){return typeof e==`string`&&r.some(t=>t===e)}function a(e){return e===`light`||e===`dark`}function o(e){return e===`system`||a(e)}var s=document.querySelector(`[data-theme-picker]`),c=s?.querySelector(`[data-theme-toggle]`),l=s?.querySelector(`[data-theme-panel]`),u=s?.querySelector(`[data-theme-current-name]`),d=Array.from(s?.querySelectorAll(`[data-theme-id-input]`)??[]),f=Array.from(s?.querySelectorAll(`[data-theme-mode-input]`)??[]);if(s&&c&&l&&u){let r=s,a=c,p=l,m=u,h=document.documentElement,g=document,_=window.matchMedia(`(prefers-color-scheme: dark)`),v=window.matchMedia(`(prefers-reduced-motion: reduce)`),y=i(h.dataset.themeId)?h.dataset.themeId:e,b=o(h.dataset.colorModePreference)?h.dataset.colorModePreference:`system`,x=e=>e===`system`?_.matches?`dark`:`light`:e;function S(){for(let e of d)e.checked=e.value===y;for(let e of f)e.checked=e.value===b;m.textContent=t.find(({id:e})=>e===y)?.displayName??y}function C(){try{localStorage.setItem(n,JSON.stringify({themeId:y,mode:b}))}catch{}}function w(e){let t={themeId:y,colorMode:e,modePreference:b};window.dispatchEvent(new CustomEvent(`blog-theme-change`,{detail:t}))}function T(e,t,n={}){let r=x(t),i=y!==e||b!==t||h.dataset.colorMode!==r;if(y=e,b=t,n.persist!==!1&&C(),!i){S();return}let a=()=>{h.dataset.themeId=y,h.dataset.colorModePreference=b,h.dataset.colorMode=r,S(),w(r)},o=g.startViewTransition?.bind(g);n.animate!==!1&&!v.matches&&o?o(a).finished.catch(()=>{}):a()}function E(e,t=!1){p.hidden=!e,a.setAttribute(`aria-expanded`,String(e)),a.setAttribute(`aria-label`,e?`关闭主题设置`:`打开主题设置`),e?window.requestAnimationFrame(()=>{d.find(e=>e.checked)?.focus()}):t&&a.focus()}a.addEventListener(`click`,()=>E(p.hasAttribute(`hidden`)));for(let e of d)e.addEventListener(`change`,()=>{e.checked&&i(e.value)&&T(e.value,b)});for(let e of f)e.addEventListener(`change`,()=>{e.checked&&o(e.value)&&T(y,e.value)});document.addEventListener(`pointerdown`,e=>{!p.hasAttribute(`hidden`)&&e.target instanceof Node&&!r.contains(e.target)&&E(!1)}),document.addEventListener(`keydown`,e=>{e.key===`Escape`&&!p.hasAttribute(`hidden`)&&(e.preventDefault(),E(!1,!0))}),_.addEventListener(`change`,()=>{b===`system`&&T(y,b,{persist:!1})}),S()}</script></div></header><script type="module">var e=document.querySelector(`.site-header`);if(e){let t=!1,n=()=>{e.toggleAttribute(`data-elevated`,window.scrollY>8),t=!1};n(),window.addEventListener(`scroll`,()=>{t||(t=!0,window.requestAnimationFrame(n))},{passive:!0})}</script><main><header class="page-hero" style="--hero-image: url('/images/banner.jpg')"><div class="page-hero__overlay"><div class="page-hero__content"><h1>「iOS」解构与重组：AI 时代下的 WICompress 2.0</h1><p class="page-hero__summary">从 204 行的图片压缩工具到 WICompress 2.0，也重新理解人在 AI 编程中的位置。</p><nav class="post-language-switch" aria-label="文章语言"><a href="/posts/wicompress-2-architecture-ai/" lang="zh-CN" aria-current="page">中文</a><span aria-hidden="true">/</span><a href="/en/posts/wicompress-2-architecture-ai/" lang="en">English</a></nav></div></div></header><div class="post-shell"><nav class="toc" aria-label="文章目录"><details open><summary>目录</summary><ol><li class="toc__level-1"><a href="#之前">之前</a></li><li class="toc__level-1"><a href="#飓风袭来">飓风袭来</a></li><li class="toc__level-1"><a href="#两条路挤进一个答案">两条路，挤进一个答案</a></li><li class="toc__level-1"><a href="#只是移动了位置">只是移动了位置</a></li><li class="toc__level-1"><a href="#推翻过去">推翻过去</a></li><li class="toc__level-2"><a href="#process-与-target">Process 与 Target</a></li><li class="toc__level-2"><a href="#imageio-与-rendering">ImageIO 与 Rendering</a></li><li class="toc__level-1"><a href="#只留一个编排者">只留一个编排者</a></li><li class="toc__level-1"><a href="#ai-时代的作者">AI 时代的作者</a></li><li class="toc__level-1"><a href="#20">2.0</a></li><li class="toc__level-1"><a href="#footnote-label">Footnotes</a></li></ol></details></nav><script type="module">var e=document.querySelector(`.toc`),t=e?.querySelector(`details`),n=Array.from(e?.querySelectorAll(`a[href^="#"]`)??[]);t&&window.matchMedia(`(max-width: 820px)`).matches&&(t.open=!1);var r=new Map(n.map(e=>{let t=decodeURIComponent(e.hash.slice(1)),n=document.getElementById(t);return n?[t,n]:null}).filter(e=>e!==null));function i(e){for(let t of n)decodeURIComponent(t.hash.slice(1))===e?t.setAttribute(`aria-current`,`location`):t.removeAttribute(`aria-current`)}if(r.size>0){let e=new IntersectionObserver(e=>{let t=e.filter(e=>e.isIntersecting).sort((e,t)=>e.boundingClientRect.top-t.boundingClientRect.top)[0]?.target;t?.id&&i(t.id)},{rootMargin:`-88px 0px -70% 0px`,threshold:[0,1]});for(let t of r.values())e.observe(t);let t=decodeURIComponent(window.location.hash.slice(1));t&&r.has(t)&&i(t)}</script><article class="prose"><h2 id="之前">之前</h2>
+<p>WICompress<sup><a href="#user-content-fn-1" id="user-content-fnref-1" data-footnote-ref aria-describedby="footnote-label">1</a></sup> 不是从一张架构图里诞生的，而是从一个很具体的问题里长出来的。</p>
+<p>iPhone 拍摄的图片通常已经是压缩效率很高的 HEIC。如果业务上传不支持 HEIC，直接把它重新编码成 JPEG，最终文件反而可能比原图更大。明明执行了一次「压缩」，得到的却是一张更大的图片，这就是最初想解决的问题。</p>
+<p>当时的我从自己最熟悉的 <code>UIImage</code> 出发，先使用它已有的 resize 与编码能力，只有遇到 <code>UIImage</code> 无法回答的问题时才继续下探到 <code>ImageIO</code>。这条路线谈不上漂亮，但符合一个刚开始理解图片处理的 iOS 开发者的知识生长路径：先从已经会用的东西开始，再一点点向外修路。</p>
+<p>最早的 WICompress 也确实很小。<code>v0.2.2</code> 的生产 Swift 代码只有 4 个文件、204 行。它能处理真实业务问题，有一些测试，也足够让我愿意把它一直留在那里。</p>
+<p>如果故事停在这里，大概也不会有这篇文章。</p>
+<h2 id="飓风袭来">飓风袭来</h2>
+<p>后来有一次准备技术分享，我把这个已经放了很久的库重新交给 AI 审视。这件事在《旁观者》<sup><a href="#user-content-fn-2" id="user-content-fnref-2" data-footnote-ref aria-describedby="footnote-label">2</a></sup>里曾经提到过：AI 不需要重走我的学习路径，它可以直接站在 <code>ImageIO</code> 上，从图片数据究竟能够做什么反向推导这个库还可以拥有什么。</p>
+<p>输入为什么一定是 <code>UIImage</code>？它本来可以是 <code>Data</code>，也可以是文件 <code>URL</code>。</p>
+<p>格式、方向、metadata、color space 为什么散落在不同路径里？它们本来都可以在编码数据的边界被统一检查。</p>
+<p>缩放与质量为什么只能写死在一起？图片尺寸、输出格式、Alpha、画布与最终字节数，本来就是不同维度的问题。</p>
+<p>甚至还有 HDR、动图、渐进式解码、增量 Session。一个以前从来没有认真看过的世界，几个小时里全部摊在了面前。</p>
+<p>起初是惊讶，后来则越来越能感受到自己的渺小。聊得越深入，越能发现过去的知识边界有多窄。</p>
+<blockquote>
+<p>「AI 描述了一个很诱人的能力。」</p>
+<p>「这个东西很厉害，能实现吗？」</p>
+<p>「能。」</p>
+</blockquote>
+<p>然后，它为每一个阶段都创造了一个类型。</p>
+<p>一个需求开始生长，<code>Policy</code>、<code>Resolver</code>、<code>ExecutionPlan</code>、<code>Executor</code> 也跟着一个接一个出现。这些名字看起来都很专业，每一个单独拿出来也都能解释，可它们并不是从稳定职责里自然长出来的。更多时候，它们只是给不熟悉底层 API 的自己一种安全感：名字已经足够像架构了，那么代码大概也能够继续写下去。</p>
+<p>代码量也从 <code>v1.0.0</code> 的 780 行，一路增长到 <code>v1.4.0</code> 的 2,979 行。</p>
+<table>
+<thead>
+<tr>
+<th>版本</th>
+<th style="text-align: right">生产文件</th>
+<th style="text-align: right">物理行数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>v0.2.2</code></td>
+<td style="text-align: right">4</td>
+<td style="text-align: right">204</td>
+</tr>
+<tr>
+<td><code>v1.0.0</code></td>
+<td style="text-align: right">14</td>
+<td style="text-align: right">780</td>
+</tr>
+<tr>
+<td><code>v1.2.1</code></td>
+<td style="text-align: right">15</td>
+<td style="text-align: right">1,122</td>
+</tr>
+<tr>
+<td><code>v1.4.0</code></td>
+<td style="text-align: right">27</td>
+<td style="text-align: right">2,979</td>
+</tr>
+</tbody>
+</table>
+<p>本文涉及的生产代码行数，均统计对应提交 <code>Sources/</code> 下 Swift 文件的物理行数，不包含 Tests、Example、benchmark 与文档。</p>
+<p>代码变多本身没有问题。真正的问题是，我已经无法再用一条清晰的链路解释它为什么会变成这样。</p>
+<h2 id="两条路挤进一个答案">两条路，挤进一个答案</h2>
+<p>正式开始 2.0 时，我也没有立即找到答案。</p>
+<p>第一步是让 AI 把现有能力全部列出来。我们得到了一张很长的表：resize、quality、target bytes、format、Alpha、crop、metadata、color space、passthrough、file URL……每一项都很准确，但这张表只能证明这些能力或历史行为确实存在，并没有告诉我们哪些仍属于 2.0，更没有告诉我们它们应该怎样组合。</p>
+<p>我开始反过来追问：抛开已有的类型与 Policy，调用者来到这个库时，究竟想完成什么？</p>
+<p>这时才发现，<code>v1.4.0</code> 看起来只有一套压缩流程，实际上已经存在两种完全不同的需求。</p>
+<p>第一种是 Process。调用者知道自己想要什么：是否裁切、目标尺寸、压缩质量、输出格式、metadata 与 color space。库只需要把这些确定的要求执行下去。</p>
+<p>第二种是 Target。调用者只知道最终文件必须小于 500 KB，至于应该降低多少质量、缩小多少尺寸、尝试多少次，都需要库在内部搜索。</p>
+<p>当这两种意图重新画回已有代码时，第一张架构图终于出现了。</p>
+<p><img src="/images/wicompress-v1-pipeline.svg" alt="WICompress 1.4：Process 与 Target 被挤进同一套 Policy Pipeline"></p>
+<p>图画出来后才发现，当时从未真正把它们当成两条流程。Target 会先经过 Validator 与 Resolver，再被翻译成旧的 <code>WICompressOptions</code>；无法翻译的 <code>fill</code>、<code>exactCanvas</code>、placement 等能力，又继续塞进 <code>WIWritePlan</code>。最后两条路都要穿过同一个 <code>WritePlanResolver</code> 与 <code>ImageEncoder</code>。</p>
+<p>结果是几个文件不断吸收不属于自己的职责：</p>
+<table>
+<thead>
+<tr>
+<th>文件</th>
+<th style="text-align: right"><code>v1.4.0</code> 行数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>WICompressionSolver.swift</code></td>
+<td style="text-align: right">537</td>
+</tr>
+<tr>
+<td><code>WIImageEncoder.swift</code></td>
+<td style="text-align: right">451</td>
+</tr>
+<tr>
+<td><code>WIWritePlanResolver.swift</code></td>
+<td style="text-align: right">385</td>
+</tr>
+</tbody>
+</table>
+<p>三个文件占了整个生产库的 46.1%。<code>Solver</code> 同时搜索质量、尺寸与 PNG 候选；<code>Encoder</code> 不只编码，还负责 decode、thumbnail、resize、crop、canvas、Alpha、方向、metadata 与 color space；<code>WritePlanResolver</code> 则要解释所有 Policy，决定返回原图、source copy 还是重新渲染。</p>
+<p>更难受的是那些从 UI 世界借来的词。<code>fit</code>、<code>fill</code>、<code>fitInside</code>、<code>alignment</code>，单独看都不是错误的概念，但 WICompress 不是图片展示库。我作为作者第二次回头时，已经很难在不读代码的情况下解释它们各自意味着什么，更别说第一次接触这个库的开发者。</p>
+<p>不是添加新需求有错，而是整个系统已经失去了能够继续扩张的语言。</p>
+<p>这张图依然没有告诉我 2.0 应该长成什么样，但它结束了第一次重新开始：在经过思考、能力表格与一轮又一轮没有头绪的分类之后，我们终于能够准确指出问题——两条不同的路，被挤进了同一个答案。</p>
+<p>知道问题并不等于已经找到解法。第一轮修改依然只是把代码移动到更多 Target 与文件夹里：ImageIO 被抽了出来，Raster 被抽了出来，Process 也有了自己的类型，可旧的 Resolver、Plan、Solver 与 Encoder 一个都没有真正消失。</p>
+<h2 id="只是移动了位置">只是移动了位置</h2>
+<p><img src="/images/wicompress-transition-pipeline.svg" alt="WICompress 2.0 施工期：新模块出现了，旧执行所有者仍然存在"></p>
+<p>这张图取自请求级 <code>ImagePipeline</code> 刚刚出现的中间阶段。当时已经有新的 <code>WIImageIO</code> 与 <code>WIImageRaster</code>，也已经开始谈 Domain 与 Pipeline，但执行流程仍然需要 <code>ProcessResolver</code>、<code>TargetResolver</code>、<code>OutputResolver</code>、<code>ExecutionPlan</code> 与 <code>CompressionSolver</code> 接力。</p>
+<p>新 Pipeline 没有替代旧所有者，只是加入了它们。</p>
+<p>这个节点有 41 个生产文件、4,056 行代码。<code>WIImageIO.Source</code> 有 589 行，<code>ImagePipeline</code> 有 430 行，<code>CompressionSolver</code> 有 431 行。整个施工期的生产代码一度达到 4,856 行，文件数最高达到 49 个。</p>
+<p>一些逻辑文件也曾在不同阶段长到接近或者超过 500 行。下面是它们各自的历史峰值，并非来自同一个提交：</p>
+<table>
+<thead>
+<tr>
+<th>文件</th>
+<th style="text-align: right">历史峰值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>WIImageIO.swift</code></td>
+<td style="text-align: right">798</td>
+</tr>
+<tr>
+<td><code>WICompressionSolver.swift</code></td>
+<td style="text-align: right">673</td>
+</tr>
+<tr>
+<td><code>ImagePipeline+Target.swift</code></td>
+<td style="text-align: right">615</td>
+</tr>
+<tr>
+<td><code>Source.swift</code></td>
+<td style="text-align: right">589</td>
+</tr>
+<tr>
+<td><code>ImagePipeline.swift</code></td>
+<td style="text-align: right">495</td>
+</tr>
+<tr>
+<td><code>WIImageEncoder.swift</code></td>
+<td style="text-align: right">487</td>
+</tr>
+</tbody>
+</table>
+<p>但文件长度还不是最重要的问题。一个 800 行的文件可以只是尚未完成整理，一个 100 行的类型也可能完全没有存在的必要。真正让我不舒服的是，这张图里到处都是「解释者」：一个对象先解释请求，得到一个 Plan；另一个对象再解释 Plan，决定由谁执行；最后又需要一个 Executor 把前面的解释重新接起来。</p>
+<p>我们把文件分开了，却没有减少任何人的认知负担。</p>
+<h2 id="推翻过去">推翻过去</h2>
+<p>真正的转折不是再设计一版更完整的架构，而是开始反过来追问每一个名字。</p>
+<p><code>Inspector</code> 为什么存在？如果 inspect 只是一个动作，那么它应该直接返回 <code>Descriptor</code>。</p>
+<p><code>Source</code> 为什么要被每个子函数认识？如果 decode 只需要编码数据，render 只需要 <code>CGImage</code> 与几何事实，那么它们就不应该被一个业务 Container 污染。</p>
+<p><code>Resolver</code>、<code>ExecutionPlan</code>、<code>Executor</code> 又分别减少了什么压力？如果它们只是把一个 switch 从这里搬到那里，那么类型数量增加了，但事情没有变少。</p>
+<p>对我而言：程序员最重要的勇气，就是推翻过去。</p>
+<p>于是我们不再想怎样保住已有类型，而是重新确认这个库真正面对的需求。</p>
+<h3 id="process-与-target">Process 与 Target</h3>
+<p>Process 与 Target 最终被明确拆成两条入口。</p>
+<p>Process 接受确定意图。<code>WIImageResizing</code> 只需要完成 <code>PixelSize → PixelSize</code>，调用者可以使用 Luban，也可以实现自己的尺寸算法；crop、output、metadata 与 color space 都是明确输入，Pipeline 不再猜测 UI 语义。</p>
+<p>Target 接受硬性字节上限。它对应的是真实生产场景：分享 SDK、附件上传、接口字段只允许固定大小。调用者给出 <code>maxBytes</code>，库在内部搜索质量与尺寸；成功结果必须满足这个上限，无法满足时则明确失败。</p>
+<pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="swift"><code><span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">let</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> processed </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#D73A49;--shiki-dark:#F97583"> try</span><span style="color:#D73A49;--shiki-dark:#F97583"> await</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> WICompressor.</span><span style="color:#005CC5;--shiki-dark:#79B8FF">process</span><span style="color:#24292E;--shiki-dark:#E1E4E8">(imageData)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">let</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> target </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#D73A49;--shiki-dark:#F97583"> try</span><span style="color:#005CC5;--shiki-dark:#79B8FF"> WICompressionTarget</span><span style="color:#24292E;--shiki-dark:#E1E4E8">(</span><span style="color:#005CC5;--shiki-dark:#79B8FF">maxBytes</span><span style="color:#24292E;--shiki-dark:#E1E4E8">: </span><span style="color:#005CC5;--shiki-dark:#79B8FF">500_000</span><span style="color:#24292E;--shiki-dark:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">let</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> constrained </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#D73A49;--shiki-dark:#F97583"> try</span><span style="color:#D73A49;--shiki-dark:#F97583"> await</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> WICompressor.</span><span style="color:#005CC5;--shiki-dark:#79B8FF">compress</span><span style="color:#24292E;--shiki-dark:#E1E4E8">(imageData, </span><span style="color:#005CC5;--shiki-dark:#79B8FF">to</span><span style="color:#24292E;--shiki-dark:#E1E4E8">: target)</span></span></code></pre>
+<p>两条流程共用 <code>WIImageOutput</code> 与最终执行能力，但不再假装拥有同一套 Policy。</p>
+<h3 id="imageio-与-rendering">ImageIO 与 Rendering</h3>
+<p>当压缩业务被分开后，底层边界也开始变得清晰。</p>
+<p>ImageIO 负责 encoded data 的 inspection、decode、thumbnail、transcode 与 encode。<code>WIImageRendering</code> 基于 Core Graphics 完成 crop、resize、canvas、背景、Alpha 与 color space conversion。<code>CGImage</code> 是两个模块之间的交换值，而不是新的业务中心。</p>
+<p><code>WIImageIO</code> 当然不是一个大而全的 ImageIO framework。它没有准备接住动图、渐进式解码和 HDR 的全部世界，那也从来不是 WICompress 的核心目标。但在静态图片这条链路上，它已经把 <code>CGImageSource</code>、<code>CGImageDestination</code>、属性字典与 finalize 收进了一套足够自然的 API。</p>
+<pre class="astro-code astro-code-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="swift"><code><span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">let</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> encoded </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#D73A49;--shiki-dark:#F97583"> try</span><span style="color:#005CC5;--shiki-dark:#79B8FF"> ImageReader</span><span style="color:#24292E;--shiki-dark:#E1E4E8">(imageData)</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    .</span><span style="color:#005CC5;--shiki-dark:#79B8FF">thumbnail</span><span style="color:#24292E;--shiki-dark:#E1E4E8">(</span><span style="color:#005CC5;--shiki-dark:#79B8FF">options</span><span style="color:#24292E;--shiki-dark:#E1E4E8">: .</span><span style="color:#D73A49;--shiki-dark:#F97583">init</span><span style="color:#24292E;--shiki-dark:#E1E4E8">(</span><span style="color:#005CC5;--shiki-dark:#79B8FF">maximumPixelSize</span><span style="color:#24292E;--shiki-dark:#E1E4E8">: </span><span style="color:#005CC5;--shiki-dark:#79B8FF">1_200</span><span style="color:#24292E;--shiki-dark:#E1E4E8">))</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    .</span><span style="color:#005CC5;--shiki-dark:#79B8FF">encode</span><span style="color:#24292E;--shiki-dark:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#005CC5;--shiki-dark:#79B8FF">        as</span><span style="color:#24292E;--shiki-dark:#E1E4E8">: .jpeg,</span></span>
+<span class="line"><span style="color:#005CC5;--shiki-dark:#79B8FF">        options</span><span style="color:#24292E;--shiki-dark:#E1E4E8">: .</span><span style="color:#D73A49;--shiki-dark:#F97583">init</span><span style="color:#24292E;--shiki-dark:#E1E4E8">(</span><span style="color:#005CC5;--shiki-dark:#79B8FF">compressionQuality</span><span style="color:#24292E;--shiki-dark:#E1E4E8">: </span><span style="color:#005CC5;--shiki-dark:#79B8FF">0.75</span><span style="color:#24292E;--shiki-dark:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">    )</span></span></code></pre>
+<p>至少在静态图片这条边界上，这套 API 已经达到了我希望的可读性：状态转换明确，ImageIO 细节也没有重新散回高层业务。有些大型图片库拥有更完整的动画、缓存与渐进式能力，但对 ImageIO 的使用依然散落在 processor、serializer 或 helper 里；WIImageIO 做得更少，也因此有机会把这条静态图片链路说得更清楚。</p>
+<p>曾经一直想要的 Chain API，也只在这里保留了下来。不是因为链式调用看起来优雅，而是 <code>ImageReader → ImageFrame → encoded Data</code> 确实对应真实的状态变化。高层压缩 API 依然保持普通 terminal，因为把所有参数排成一条链，并不会降低开发者理解 Domain 的成本。</p>
+<p>Rendering 则暂时保持 package-only。它已经能够稳定完成单张图片渲染，但还没有形成值得独立公开的 API。能够封装，不代表必须公开；这也是 2.0 开始学会克制的地方。</p>
+<p>删除旧 Policy Pipeline 的那个提交，是整个施工期的阶段性低点：生产源码从峰值 4,856 行回落到 3,880 行，净减少 976 行。它们不是因为把大文件机械拆小而消失的，而是因为旧路径与重复执行所有者真正被删除了。</p>
+<p>但 <code>3,880</code> 并不是 2.0 的终点。随后建立共享 Domain、发布 <code>WIImageIO</code> 的 Reader / Frame API、补齐选择性 metadata、重建 Rendering、分离 TargetSearch，并加入 Luban 2 与异步入口，生产代码又随着真实能力增长起来。</p>
+<h2 id="只留一个编排者">只留一个编排者</h2>
+<p><img src="/images/wicompress-v2-pipeline.svg" alt="WICompress 2.0：能力仍然完整，但执行流程只剩一个编排者"></p>
+<p>最终的结构反而很朴素。</p>
+<p><code>WIImageProcess</code> 与 <code>WICompressionTarget</code> 描述两种公开意图。请求进入 <code>ImagePipeline</code> 后，原始输入、Descriptor、working image 与候选搜索都只存在于这一次请求里。Pipeline 是唯一理解完整流程的人。</p>
+<p>ImageIO 只提供 inspection、decode、transcode 与 encode；Rendering 只执行像素绘制；<code>TargetSearch</code> 只维护 Target 的反馈搜索状态。它们接受自己真正需要的输入，返回一个确定结果，不认识外层 Container，也不试图理解完整压缩业务。</p>
+<p><code>v2.0.0</code> 最终有 40 个生产 Swift 文件、4,713 行代码。它比阶段性低点多了 833 行，也比 <code>v1.4.0</code> 更大；最大文件 <code>ImagePipeline.swift</code> 仍然有 474 行，但已经没有超过 500 行的文件。</p>
+<p>代码量没有回到 204 行，也不应该回去。一个真实存在的能力，本来就需要真实存在的代码。Target benchmark、Example、中英文 DocC、迁移指南与架构文档则位于这份生产代码统计之外，它们让这个小库逐渐拥有了完整的工程边界。</p>
+<p>变化不在于代码变少，而在于现在打开任何一个模块，都能够知道它为什么存在。</p>
+<h2 id="ai-时代的作者">AI 时代的作者</h2>
+<p>这次重构当然离不开 AI。</p>
+<p>它帮我重新学习 ImageIO 与 Core Graphics，阅读 Nuke<sup><a href="#user-content-fn-3" id="user-content-fnref-3" data-footnote-ref aria-describedby="footnote-label">3</a></sup>、Kingfisher<sup><a href="#user-content-fn-4" id="user-content-fnref-4" data-footnote-ref aria-describedby="footnote-label">4</a></sup>、SDWebImage<sup><a href="#user-content-fn-5" id="user-content-fnref-5" data-footnote-ref aria-describedby="footnote-label">5</a></sup>、Signal<sup><a href="#user-content-fn-6" id="user-content-fnref-6" data-footnote-ref aria-describedby="footnote-label">6</a></sup> 等项目，比较 Android 与 Web 的尺寸 API，检查 Swift 6.2 并发语义，编写测试、benchmark、文档与迁移指南。大量实现由它快速完成，Review 也不再只发生一次：一个 Agent 写代码，另一个 Agent 从错误语义、内存生命周期、平台构建与公开 API 上继续挑战它。</p>
+<p>这套工作流把一个人的产能推到了过去很难想象的位置。</p>
+<p>但 AI 同样擅长另一件事：为每一种可能性补出一个完整方案。只要继续追问，总能再得到一个 Service、Protocol、Registry 或可扩展插槽。每一个方案都说得通，甚至大部分真的能够工作。</p>
+<p>问题在于，Proposal 不是 Requirement。能够实现，也不代表有资格进入作品。</p>
+<p>如果没有人不断追问「它服务谁」「它拥有什么状态」「它减少了哪条旧路径」「我们现在真的需要吗」，AI 会很自然地把可能性铺满。架构会越来越完整，作品却可能越来越不像自己的东西。</p>
+<p>所以这次经历不能简单总结成「AI 负责增加，人类负责删除」。AI 也提出过许多最终留下的好设计，人也会作出错误判断。真正的区别在于，最终必须有人认领边界：为什么 Process 与 Target 分开，为什么 Pipeline 不公开，为什么 Rendering 暂不发布，为什么不做动图，为什么 2.0 选择 Swift 6.2，又为什么有些历史能力宁愿不再兼容。</p>
+<p>这些决定没有哪一个是靠多写一个类型自动得到的。</p>
+<p>大重构也并不是某一天灵光乍现后的全部重写。ImageIO、Rendering、Domain、Pipeline、Target Search，都是在一轮又一轮很小的修改里逐渐找到位置。每次只删除一段重复所有权，跑完测试，提交，再重新看整张图。下午的自己继续 challenge 上午的自己，直到图里再没有一个连作者都解释不清的名字。</p>
+<p>AI 加快了实现，但作者仍然要为最后留下的形状负责。</p>
+<h2 id="20">2.0</h2>
+<p>2026 年 8 月 2 日，WICompress 2.0 正式发布<sup><a href="#user-content-fn-7" id="user-content-fnref-7" data-footnote-ref aria-describedby="footnote-label">7</a></sup>。</p>
+<p>它现在是一个 UIKit / AppKit-free 的 Swift 6.2 图片处理与压缩库，支持 Apple 各个平台；对外提供明确的 Process 与 Target 两条流程，也把 <code>WIImageIO</code> 作为独立 product 交给真正需要底层图片能力的人。Example、benchmark、中英文 DocC、迁移指南与架构文档也终于成为发布的一部分。</p>
+<p>它当然不是图片世界的完整答案。动图、渐进式解码、完整 HDR 处理还在边界之外，Target 算法也仍然有继续 benchmark 与优化的空间。但这些内容不需要为了证明 2.0 完整而提前进入代码。有一天真实需求到来，再重新理解、重新选择即可。</p>
+<p>写《旁观者》<sup><a href="#user-content-fn-2" id="user-content-fnref-2-2" data-footnote-ref aria-describedby="footnote-label">2</a></sup>时，我困惑的是，当探索与实现被 AI 大幅压缩之后，作者还剩下什么。WICompress 2.0 没有让时间重新变慢，但它让我确认了一件更实际的事：AI 可以快速给出很多答案，最终留下哪一个，仍然需要作者判断。</p>
+<p>这一次，我没有只做一个旁观者。</p>
+<section data-footnotes class="footnotes"><h2 class="sr-only" id="footnote-label">Footnotes</h2>
+<ol>
+<li id="user-content-fn-1">
+<p><a href="https://github.com/Weixi779/WICompress">WICompress</a> <a href="#user-content-fnref-1" data-footnote-backref="" aria-label="Back to reference 1" class="data-footnote-backref">↩</a></p>
+</li>
+<li id="user-content-fn-2">
+<p><a href="https://weixi779.github.io/posts/observer/">《旁观者》</a> <a href="#user-content-fnref-2" data-footnote-backref="" aria-label="Back to reference 2" class="data-footnote-backref">↩</a> <a href="#user-content-fnref-2-2" data-footnote-backref="" aria-label="Back to reference 2-2" class="data-footnote-backref">↩<sup>2</sup></a></p>
+</li>
+<li id="user-content-fn-3">
+<p><a href="https://github.com/kean/Nuke">Nuke</a> <a href="#user-content-fnref-3" data-footnote-backref="" aria-label="Back to reference 3" class="data-footnote-backref">↩</a></p>
+</li>
+<li id="user-content-fn-4">
+<p><a href="https://github.com/onevcat/Kingfisher">Kingfisher</a> <a href="#user-content-fnref-4" data-footnote-backref="" aria-label="Back to reference 4" class="data-footnote-backref">↩</a></p>
+</li>
+<li id="user-content-fn-5">
+<p><a href="https://github.com/SDWebImage/SDWebImage">SDWebImage</a> <a href="#user-content-fnref-5" data-footnote-backref="" aria-label="Back to reference 5" class="data-footnote-backref">↩</a></p>
+</li>
+<li id="user-content-fn-6">
+<p><a href="https://github.com/signalapp/Signal-iOS">Signal-iOS</a> <a href="#user-content-fnref-6" data-footnote-backref="" aria-label="Back to reference 6" class="data-footnote-backref">↩</a></p>
+</li>
+<li id="user-content-fn-7">
+<p><a href="https://github.com/Weixi779/WICompress/releases/tag/v2.0.0">WICompress 2.0 Release</a> <a href="#user-content-fnref-7" data-footnote-backref="" aria-label="Back to reference 7" class="data-footnote-backref">↩</a></p>
+</li>
+</ol>
+</section>
+<nav class="post-navigation" aria-label="相邻文章"><span></span><a href="/posts/caffeine-moka-cache-notes/"><span>更早文章 →</span><strong>「iOS」现代缓存体系探索</strong></a></nav><section class="comments" aria-label="文章评论"><div id="giscus-comments" data-theme-light="light" data-theme-dark="dark"></div><script src="https://giscus.app/client.js" data-repo="Weixi779/Weixi779.github.io" data-repo-id="MDEwOlJlcG9zaXRvcnkzODE5Nzk0MzA=" data-category="Announcements" data-category-id="DIC_kwDOFsSLJs4C3eHH" data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="bottom" data-theme="preferred_color_scheme" data-lang="zh-CN" data-loading="lazy" crossorigin="anonymous" async></script></section><script type="module">function e(e){let t=document.querySelector(`iframe.giscus-frame`);t?.contentWindow&&t.contentWindow.postMessage({giscus:{setConfig:{theme:e}}},`https://giscus.app`)}window.addEventListener(`blog-theme-change`,t=>{e(t.detail.colorMode)});var t=document.querySelector(`.comments`);if(t){let n=new MutationObserver(()=>{document.querySelector(`iframe.giscus-frame`)&&(e(document.documentElement.dataset.colorMode===`dark`?`dark`:`light`),n.disconnect())});n.observe(t,{childList:!0,subtree:!0})}</script></article></div></main><footer class="site-footer"><nav class="site-footer__links" aria-label="找到我"><a class="site-footer__link" href="https://github.com/Weixi779" target="_blank" rel="me noopener noreferrer" aria-label="在 GitHub 找到我" title="GitHub"><svg class="site-footer__icon site-footer__icon--fill" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.61-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.89 1.53 2.34 1.09 2.91.83.09-.65.35-1.09.64-1.34-2.22-.25-4.56-1.11-4.56-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.03A9.6 9.6 0 0 1 12 6.84c.85 0 1.71.12 2.5.34 1.91-1.3 2.75-1.03 2.75-1.03.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.69-4.57 4.94.36.31.68.92.68 1.85v2.74c0 .27.18.58.69.48A10 10 0 0 0 12 2Z"></path></svg></a><a class="site-footer__link" href="https://leetcode.cn/u/wei-xi-d/" target="_blank" rel="noopener noreferrer" aria-label="查看我的 LeetCode 主页" title="LeetCode"><svg class="site-footer__icon site-footer__icon--fill" aria-hidden="true" viewBox="0 0 24 24"><path d="M13.483 0a1.374 1.374 0 0 0-.961.438L7.116 6.226l-3.854 4.126a5.266 5.266 0 0 0-1.209 2.104 5.35 5.35 0 0 0-.125.513 5.527 5.527 0 0 0 .062 2.362 5.83 5.83 0 0 0 .349 1.017 5.938 5.938 0 0 0 1.271 1.818l4.277 4.193.039.038c2.248 2.165 5.852 2.133 8.063-.074l2.396-2.392c.54-.54.54-1.414.003-1.955a1.378 1.378 0 0 0-1.951-.003l-2.396 2.392a3.021 3.021 0 0 1-4.205.038l-.02-.019-4.276-4.193c-.652-.64-.972-1.469-.948-2.263a2.68 2.68 0 0 1 .066-.523 2.545 2.545 0 0 1 .619-1.164L9.13 8.114c1.058-1.134 3.204-1.27 4.43-.278l3.501 2.831c.593.48 1.461.387 1.94-.207a1.384 1.384 0 0 0-.207-1.943l-3.5-2.831c-.8-.647-1.766-1.045-2.774-1.202l2.015-2.158A1.384 1.384 0 0 0 13.483 0zm-2.866 12.815a1.38 1.38 0 0 0-1.38 1.382 1.38 1.38 0 0 0 1.38 1.382H20.79a1.38 1.38 0 0 0 1.38-1.382 1.38 1.38 0 0 0-1.38-1.382z"></path></svg></a><a class="site-footer__link" href="https://space.bilibili.com/6450245" target="_blank" rel="noopener noreferrer" aria-label="查看我的哔哩哔哩主页" title="Bilibili"><svg class="site-footer__icon site-footer__icon--fill" aria-hidden="true" viewBox="0 0 24 24"><path d="M17.813 4.653h.854c1.51.054 2.769.578 3.773 1.574 1.004.995 1.524 2.249 1.56 3.76v7.36c-.036 1.51-.556 2.769-1.56 3.773s-2.262 1.524-3.773 1.56H5.333c-1.51-.036-2.769-.556-3.773-1.56S.036 18.858 0 17.347v-7.36c.036-1.511.556-2.765 1.56-3.76 1.004-.996 2.262-1.52 3.773-1.574h.774l-1.174-1.12a1.234 1.234 0 0 1-.373-.906c0-.356.124-.658.373-.907l.027-.027c.267-.249.573-.373.92-.373.347 0 .653.124.92.373L9.653 4.44c.071.071.134.142.187.213h4.267a.836.836 0 0 1 .16-.213l2.853-2.747c.267-.249.573-.373.92-.373.347 0 .662.151.929.4.267.249.391.551.391.907 0 .355-.124.657-.373.906zM5.333 7.24c-.746.018-1.373.276-1.88.773-.506.498-.769 1.13-.786 1.894v7.52c.017.764.28 1.395.786 1.893.507.498 1.134.756 1.88.773h13.334c.746-.017 1.373-.275 1.88-.773.506-.498.769-1.129.786-1.893v-7.52c-.017-.765-.28-1.396-.786-1.894-.507-.497-1.134-.755-1.88-.773zM8 11.107c.373 0 .684.124.933.373.25.249.383.569.4.96v1.173c-.017.391-.15.711-.4.96-.249.25-.56.374-.933.374s-.684-.125-.933-.374c-.25-.249-.383-.569-.4-.96V12.44c0-.373.129-.689.386-.947.258-.257.574-.386.947-.386zm8 0c.373 0 .684.124.933.373.25.249.383.569.4.96v1.173c-.017.391-.15.711-.4.96-.249.25-.56.374-.933.374s-.684-.125-.933-.374c-.25-.249-.383-.569-.4-.96V12.44c.017-.391.15-.711.4-.96.249-.249.56-.373.933-.373Z"></path></svg></a><a class="site-footer__link" href="mailto:sunshiwei418@126.com" aria-label="给我发送邮件" title="Email"><svg class="site-footer__icon site-footer__icon--stroke" aria-hidden="true" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="m4 7 8 6 8-6"></path></svg></a><a class="site-footer__link" href="/rss.xml" aria-label="订阅 RSS" title="RSS"><svg class="site-footer__icon site-footer__icon--stroke" aria-hidden="true" viewBox="0 0 24 24"><circle cx="5" cy="19" r="1"></circle><path d="M5 11a8 8 0 0 1 8 8M5 5a14 14 0 0 1 14 14"></path></svg></a></nav><p>© 2026 Weixi</p></footer></body></html>

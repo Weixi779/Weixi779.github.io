@@ -1,4 +1,13 @@
-<section class="comments" aria-label="文章评论">
+---
+interface Props {
+  language?: 'zh-CN' | 'en';
+}
+
+const { language = 'zh-CN' } = Astro.props;
+const isEnglish = language === 'en';
+---
+
+<section class="comments" aria-label={isEnglish ? 'Comments' : '文章评论'}>
   <div id="giscus-comments" data-theme-light="light" data-theme-dark="dark"></div>
   <script
     is:inline
@@ -13,7 +22,7 @@
     data-emit-metadata="0"
     data-input-position="bottom"
     data-theme="preferred_color_scheme"
-    data-lang="zh-CN"
+    data-lang={language}
     data-loading="lazy"
     crossorigin="anonymous"
     async

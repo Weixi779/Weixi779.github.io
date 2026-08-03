@@ -14,43 +14,74 @@ interface Heading {
 
 interface Props {
   post: PostEntry;
+  translation?: PostEntry;
   headings: Heading[];
   newerPost?: PostEntry;
   olderPost?: PostEntry;
 }
 
-const { post, headings, newerPost, olderPost } = Astro.props;
+const { post, translation, headings, newerPost, olderPost } = Astro.props;
 const heroImage = post.data.hero || '/images/banner.jpg';
+const language = post.data.lang;
+const isEnglish = language === 'en';
+const chinesePost = language === 'zh-CN' ? post : translation;
+const englishPost = language === 'en' ? post : translation;
+const alternates = [
+  ...(chinesePost ? [{ language: 'zh-CN' as const, href: getPostPath(chinesePost) }] : []),
+  ...(englishPost ? [{ language: 'en' as const, href: getPostPath(englishPost) }] : []),
+  ...(chinesePost ? [{ language: 'x-default' as const, href: getPostPath(chinesePost) }] : []),
+];
 ---
 
-<BaseLayout title={post.data.title} description={post.data.summary} image={heroImage}>
+<BaseLayout
+  title={post.data.title}
+  description={post.data.summary}
+  image={heroImage}
+  language={language}
+  alternates={alternates}
+>
   <header class="page-hero" style={`--hero-image: url('${heroImage}')`}>
     <div class="page-hero__overlay">
       <div class="page-hero__content">
         <h1>{post.data.title}</h1>
         <p class="page-hero__summary">{post.data.summary}</p>
+        {chinesePost && englishPost && (
+          <nav class="post-language-switch" aria-label={isEnglish ? 'Article language' : '文章语言'}>
+            <a
+              href={getPostPath(chinesePost)}
+              lang="zh-CN"
+              aria-current={!isEnglish ? 'page' : undefined}
+            >中文</a>
+            <span aria-hidden="true">/</span>
+            <a
+              href={getPostPath(englishPost)}
+              lang="en"
+              aria-current={isEnglish ? 'page' : undefined}
+            >English</a>
+          </nav>
+        )}
       </div>
     </div>
   </header>
   <div class="post-shell">
-    {post.data.toc && <TableOfContents headings={headings} />}
+    {post.data.toc && <TableOfContents headings={headings} language={language} />}
     <article class="prose">
       <slot />
-      <nav class="post-navigation" aria-label="相邻文章">
+      <nav class="post-navigation" aria-label={isEnglish ? 'Adjacent posts' : '相邻文章'}>
         {newerPost ? (
           <a href={getPostPath(newerPost)}>
-            <span>← 更新文章</span>
+            <span>{isEnglish ? '← Newer post' : '← 更新文章'}</span>
             <strong>{newerPost.data.title}</strong>
           </a>
         ) : <span></span>}
         {olderPost ? (
           <a href={getPostPath(olderPost)}>
-            <span>更早文章 →</span>
+            <span>{isEnglish ? 'Older post →' : '更早文章 →'}</span>
             <strong>{olderPost.data.title}</strong>
           </a>
         ) : <span></span>}
       </nav>
-      <GiscusComments />
+      <GiscusComments language={language} />
     </article>
   </div>
 </BaseLayout>

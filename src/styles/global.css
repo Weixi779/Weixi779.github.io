@@ -285,6 +285,27 @@ input {
   text-wrap: balance;
 }
 
+.post-language-switch {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 18px;
+  color: rgb(255 255 255 / 62%);
+  font-size: 0.9rem;
+}
+
+.post-language-switch a {
+  color: rgb(255 255 255 / 78%);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+
+.post-language-switch a[aria-current='page'] {
+  color: #ffffff;
+  font-weight: 800;
+  text-decoration: none;
+}
+
 .content-container,
 .post-shell {
   width: min(1120px, calc(100% - 32px));

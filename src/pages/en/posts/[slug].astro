@@ -1,10 +1,10 @@
 ---
 import { render } from 'astro:content';
-import PostLayout from '../../layouts/PostLayout.astro';
-import { getPostStaticPaths, type PostRouteProps } from '../../utils/posts';
+import PostLayout from '../../../layouts/PostLayout.astro';
+import { getPostStaticPaths, type PostRouteProps } from '../../../utils/posts';
 
 export async function getStaticPaths() {
-  return getPostStaticPaths('zh-CN');
+  return getPostStaticPaths('en');
 }
 
 const { post, translation, newerPost, olderPost } = Astro.props as PostRouteProps;

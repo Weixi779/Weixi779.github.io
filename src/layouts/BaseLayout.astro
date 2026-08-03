@@ -8,22 +8,31 @@ interface Props {
   title?: string;
   description?: string;
   image?: string;
+  language?: 'zh-CN' | 'en';
+  alternates?: Array<{
+    language: 'zh-CN' | 'en' | 'x-default';
+    href: string;
+  }>;
 }
 
 const {
   title,
-  description = '个人博客记录成长',
+  description,
   image = '/images/banner.jpg',
+  language = 'zh-CN',
+  alternates = [],
 } = Astro.props;
+const resolvedDescription = description ?? (language === 'en' ? 'A personal record of learning and growth' : '个人博客记录成长');
 const siteTitle = '伟兮の小屋';
 const fullTitle = title ? `${title} - ${siteTitle}` : siteTitle;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const socialImage = new URL(image, Astro.site);
+const ogLocale = language === 'en' ? 'en_US' : 'zh_CN';
 ---
 
 <!doctype html>
 <html
-  lang="zh-CN"
+  lang={language}
   data-theme-id={defaultThemeId}
   data-color-mode="light"
   data-color-mode-preference="system"
@@ -32,14 +41,22 @@ const socialImage = new URL(image, Astro.site);
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
-    <meta name="description" content={description} />
+    <meta name="description" content={resolvedDescription} />
     <meta name="color-scheme" content="light dark" />
     <meta property="og:title" content={fullTitle} />
-    <meta property="og:description" content={description} />
+    <meta property="og:description" content={resolvedDescription} />
     <meta property="og:type" content="website" />
+    <meta property="og:locale" content={ogLocale} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={socialImage} />
     <link rel="canonical" href={canonical} />
+    {alternates.map((alternate) => (
+      <link
+        rel="alternate"
+        hreflang={alternate.language}
+        href={new URL(alternate.href, Astro.site)}
+      />
+    ))}
     <link rel="alternate" type="application/rss+xml" title={`${siteTitle} RSS`} href="/rss.xml" />
     <link rel="icon" href="/images/favicon.ico" />
     <title>{fullTitle}</title>

@@ -7,7 +7,16 @@ const projectRoot = resolve(scriptDirectory, '..');
 const distRoot = join(projectRoot, 'dist');
 const generatedThemeCssPath = join(projectRoot, 'src', 'styles', 'generated', 'themes.css');
 const themeFoundryCatalogPath = join(projectRoot, 'vendor', 'themefoundry', 'themes.json');
-const requiredRoutes = ['/', '/404.html', '/about/', '/archive/', '/page/2/', '/page/3/'];
+const translatedPostRoute = '/en/posts/wicompress-2-architecture-ai/';
+const requiredRoutes = [
+  '/',
+  '/404.html',
+  '/about/',
+  '/archive/',
+  '/page/2/',
+  '/page/3/',
+  translatedPostRoute,
+];
 const requiredFontAssets = [
   'JetBrainsMono-Regular.woff2',
   'JetBrainsMono-Bold.woff2',
@@ -132,6 +141,22 @@ if (!existsSync(distRoot)) {
     }
     if (!html.includes('data-mapping="pathname"')) fail(`Giscus is missing from ${postPage}`);
     if (!html.includes('class="post-navigation"')) fail(`post navigation is missing from ${postPage}`);
+  }
+
+  const translatedPostPath = routeOutputPath(translatedPostRoute);
+  if (existsSync(translatedPostPath)) {
+    const translatedPostHtml = readFileSync(translatedPostPath, 'utf8');
+    for (const marker of [
+      '<html lang="en"',
+      'hreflang="zh-CN"',
+      'hreflang="en"',
+      'hreflang="x-default"',
+      'class="post-language-switch"',
+    ]) {
+      if (!translatedPostHtml.includes(marker)) {
+        fail(`translated post is missing ${marker}`);
+      }
+    }
   }
 
   const rssPath = join(distRoot, 'rss.xml');

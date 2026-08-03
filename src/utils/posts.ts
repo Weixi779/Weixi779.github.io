@@ -1,23 +1,68 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
 
 export type PostEntry = CollectionEntry<'posts'>;
+export type PostLanguage = 'zh-CN' | 'en';
 
-export async function getPublishedPosts(): Promise<PostEntry[]> {
+export interface PostRouteProps {
+  post: PostEntry;
+  translation?: PostEntry;
+  newerPost?: PostEntry;
+  olderPost?: PostEntry;
+}
+
+async function loadPublishedPosts(): Promise<PostEntry[]> {
   const posts = await getCollection('posts', ({ data }) => !data.draft);
-  const seenSlugs = new Set<string>();
+  const seenRoutes = new Set<string>();
+  const seenTranslations = new Set<string>();
 
   for (const post of posts) {
-    if (seenSlugs.has(post.data.slug)) {
-      throw new Error(`Duplicate post slug: ${post.data.slug}`);
+    const routeIdentity = `${post.data.lang}:${post.data.slug}`;
+    if (seenRoutes.has(routeIdentity)) {
+      throw new Error(`Duplicate post route: ${routeIdentity}`);
     }
-    seenSlugs.add(post.data.slug);
+    seenRoutes.add(routeIdentity);
+
+    if (post.data.translationKey) {
+      const translationIdentity = `${post.data.lang}:${post.data.translationKey}`;
+      if (seenTranslations.has(translationIdentity)) {
+        throw new Error(`Duplicate post translation: ${translationIdentity}`);
+      }
+      seenTranslations.add(translationIdentity);
+    }
   }
 
   return posts.sort((left, right) => right.data.publishedAt.localeCompare(left.data.publishedAt));
 }
 
+export async function getPublishedPosts(language: PostLanguage = 'zh-CN'): Promise<PostEntry[]> {
+  const posts = await loadPublishedPosts();
+  return posts.filter((post) => post.data.lang === language);
+}
+
+export async function getPostStaticPaths(language: PostLanguage) {
+  const allPosts = await loadPublishedPosts();
+  const posts = allPosts.filter((post) => post.data.lang === language);
+
+  return posts.map((post, index) => ({
+    params: { slug: post.data.slug },
+    props: {
+      post,
+      translation: post.data.translationKey
+        ? allPosts.find(
+            (candidate) =>
+              candidate.data.translationKey === post.data.translationKey &&
+              candidate.data.lang !== post.data.lang,
+          )
+        : undefined,
+      newerPost: index > 0 ? posts[index - 1] : undefined,
+      olderPost: index < posts.length - 1 ? posts[index + 1] : undefined,
+    } satisfies PostRouteProps,
+  }));
+}
+
 export function getPostPath(post: PostEntry): string {
-  return `/posts/${post.data.slug}/`;
+  const prefix = post.data.lang === 'en' ? '/en/posts' : '/posts';
+  return `${prefix}/${post.data.slug}/`;
 }
 
 export function getPostPublishedAt(post: PostEntry): Date {

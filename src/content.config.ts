@@ -16,6 +16,7 @@ const posts = defineCollection({
   loader: glob({
     pattern: '**/*.md',
     base: './src/content/posts',
+    generateId: ({ entry }) => entry.replace(/\.md$/u, ''),
   }),
   schema: z.object({
     title: z.string(),
@@ -28,6 +29,8 @@ const posts = defineCollection({
     toc: z.boolean().default(false),
     math: z.boolean().default(false),
     draft: z.boolean().default(false),
+    lang: z.enum(['zh-CN', 'en']).default('zh-CN'),
+    translationKey: optionalString,
   }),
 });
 

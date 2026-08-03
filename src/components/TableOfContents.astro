@@ -7,9 +7,11 @@ interface Heading {
 
 interface Props {
   headings: Heading[];
+  language?: 'zh-CN' | 'en';
 }
 
-const { headings } = Astro.props;
+const { headings, language = 'zh-CN' } = Astro.props;
+const isEnglish = language === 'en';
 const supportedHeadings = headings.filter(({ depth }) => depth >= 1 && depth <= 6);
 const baseDepth = supportedHeadings.reduce(
   (shallowestDepth, { depth }) => Math.min(shallowestDepth, depth),
@@ -24,9 +26,9 @@ const visibleHeadings = supportedHeadings
 ---
 
 {visibleHeadings.length > 0 && (
-  <nav class="toc" aria-label="文章目录">
+  <nav class="toc" aria-label={isEnglish ? 'Table of contents' : '文章目录'}>
     <details open>
-      <summary>目录</summary>
+      <summary>{isEnglish ? 'Contents' : '目录'}</summary>
       <ol>
         {visibleHeadings.map((heading) => (
           <li class:list={[`toc__level-${heading.level}`]}>

@@ -12,6 +12,8 @@ lang: en
 translationKey: wicompress-2-architecture-ai
 ---
 
+> **Note added later:** After this article was finished, I ran an independent review of WICompress 2.0 with the `Improve Codebase Architecture` skill. Its questions around deep modules, deletion tests, locality, and ownership largely validated the research and refactoring direction described here. The skill did not guide the refactor; this is not a causal story rewritten after the fact. Instead, the comparison showed that these judgments could travel beyond WICompress and led me to design [`does-it-still-make-sense`](https://github.com/Weixi779/skills/tree/main/skills/does-it-still-make-sense): not an Agent walking around with a broom forever, but an architectural pause I choose to trigger when the room may finally need cleaning—does the current shape still make sense?
+
 ## Before
 
 WICompress[^1] did not begin with an architecture diagram. It grew out of one very specific problem.

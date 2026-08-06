@@ -12,6 +12,8 @@ lang: zh-CN
 translationKey: wicompress-2-architecture-ai
 ---
 
+> **补记：** 这篇文章完成后，又用 `Improve Codebase Architecture` Skill 对 WICompress 2.0 做了一次独立回看。它从 Deep Module、Deletion Test、Locality 与 Ownership 出发，基本验证了本文的研究与重构方向。它没有指导这次重构，这也不是一次事后的因果改写；恰恰是这次对照，让我确认这些判断不只属于 WICompress，也促成了自己的 [`does-it-still-make-sense`](https://github.com/Weixi779/skills/tree/main/skills/does-it-still-make-sense) Skill：不是让 Agent 永远拿着扫把寻找问题，而是在我觉得屋子也许该收拾时，主动停下来重新问一次——现在的架构，仍然说得通吗？
+
 ## 之前
 
 WICompress[^1] 不是从一张架构图里诞生的，而是从一个很具体的问题里长出来的。

@@ -1,0 +1,283 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme-id="deepSeaMilk" data-color-mode="light" data-color-mode-preference="system"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><meta name="generator" content="Astro v7.0.7"><meta name="description" content="本想在三家里选出下一个网络图片库，后来从缓存、合并走到展示，每一层都只得到一半答案。"><meta name="color-scheme" content="light dark"><meta property="og:title" content="「iOS」一次略有遗憾的网络图片调研 - 伟兮の小屋"><meta property="og:description" content="本想在三家里选出下一个网络图片库，后来从缓存、合并走到展示，每一层都只得到一半答案。"><meta property="og:type" content="website"><meta property="og:locale" content="zh_CN"><meta property="og:url" content="https://weixi779.github.io/posts/ios-network-image-survey/"><meta property="og:image" content="https://weixi779.github.io/images/banner.jpg"><link rel="canonical" href="https://weixi779.github.io/posts/ios-network-image-survey/"><link rel="alternate" hreflang="zh-CN" href="https://weixi779.github.io/posts/ios-network-image-survey/"><link rel="alternate" hreflang="x-default" href="https://weixi779.github.io/posts/ios-network-image-survey/"><link rel="alternate" type="application/rss+xml" title="伟兮の小屋 RSS" href="/rss.xml"><link rel="icon" href="/images/favicon.ico"><title>「iOS」一次略有遗憾的网络图片调研 - 伟兮の小屋</title><script data-default-theme="deepSeaMilk" data-theme-ids="[&quot;deepSeaMilk&quot;,&quot;cinderCandy&quot;,&quot;wisteriaMatcha&quot;,&quot;clearWaterNavy&quot;]" data-storage-key="blog-theme-preference">
+      (() => {
+        const bootstrap = document.currentScript;
+        const defaultThemeId = bootstrap?.dataset.defaultTheme ?? 'deepSeaMilk';
+        const themeIds = JSON.parse(bootstrap?.dataset.themeIds ?? '[]');
+        const themeStorageKey = bootstrap?.dataset.storageKey ?? 'blog-theme-preference';
+        let preference = null;
+        try {
+          const stored = localStorage.getItem(themeStorageKey);
+          preference = stored ? JSON.parse(stored) : null;
+        } catch {}
+
+        const storedThemeId = preference?.themeId;
+        const storedMode = preference?.mode;
+        const systemDark = window.matchMedia?.('(prefers-color-scheme: dark)').matches;
+        const themeId = themeIds.includes(storedThemeId) ? storedThemeId : defaultThemeId;
+        const colorModePreference =
+          storedMode === 'light' || storedMode === 'dark' || storedMode === 'system'
+            ? storedMode
+            : 'system';
+        const colorMode =
+          colorModePreference === 'light' || colorModePreference === 'dark'
+            ? colorModePreference
+            : systemDark
+              ? 'dark'
+              : 'light';
+
+        document.documentElement.dataset.themeId = themeId;
+        document.documentElement.dataset.colorModePreference = colorModePreference;
+        document.documentElement.dataset.colorMode = colorMode;
+      })();
+    </script><link rel="stylesheet" href="/assets/prose.L3rFJHHg.css"><link rel="stylesheet" href="/assets/BaseLayout.DOBQhnoK.css"></head><body><header class="site-header"><div class="site-header__inner"><a class="site-brand" href="/">伟兮の小屋</a><nav aria-label="主导航"><a href="/">首页</a><a href="/archive/">归档</a><a href="/about/">关于</a></nav><div class="theme-picker" data-theme-picker data-astro-cid-hcqnpaxe><button class="theme-toggle" id="theme-toggle" type="button" aria-label="打开主题设置" aria-haspopup="dialog" aria-expanded="false" aria-controls="theme-panel" data-theme-toggle data-astro-cid-hcqnpaxe><span aria-hidden="true" class="theme-toggle__icon" data-astro-cid-hcqnpaxe>◐</span><span class="theme-toggle__label" data-astro-cid-hcqnpaxe>主题</span></button><section class="theme-panel" id="theme-panel" role="dialog" aria-label="主题设置" data-theme-panel hidden data-astro-cid-hcqnpaxe><header class="theme-panel__header" data-astro-cid-hcqnpaxe><strong data-astro-cid-hcqnpaxe>主题设置</strong><small data-theme-current-name data-astro-cid-hcqnpaxe>Deep Sea Milk</small></header><fieldset class="theme-panel__group" data-astro-cid-hcqnpaxe><legend data-astro-cid-hcqnpaxe>配色</legend><div class="theme-options" data-astro-cid-hcqnpaxe><label class="theme-option" style="--theme-light-background: rgb(96.08% 93.73% 91.76% / 1);--theme-light-surface: rgb(100% 99.22% 97.25% / 1);--theme-light-accent: rgb(7.06% 18.04% 54.12% / 1);--theme-dark-background: rgb(3.14% 6.67% 14.9% / 1);--theme-dark-surface: rgb(7.84% 14.12% 29.02% / 1);--theme-dark-accent: rgb(61.18% 70.59% 100% / 1)" data-astro-cid-hcqnpaxe><input type="radio" name="theme-id" value="deepSeaMilk" checked data-theme-id-input data-astro-cid-hcqnpaxe><span class="theme-option__body" data-astro-cid-hcqnpaxe><span class="theme-option__preview" aria-hidden="true" data-astro-cid-hcqnpaxe><span class="theme-option__preview-mode theme-option__preview-mode--light" data-astro-cid-hcqnpaxe></span><span class="theme-option__preview-mode theme-option__preview-mode--dark" data-astro-cid-hcqnpaxe></span></span><span class="theme-option__name" data-astro-cid-hcqnpaxe>Deep Sea Milk</span></span></label><label class="theme-option" style="--theme-light-background: rgb(100% 96.86% 98.04% / 1);--theme-light-surface: rgb(100% 100% 100% / 1);--theme-light-accent: rgb(77.25% 11.37% 38.82% / 1);--theme-dark-background: rgb(6.67% 6.67% 7.84% / 1);--theme-dark-surface: rgb(12.55% 12.55% 15.29% / 1);--theme-dark-accent: rgb(100% 43.53% 65.88% / 1)" data-astro-cid-hcqnpaxe><input type="radio" name="theme-id" value="cinderCandy" data-theme-id-input data-astro-cid-hcqnpaxe><span class="theme-option__body" data-astro-cid-hcqnpaxe><span class="theme-option__preview" aria-hidden="true" data-astro-cid-hcqnpaxe><span class="theme-option__preview-mode theme-option__preview-mode--light" data-astro-cid-hcqnpaxe></span><span class="theme-option__preview-mode theme-option__preview-mode--dark" data-astro-cid-hcqnpaxe></span></span><span class="theme-option__name" data-astro-cid-hcqnpaxe>Cinder Candy</span></span></label><label class="theme-option" style="--theme-light-background: rgb(96.47% 97.25% 92.94% / 1);--theme-light-surface: rgb(100% 99.61% 96.86% / 1);--theme-light-accent: rgb(37.25% 33.33% 63.53% / 1);--theme-dark-background: rgb(7.84% 7.06% 14.12% / 1);--theme-dark-surface: rgb(14.12% 12.55% 24.71% / 1);--theme-dark-accent: rgb(72.55% 69.41% 100% / 1)" data-astro-cid-hcqnpaxe><input type="radio" name="theme-id" value="wisteriaMatcha" data-theme-id-input data-astro-cid-hcqnpaxe><span class="theme-option__body" data-astro-cid-hcqnpaxe><span class="theme-option__preview" aria-hidden="true" data-astro-cid-hcqnpaxe><span class="theme-option__preview-mode theme-option__preview-mode--light" data-astro-cid-hcqnpaxe></span><span class="theme-option__preview-mode theme-option__preview-mode--dark" data-astro-cid-hcqnpaxe></span></span><span class="theme-option__name" data-astro-cid-hcqnpaxe>Wisteria Matcha</span></span></label><label class="theme-option" style="--theme-light-background: rgb(91.76% 97.25% 98.04% / 1);--theme-light-surface: rgb(97.25% 99.61% 100% / 1);--theme-light-accent: rgb(6.67% 18.82% 33.73% / 1);--theme-dark-background: rgb(2.75% 8.24% 13.33% / 1);--theme-dark-surface: rgb(6.67% 18.82% 33.73% / 1);--theme-dark-accent: rgb(56.86% 81.18% 83.53% / 1)" data-astro-cid-hcqnpaxe><input type="radio" name="theme-id" value="clearWaterNavy" data-theme-id-input data-astro-cid-hcqnpaxe><span class="theme-option__body" data-astro-cid-hcqnpaxe><span class="theme-option__preview" aria-hidden="true" data-astro-cid-hcqnpaxe><span class="theme-option__preview-mode theme-option__preview-mode--light" data-astro-cid-hcqnpaxe></span><span class="theme-option__preview-mode theme-option__preview-mode--dark" data-astro-cid-hcqnpaxe></span></span><span class="theme-option__name" data-astro-cid-hcqnpaxe>Clear Water Navy</span></span></label></div></fieldset><fieldset class="theme-panel__group theme-panel__group--mode" data-astro-cid-hcqnpaxe><legend data-astro-cid-hcqnpaxe>显示模式</legend><div class="theme-modes" data-astro-cid-hcqnpaxe><label class="theme-mode" data-astro-cid-hcqnpaxe><input type="radio" name="theme-mode" value="system" checked data-theme-mode-input data-astro-cid-hcqnpaxe><span data-astro-cid-hcqnpaxe>跟随系统</span></label><label class="theme-mode" data-astro-cid-hcqnpaxe><input type="radio" name="theme-mode" value="light" data-theme-mode-input data-astro-cid-hcqnpaxe><span data-astro-cid-hcqnpaxe>浅色</span></label><label class="theme-mode" data-astro-cid-hcqnpaxe><input type="radio" name="theme-mode" value="dark" data-theme-mode-input data-astro-cid-hcqnpaxe><span data-astro-cid-hcqnpaxe>深色</span></label></div></fieldset></section></div><script type="module">var e=`deepSeaMilk`,t=[{id:`deepSeaMilk`,displayName:`Deep Sea Milk`,modes:[`light`,`dark`],preview:{light:{background:`rgb(96.08% 93.73% 91.76% / 1)`,surface:`rgb(100% 99.22% 97.25% / 1)`,accent:`rgb(7.06% 18.04% 54.12% / 1)`},dark:{background:`rgb(3.14% 6.67% 14.9% / 1)`,surface:`rgb(7.84% 14.12% 29.02% / 1)`,accent:`rgb(61.18% 70.59% 100% / 1)`}}},{id:`cinderCandy`,displayName:`Cinder Candy`,modes:[`light`,`dark`],preview:{light:{background:`rgb(100% 96.86% 98.04% / 1)`,surface:`rgb(100% 100% 100% / 1)`,accent:`rgb(77.25% 11.37% 38.82% / 1)`},dark:{background:`rgb(6.67% 6.67% 7.84% / 1)`,surface:`rgb(12.55% 12.55% 15.29% / 1)`,accent:`rgb(100% 43.53% 65.88% / 1)`}}},{id:`wisteriaMatcha`,displayName:`Wisteria Matcha`,modes:[`light`,`dark`],preview:{light:{background:`rgb(96.47% 97.25% 92.94% / 1)`,surface:`rgb(100% 99.61% 96.86% / 1)`,accent:`rgb(37.25% 33.33% 63.53% / 1)`},dark:{background:`rgb(7.84% 7.06% 14.12% / 1)`,surface:`rgb(14.12% 12.55% 24.71% / 1)`,accent:`rgb(72.55% 69.41% 100% / 1)`}}},{id:`clearWaterNavy`,displayName:`Clear Water Navy`,modes:[`light`,`dark`],preview:{light:{background:`rgb(91.76% 97.25% 98.04% / 1)`,surface:`rgb(97.25% 99.61% 100% / 1)`,accent:`rgb(6.67% 18.82% 33.73% / 1)`},dark:{background:`rgb(2.75% 8.24% 13.33% / 1)`,surface:`rgb(6.67% 18.82% 33.73% / 1)`,accent:`rgb(56.86% 81.18% 83.53% / 1)`}}}],n=`blog-theme-preference`,r=t.map(({id:e})=>e);function i(e){return typeof e==`string`&&r.some(t=>t===e)}function a(e){return e===`light`||e===`dark`}function o(e){return e===`system`||a(e)}var s=document.querySelector(`[data-theme-picker]`),c=s?.querySelector(`[data-theme-toggle]`),l=s?.querySelector(`[data-theme-panel]`),u=s?.querySelector(`[data-theme-current-name]`),d=Array.from(s?.querySelectorAll(`[data-theme-id-input]`)??[]),f=Array.from(s?.querySelectorAll(`[data-theme-mode-input]`)??[]);if(s&&c&&l&&u){let r=s,a=c,p=l,m=u,h=document.documentElement,g=document,_=window.matchMedia(`(prefers-color-scheme: dark)`),v=window.matchMedia(`(prefers-reduced-motion: reduce)`),y=i(h.dataset.themeId)?h.dataset.themeId:e,b=o(h.dataset.colorModePreference)?h.dataset.colorModePreference:`system`,x=e=>e===`system`?_.matches?`dark`:`light`:e;function S(){for(let e of d)e.checked=e.value===y;for(let e of f)e.checked=e.value===b;m.textContent=t.find(({id:e})=>e===y)?.displayName??y}function C(){try{localStorage.setItem(n,JSON.stringify({themeId:y,mode:b}))}catch{}}function w(e){let t={themeId:y,colorMode:e,modePreference:b};window.dispatchEvent(new CustomEvent(`blog-theme-change`,{detail:t}))}function T(e,t,n={}){let r=x(t),i=y!==e||b!==t||h.dataset.colorMode!==r;if(y=e,b=t,n.persist!==!1&&C(),!i){S();return}let a=()=>{h.dataset.themeId=y,h.dataset.colorModePreference=b,h.dataset.colorMode=r,S(),w(r)},o=g.startViewTransition?.bind(g);n.animate!==!1&&!v.matches&&o?o(a).finished.catch(()=>{}):a()}function E(e,t=!1){p.hidden=!e,a.setAttribute(`aria-expanded`,String(e)),a.setAttribute(`aria-label`,e?`关闭主题设置`:`打开主题设置`),e?window.requestAnimationFrame(()=>{d.find(e=>e.checked)?.focus()}):t&&a.focus()}a.addEventListener(`click`,()=>E(p.hasAttribute(`hidden`)));for(let e of d)e.addEventListener(`change`,()=>{e.checked&&i(e.value)&&T(e.value,b)});for(let e of f)e.addEventListener(`change`,()=>{e.checked&&o(e.value)&&T(y,e.value)});document.addEventListener(`pointerdown`,e=>{!p.hasAttribute(`hidden`)&&e.target instanceof Node&&!r.contains(e.target)&&E(!1)}),document.addEventListener(`keydown`,e=>{e.key===`Escape`&&!p.hasAttribute(`hidden`)&&(e.preventDefault(),E(!1,!0))}),_.addEventListener(`change`,()=>{b===`system`&&T(y,b,{persist:!1})}),S()}</script></div></header><script type="module">var e=document.querySelector(`.site-header`);if(e){let t=!1,n=()=>{e.toggleAttribute(`data-elevated`,window.scrollY>8),t=!1};n(),window.addEventListener(`scroll`,()=>{t||(t=!0,window.requestAnimationFrame(n))},{passive:!0})}</script><main><header class="page-hero" style="--hero-image: url('/images/banner.jpg')"><div class="page-hero__overlay"><div class="page-hero__content"><h1>「iOS」一次略有遗憾的网络图片调研</h1><p class="page-hero__summary">本想在三家里选出下一个网络图片库，后来从缓存、合并走到展示，每一层都只得到一半答案。</p></div></div></header><div class="post-shell"><nav class="toc" aria-label="文章目录"><details open><summary>目录</summary><ol><li class="toc__level-1"><a href="#背景">背景</a></li><li class="toc__level-1"><a href="#存储">存储</a></li><li class="toc__level-2"><a href="#初见">初见</a></li><li class="toc__level-2"><a href="#三家的答案">三家的答案</a></li><li class="toc__level-2"><a href="#离开网络图片">离开网络图片</a></li><li class="toc__level-1"><a href="#合并发生在哪里">合并发生在哪里</a></li><li class="toc__level-2"><a href="#请求合并之后">请求合并之后</a></li><li class="toc__level-2"><a href="#相同-还不够">相同, 还不够</a></li><li class="toc__level-2"><a href="#一个边界实验">一个边界实验</a></li><li class="toc__level-1"><a href="#展示">展示</a></li><li class="toc__level-2"><a href="#为什么还要写一次-ifelse">为什么还要写一次 if/else</a></li><li class="toc__level-2"><a href="#没想到是-sdwebimage">没想到是 SDWebImage</a></li><li class="toc__level-2"><a href="#让-container-走到最后">让 Container 走到最后</a></li><li class="toc__level-2"><a href="#谁还有权修改这个-view">谁还有权修改这个 View</a></li><li class="toc__level-1"><a href="#理想之后">理想之后</a></li><li class="toc__level-1"><a href="#脚注">脚注</a></li><li class="toc__level-1"><a href="#footnote-label">Footnotes</a></li></ol></details></nav><script type="module">var e=document.querySelector(`.toc`),t=e?.querySelector(`details`),n=Array.from(e?.querySelectorAll(`a[href^="#"]`)??[]);t&&window.matchMedia(`(max-width: 820px)`).matches&&(t.open=!1);var r=new Map(n.map(e=>{let t=decodeURIComponent(e.hash.slice(1)),n=document.getElementById(t);return n?[t,n]:null}).filter(e=>e!==null));function i(e){for(let t of n)decodeURIComponent(t.hash.slice(1))===e?t.setAttribute(`aria-current`,`location`):t.removeAttribute(`aria-current`)}if(r.size>0){let e=new IntersectionObserver(e=>{let t=e.filter(e=>e.isIntersecting).sort((e,t)=>e.boundingClientRect.top-t.boundingClientRect.top)[0]?.target;t?.id&&i(t.id)},{rootMargin:`-88px 0px -70% 0px`,threshold:[0,1]});for(let t of r.values())e.observe(t);let t=decodeURIComponent(window.location.hash.slice(1));t&&r.has(t)&&i(t)}</script><article class="prose"><h2 id="背景">背景</h2>
+<p>作为被梦想喂大的一代, 入行时总容易憧憬那些名字很响的库. RxSwift, Moya, TCA, Nuke, 都曾长期停在浏览器标签栏的前列; 以前点开那些仓库, 多半是上下滑两下, 就觉得自己又强了一点. Nuke 在我这边挂得尤其久, 像一桩一直想做却总轮不到的事: 现在自己也给社区递过补丁, 也在仓库里磨过自己的东西, 再翻别人的库时目光就不太一样了. 这次正好撞上项目里网络图片这摊不得不收拾的旧账, 便想借机把 SDWebImage, Kingfisher, Nuke 的设计重新走一遍.</p>
+<p>真正往下走以后, 这次调研却很快离开了「下一个库该选谁」这个问题. 从缓存开始, 到请求与处理的合并, 再到最后的展示层, 每往下一层, 都会撞见另一个看似早已解决、实际仍有分歧的问题. 有些第一眼喜欢的设计, 读完源码以后反而不再喜欢; 有些原本没有抱太高期待的实现, 跑完数据却必须重新评价.</p>
+<p>先从存储开始. 这是最早追下去的一条线, 也是最独立的一条线.</p>
+<h2 id="存储">存储</h2>
+<h3 id="初见">初见</h3>
+<p>Nuke 把三种缓存机制摆在了眼前:</p>
+<ul>
+<li><code>ImageCache</code>: 一级缓存，留解码后的图片，大部分是内存。</li>
+<li><code>DataCache</code>: 二级缓存，存储图片请求的二进制数据，大部分是磁盘。</li>
+<li><code>URLCache</code>: 同样是二级缓存，走系统的 HTTP 缓存，更简单，内存磁盘均可设置，但是有解码成本。</li>
+</ul>
+<p>但它并没有把三层一起打开：默认的 <a href="https://github.com/kean/Nuke/blob/63a8fcbd6621340a2410bc3e9575ac97058615f4/Sources/Nuke/Pipeline/ImagePipeline%2BConfiguration.swift#L183-L230"><code>withURLCache</code></a> 使用 HTTP Disk Cache，换成 <code>withDataCache</code> 时，反而会主动关掉 <code>URLCache</code>。可惜项目里的 CDN 过期时间是 1 年，打开基本就又是磁盘缓存，所以没的选，还是得走传统的内存+硬盘。</p>
+<p>真正让我停下来的是: Nuke 的内存 <code>ImageCache</code> 有一份全局 TTL, 磁盘 <code>DataCache</code> 主要靠容量与 LRU, 却都没有一对清楚的 TTL 与 TTI.</p>
+<p>TTL 已经有了, TTI 难道不该也是一个很简单的需求吗?</p>
+<p>带着这个问题继续往下翻，翻阅了三家的源码，事实大致可以收在一张表里：</p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>SDWebImage 5.21.7<sup><a href="#user-content-fn-1" id="user-content-fnref-1" data-footnote-ref aria-describedby="footnote-label">1</a></sup></th>
+<th>Kingfisher 8.11.0<sup><a href="#user-content-fn-2" id="user-content-fnref-2" data-footnote-ref aria-describedby="footnote-label">2</a></sup></th>
+<th>Nuke 13.0.6<sup><a href="#user-content-fn-3" id="user-content-fnref-3" data-footnote-ref aria-describedby="footnote-label">3</a></sup></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Memory</td>
+<td><code>SDMemoryCache</code>, <code>NSCache</code>; 存 Image; cost / count; 无时间过期</td>
+<td><code>MemoryStorage.Backend</code>, <code>NSCache</code>; 存 Image; cost / count; per-entry expiration</td>
+<td><code>ImageCache</code>, 自有实现; 存 <code>ImageContainer</code>; cost / count; 全局 TTL</td>
+</tr>
+<tr>
+<td>Disk</td>
+<td><code>SDDiskCache</code>, File; 存 Data; age / size sweep</td>
+<td><code>DiskStorage.Backend</code>, File; 存 Data; expiration / size cleanup</td>
+<td><code>DataCache</code>, File; 存 Data; Access-date LRU sweep; 异步写入</td>
+</tr>
+<tr>
+<td>默认 Disk 文件名散列</td>
+<td>MD5, <code>CC_MD5</code>; 保留原扩展名</td>
+<td>SHA-256; <code>CryptoKit</code>, 旧系统回退 <code>CC_SHA256</code></td>
+<td>SHA-1, <code>CryptoKit.Insecure.SHA1</code>; 可替换 <code>FilenameGenerator</code></td>
+</tr>
+<tr>
+<td>TTL / TTI</td>
+<td>Memory: 无; Disk: 一份 <code>maxDiskAge</code> + 一种日期依据; TTL-like / TTI-like 二选一</td>
+<td>Memory / Disk: per-entry <code>StorageExpiration</code> + <code>ExpirationExtending</code>; 仍是一份过期时间, 不是双时钟</td>
+<td>Memory: 全局 TTL, 访问不续期; Disk: 无时间过期</td>
+</tr>
+<tr>
+<td>容量超限</td>
+<td>Memory: <code>NSCache</code> limits; Disk: cleanup 后降到 50%</td>
+<td>Memory: <code>NSCache</code> limits; Disk: cleanup 后降到 50%</td>
+<td>Memory: 同步 trim 到 limit; Disk: sweep 后降到 70%</td>
+</tr>
+<tr>
+<td>写入准入</td>
+<td>无显式准入; Disk 可先写到超限</td>
+<td>无容量准入; Disk 只回传成功 / 失败</td>
+<td>Memory 单项 cost 默认达到总 limit 的 10% 即静默拒绝; Disk 入队即返回</td>
+</tr>
+<tr>
+<td>单次 Load</td>
+<td>可换 Cache、指定 query / store 层级; 不改过期</td>
+<td>可换 Cache、指定层级; 可改 Memory / Disk 的过期与续期</td>
+<td>可关 Memory / Disk 读写、绕过或只读 Cache; 不改过期</td>
+</tr>
+<tr>
+<td>替换入口</td>
+<td>完整 <code>SDImageCache</code> 协议; Memory / Disk 也可换 Class</td>
+<td>只接受具体的 <code>ImageCache</code>; 类可继承, 两个 Backend 为 final</td>
+<td><code>ImageCaching</code> / <code>DataCaching</code> 协议注入</td>
+</tr>
+<tr>
+<td>直接可见</td>
+<td>来源; Disk count / size</td>
+<td>来源、写入结果; Memory cost、Disk size; clean 通知</td>
+<td>来源; Memory count / cost; Disk count / size</td>
+</tr>
+<tr>
+<td>统一统计: hit / miss、耗时、rejection、eviction reason、residency</td>
+<td>无</td>
+<td>无</td>
+<td>无</td>
+</tr>
+</tbody>
+</table>
+<h3 id="三家的答案">三家的答案</h3>
+<p>SDWebImage 不是没有 TTL 或 TTI, 而是只有一份 <code>maxDiskAge</code> 与一种日期依据. 两者只能二选一, 过期依赖 sweep, 容量超限后则直接清到一半. 对我来说, 这和完整的 TTL / TTI 语义仍然不是一回事.</p>
+<p>Kingfisher 是三家中过期语义最完整的一个. <code>StorageExpiration</code> 描述何时过期, <code>ExpirationExtending</code> 描述访问以后是否续期. 但一次 Load 仍然可以覆盖 entry 的过期时间与续期方式. Cache 已经有了默认策略, Request 为什么还需要重新决定一遍?</p>
+<blockquote>
+<p>我请求一次网络图片, 跟缓存有什么关系? 我只期望拿到一张图片.</p>
+</blockquote>
+<p>一个 entry 能活多久, 命中后是否续期, 应该由装配好的 Cache 回答. Request 再来决定一遍, 说得好听是灵活, 说难听一点, 就是责任外泄. 更何况, Kingfisher 的 Manager 接受的还是一个具体 <code>ImageCache</code>.</p>
+<p>Nuke 的答案正好相反. 它的内存 Cache 会在写入时限制单个 entry, 超限后收回到准确水位, 查询时也立即判断过期; <code>ImageCaching</code> 与 <code>DataCaching</code> 两个协议又可以直接塞回 <code>ImagePipeline.Configuration</code>. 这至少证明了严格控制容量与查询时判断过期并不是什么过度设计. 可它的磁盘 Cache 没有 TTL / TTI, 协议也薄到无法回答一次写入最后是 accepted、rejected 还是 failed, 更量不到真实的写盘耗时.</p>
+<p>三家都想对了一部分, 却没有一家完整覆盖我对缓存的期待. 如果真要研究一套缓存, 至少得知道有没有命中、读写花了多久、谁被拒绝、为什么被淘汰, 以及数据究竟住了多久. 至于一次 miss 之后的 network、decode 与 process 成本, 应该由 Pipeline 记录, 再由装配层把两段连起来, 而不是反过来让 Cache 认识 Network 和 Decoder.</p>
+<p>走到这里, 我已经不太想再给 <code>ImageRequest</code> 增加 cache option. 无缓存、普通缓存、不按时间自动过期的磁盘缓存, 本来就是几套不同的执行环境. 更自然的做法, 是由装配层准备多条 <code>ImagePipeline</code>, 再分别处理 Request:</p>
+<blockquote>
+<p>Request 决定想拿到什么, ImagePipeline 决定用怎样的一套系统得到它.</p>
+</blockquote>
+<h3 id="离开网络图片">离开网络图片</h3>
+<p>到这里, 我暂时离开了网络图片. LRU 已经存在了几十年, 今天的缓存研究不可能只剩半水位与几个过期参数. 顺着这个疑问, 我找到了 Moka、Caffeine, 后来又写下 <a href="https://github.com/Weixi779/Latte">Latte</a>, 用 benchmark 验证自己的猜想. 完整过程已经留在<a href="/posts/caffeine-moka-cache-notes/">《现代缓存体系探索》</a>里; 等我再次回到网络图片时, 手里已经有了一套更明确的判断标准, 问题也来到了 Cache 之后: 如果二十个调用者同时要同一张图, 到底应该发生几次网络请求、几次 decode、几次 process?</p>
+<h2 id="合并发生在哪里">合并发生在哪里</h2>
+<p>最开始, 我以为这只是一个请求合并问题.</p>
+<p>二十个 <code>UIImageView</code> 同时请求同一个 URL, SDWebImage、Kingfisher、Nuke 都只发出一次请求, 最后也都只留下一个 <code>CGImage</code>. 到这里三家没有区别, 甚至让我怀疑自己是不是想多了: 一个存在了这么久的问题, 大家当然早就解决了.</p>
+<p>但网络请求结束以后呢?</p>
+<p>真实的网络图片很少止步于拿到 Data. 后面还有 decode、resize、圆角或更多处理. 如果二十个调用者需要完全相同的结果, 这些工作也应该跟着网络请求一起合并吗?</p>
+<p>我写了一个独立的 <a href="https://github.com/Weixi779/NetworkImageBenchmark">NetworkImageBenchmark</a><sup><a href="#user-content-fn-4" id="user-content-fnref-4" data-footnote-ref aria-describedby="footnote-label">4</a></sup>, 用本地 HTTP Server 记录真实请求次数, 再给三家原本的 Processor 套上一层 probe. 于是一次 load 被拆成了几层可以分别观察的事实: Server 看见了几次请求, resize 与 suffix 各执行几次, 最终又留下几个不同的 <code>CGImage</code>.</p>
+<table>
+<thead>
+<tr>
+<th>场景</th>
+<th>SDWebImage</th>
+<th>Kingfisher</th>
+<th>Nuke</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>同 URL, 无额外处理</td>
+<td>1 HTTP, 1 Image</td>
+<td>1 HTTP, 1 Image</td>
+<td>1 HTTP, 1 Image</td>
+</tr>
+<tr>
+<td>同一条 resize + round 链</td>
+<td>1 HTTP, 20/20 次处理, 20 Images</td>
+<td>1 HTTP, 1/1 次处理, 1 Image</td>
+<td>1 HTTP, 1/1 次处理, 1 Image</td>
+</tr>
+<tr>
+<td>一半 resize, 一半 resize + round</td>
+<td>1 HTTP, 20/10 次处理, 20 Images</td>
+<td>1 HTTP, 2/1 次处理, 2 Images</td>
+<td>1 HTTP, 1/1 次处理, 2 Images</td>
+</tr>
+<tr>
+<td>边界实验: 第一批进入 round 后, 第二批再加入</td>
+<td>2 HTTP, 20/20 次处理, 20 Images</td>
+<td>2 HTTP, 2/2 次处理, 2 Images</td>
+<td>1 HTTP, 1/1 次处理, 1 Image</td>
+</tr>
+</tbody>
+</table>
+<h3 id="请求合并之后">请求合并之后</h3>
+<p>第一轮带处理链的结果有些出乎意料. SDWebImage 合并了下载, 却没有继续合并下载之后的处理. 同一份 Data 回来以后, 二十个调用者各自走了一次 resize 与 round, 最后得到二十个 <code>CGImage</code>.</p>
+<p>我原本以为 Kingfisher 在这里的表现也不会太好, 结果它和 Nuke 都只执行了一次完整处理链. 二十个调用者不只是共享一次下载, 还共享同一个处理结果.</p>
+<p>所以问题不再是「有没有请求合并」, 而是一次共享工作的边界到底画在哪里. SDWebImage 画在 Downloader; Kingfisher 与 Nuke 则至少把相同的处理链也收了进去.</p>
+<h3 id="相同-还不够">相同, 还不够</h3>
+<p>于是我又把条件改了一点: 同一个 URL, 前十个调用者只需要 resize, 后十个还要再加 round.</p>
+<p>这一次 Kingfisher 执行了两次 resize、一次 round. 两条完整处理链各自能够合并, 但它们共同的 resize 前缀不会再共享. Nuke 只执行一次 resize 与一次 round: resize 的结果先被两条路径共同使用, round 只为真正需要它的那一半继续工作.</p>
+<p>换句话说, Kingfisher 识别的是「两条处理链是否相同」; Nuke 还能继续识别「两条不同的处理链共享了哪些工作」.</p>
+<p>这个区别已经不太像一个简单的 downloader optimization 了. Nuke 合并的是 Pipeline 里可以被复用的 Work, Request 只是这些 Work 的消费者.</p>
+<h3 id="一个边界实验">一个边界实验</h3>
+<p>最后我又构造了一个更极端的场景: 第一批已经完成下载与 resize, 正停在被 benchmark 阻塞的 round 里, 此时第二批才请求完全相同的处理结果.</p>
+<p>SDWebImage 与 Kingfisher 都重新发起了一次 HTTP 请求; Nuke 仍然只有一次请求、一次 resize 与一次 round. 它没有保留已经结束的 resize Task, 只是完整的 <code>resize → round</code> Task 尚未完成, 第二批可以直接成为它的新订阅者. 等 round 结束, 这份 Task 也会立即回收.</p>
+<p>这未必能为日常业务省下多少工作, 人为阻塞以后也没有比较耗时的意义. 它更像一束用来照边界的光: Nuke 合并的是一项仍在进行的完整图片任务, 完成后便立即回收; SDWebImage 与 Kingfisher 的共享窗口则更早结束.</p>
+<p>回头看, Nuke 的实现无疑更完整. 但完整是不是就等于必要, 仍然是另一个问题. 业务里究竟有多少不同处理链会共享前缀? 如果答案接近于零, 这套设计可能只是没有被用上的正确; 如果图片处理足够重、消费端足够多, 它省下的又不只是一个漂亮的抽象.</p>
+<p>至少这次数据让我改掉了两个先入为主的判断: SDWebImage 不是不会合并请求, Kingfisher 的处理合并也比我想象中好得多. 而 Nuke 真正拉开差距的地方, 不是把同一个 URL 合成一次, 而是把一次图片加载拆成了可以分别复用、也可以继续组合的工作.</p>
+<h2 id="展示">展示</h2>
+<h3 id="为什么还要写一次-ifelse">为什么还要写一次 if/else</h3>
+<p>展示层的调研不是从源码开始的, 而是从 API 开始的.</p>
+<p>站在使用者的角度, 我只是想用一个 URL 拿到一张图片. 但在 Nuke 与 Kingfisher 里加入动图以后, 事情都会多出一个分支: 静态图交给默认的 Image, 动图再换一套 View 或 Renderer. 不是不能做, 甚至文档已经把步骤写得很清楚; 只是格式判断最后还是落到了使用者手里.</p>
+<p>这让我有些不解. GIF、APNG 或 Animated WebP 并不是一次图片加载的异常情况, 为什么调用者要先知道 URL 后面到底藏着什么?</p>
+<p>再去看 Web 与 Android, 答案反而朴素得多. Web 仍然是同一个 <code>&lt;img&gt;</code>; Android 的 <code>Drawable</code> 既可以是一张静态图, 也可以是会播放的 <code>AnimatedImageDrawable</code>.<sup><a href="#user-content-fn-5" id="user-content-fnref-5" data-footnote-ref aria-describedby="footnote-label">5</a></sup> 它们的具体实现并不适合直接搬到 iOS, 却提醒了我一件事:</p>
+<blockquote>
+<p>动图应该是图片的一种, 而不是图片加载完成以后再补的一条特殊通道.</p>
+</blockquote>
+<h3 id="没想到是-sdwebimage">没想到是 SDWebImage</h3>
+<p>顺着这个标准回头看, 最让我意外的反而是 SDWebImage.</p>
+<p>前面的缓存与处理合并里, 我对它一直没有太高评价; 但到了展示层, <code>SDAnimatedImageView</code> 却是一个可以直接替换 <code>UIImageView</code> 的 View. 传入普通 <code>UIImage</code>, 它就按静态图展示; 传入符合 <code>SDAnimatedImage</code> 的结果, 它便建立播放器. 网络加载仍然使用同一组 <code>sd_setImage</code> API, 调用者不需要先把格式拆开.<sup><a href="#user-content-fn-6" id="user-content-fnref-6" data-footnote-ref aria-describedby="footnote-label">6</a></sup></p>
+<p>它未必在每一个性能维度上都做得最好, 但至少把能力交完整了. 也是在这里, 我第一次觉得自己一直不太喜欢的 SDWebImage, 确实把一个问题想在了前面.</p>
+<p>Kingfisher 为动图准备了 <code>AnimatedImageView</code> 与 <code>KFAnimatedImage</code>, 能力同样完整, 只是静态与动态仍然是两个公开入口. Nuke 的情况则更让人遗憾: <code>ImageContainer</code> 明明是一个很好的名字, 里面也保留了图片类型、首帧与动图原始 Data, 默认的 Presentation 却没有继续消费这些信息. 最后仍然要从 Container 里取出类型, 写下那段 <code>if container.type == .gif</code>.<sup><a href="#user-content-fn-7" id="user-content-fnref-7" data-footnote-ref aria-describedby="footnote-label">7</a></sup></p>
+<p>Container 已经知道答案, 使用者却还要再问一次.</p>
+<h3 id="让-container-走到最后">让 Container 走到最后</h3>
+<p>项目中的封装便从这里开始. 我也设计了一份 <code>ImageContainer</code>, 但不再让业务判断它装的是静态图还是动图. 对外只有一次加载; 结果进入展示层以后, Renderer 再决定直接显示 Platform Image, 还是建立一段动画播放.</p>
+<p>UIKit 里, 动画由 <code>CADisplayLink</code> 推进; SwiftUI 里, 同一份帧时间线交给 <code>TimelineView</code>. 两边的实现方式不同, 但边界相同: Pipeline 负责得到 Container, Presentation 负责理解 Container.</p>
+<p>这也意味着加载完成并不是展示层的终点. 动图什么时候开始、离开屏幕后要不要暂停、Cell 复用时怎样释放帧缓存, 都属于这一次展示自己的生命周期. 如果这些问题留给每一个业务 View, 那么统一的 <code>ImageContainer</code> 最后仍然只是换了名字的 <code>if/else</code>.</p>
+<h3 id="谁还有权修改这个-view">谁还有权修改这个 View</h3>
+<p>统一入口以后, 另一个问题很快出现了. 同一个 View 可能刚请求 A, 紧接着又请求 B. A 被取消, 不代表它的 completion 永远不会到达; 如果旧结果晚一步写回, View 仍然会闪回上一张图. 动图还会多一层麻烦: 旧的加载结束了, 旧播放器与排队中的帧也必须一起失去展示权.</p>
+<p>这里最简单的办法不是继续相信 cancel, 而是给每次展示一份自增 ID 或 token. 新请求出现时替换当前 token; completion 回来以后, 只有仍然持有当前 token 的结果才能修改 View. reset 与 reuse 也会让旧 token 立即失效.</p>
+<blockquote>
+<p>Cancel 负责尽量停止工作, token 决定结果还有没有资格被展示.</p>
+</blockquote>
+<p>这段逻辑并不复杂, 却把 View、Request 与播放器的关系说清楚了. Pipeline 里的物理工作可以继续被多个消费者共享; 但落到某一个 View 上, 当前只有一次展示请求拥有最终写入权. 图片是静态还是动态, 不应该改变这条规则.</p>
+<h2 id="理想之后">理想之后</h2>
+<p>我原以为, 把三家的实现读完, 剩下的只是把自己认同的答案重新写一遍. 后来才发现, 知道哪里不满意, 和把每一处都做到满意, 是两件完全不同的事.</p>
+<p>在一个足够窄、也足够熟悉的边界里, 把一个库写到自己心里的九十分, 并没有想象中困难. 但网络图片不是一个库. Cache、Network、Decode、Presentation, 每一部分都有自己的历史、边界与失败方式. 最后的八十分, 要求它们每一个都至少达到八十分.</p>
+<p>这比写出一个九十分难得多.</p>
+<p>Iris 便是在这段调研里慢慢出现的.<sup><a href="#user-content-fn-8" id="user-content-fnref-8" data-footnote-ref aria-describedby="footnote-label">8</a></sup> 前面几章里我认为更合理的答案, 最后大多被放到了那里. 但「放进去」和「做好了」仍然不是一回事. 它现在处于 <code>0.1.0-beta.1</code>, 有些边界已经落成代码, 有些能力刚刚能用, 还有不少地方只是完成了一个让我愿意继续往下走的第一版.</p>
+<table>
+<thead>
+<tr>
+<th>调研留下的标准</th>
+<th>Iris 目前做到哪里</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cache 策略属于装配完成的 Pipeline, Request 只描述想得到什么</td>
+<td>Store、Key 与 Cache facade 的注入边界已经落地; 默认 Memory / Disk Store 与统一观测仍未提供</td>
+</tr>
+<tr>
+<td>Network、Decode 与完整 Load 是不同的共享工作</td>
+<td>四个独立 WorkPool 已经分别承接 Cache-only Load、Network-capable Load、Network 与 Decode; Processor 尚未进入首个 beta</td>
+</tr>
+<tr>
+<td>静态图与动图应该交付同一种结果</td>
+<td><code>ImageContainer</code> 已经统一 poster 与 animation source; 默认 Presentation 展示即时图片, 可选 Animation Renderer 接管播放</td>
+</tr>
+<tr>
+<td>View 只接受当前展示请求的结果</td>
+<td>UIKit 与 SwiftUI 都已经使用 Load Token 隔离迟到结果, Renderer 与 Player 也拥有独立的 reset / active 生命周期</td>
+</tr>
+</tbody>
+</table>
+<p>这张表与其说是功能列表, 不如说是目前完成度的边界. Cache 还没有一套可以直接使用的默认存储; Processor、Progress、Profiler 与公开事件流都还不存在; Retry、placeholder、transition 和自动 View 尺寸测量也没有进入首个 beta. 即使已经落地的动画播放, 也还需要更多真实项目去验证它的内存、可见性与复用行为.</p>
+<p>所以 Iris 现在不是生产级答案, 这篇文章也没办法用它证明谁已经属于下一个时代. 我当然不介意有一天它真的走到那里, 但那不是一个仓库名字、几份设计文档或一篇文章可以提前宣布的事情.</p>
+<p>目前能确定的只是: 读过这些实现, 跑过这些数据以后, 我对一套网络图片库应该怎样工作有了自己的判断; 然后试着把这些判断放进同一个地方. 它们有些已经经得起测试, 有些还在等待现实来挑战, 有些也可能只是我又一次想得太简单.</p>
+<p>也许等 Iris 再往前走一段, 我还会回来重写这篇文章. 到那时, 今天留下的结论可能变得更完整, 也可能再次被推翻.</p>
+<p>目前, 它还在往前跑.</p>
+<h2 id="脚注">脚注</h2>
+<section data-footnotes class="footnotes"><h2 class="sr-only" id="footnote-label">Footnotes</h2>
+<ol>
+<li id="user-content-fn-1">
+<p>SDWebImage 5.21.7 源码: <a href="https://github.com/SDWebImage/SDWebImage/blob/2de3a496eaf6df9a1312862adcfd54acd73c39c0/SDWebImage/Core/SDMemoryCache.h#L12-L83"><code>SDMemoryCache</code></a>、<a href="https://github.com/SDWebImage/SDWebImage/blob/2de3a496eaf6df9a1312862adcfd54acd73c39c0/SDWebImage/Core/SDDiskCache.m#L151-L235"><code>SDDiskCache</code></a>、<a href="https://github.com/SDWebImage/SDWebImage/blob/2de3a496eaf6df9a1312862adcfd54acd73c39c0/SDWebImage/Core/SDDiskCache.m#L356-L377">MD5 文件名</a>、<a href="https://github.com/SDWebImage/SDWebImage/blob/2de3a496eaf6df9a1312862adcfd54acd73c39c0/SDWebImage/Core/SDImageCacheConfig.h#L89-L151"><code>SDImageCacheConfig</code></a>、<a href="https://github.com/SDWebImage/SDWebImage/blob/2de3a496eaf6df9a1312862adcfd54acd73c39c0/SDWebImage/Core/SDWebImageDefine.h#L256-L385">Load Context</a> 与 <a href="https://github.com/SDWebImage/SDWebImage/blob/2de3a496eaf6df9a1312862adcfd54acd73c39c0/SDWebImage/Core/SDImageCache.h"><code>SDImageCache</code></a>. <a href="#user-content-fnref-1" data-footnote-backref="" aria-label="Back to reference 1" class="data-footnote-backref">↩</a></p>
+</li>
+<li id="user-content-fn-2">
+<p>Kingfisher 8.11.0 源码: <a href="https://github.com/onevcat/Kingfisher/blob/410984bf301f4fa224fe56277b3f8672cc465c79/Sources/Cache/MemoryStorage.swift#L42-L101"><code>MemoryStorage.Backend</code></a>、<a href="https://github.com/onevcat/Kingfisher/blob/410984bf301f4fa224fe56277b3f8672cc465c79/Sources/Cache/DiskStorage.swift#L42-L79"><code>DiskStorage.Backend</code></a>、<a href="https://github.com/onevcat/Kingfisher/blob/410984bf301f4fa224fe56277b3f8672cc465c79/Sources/Utility/String%2BSHA256.swift#L29-L47">SHA-256 文件名</a>、<a href="https://github.com/onevcat/Kingfisher/blob/410984bf301f4fa224fe56277b3f8672cc465c79/Sources/Cache/Storage.swift#L35-L93"><code>StorageExpiration</code></a>、<a href="https://github.com/onevcat/Kingfisher/blob/410984bf301f4fa224fe56277b3f8672cc465c79/Sources/General/KingfisherOptionsInfo.swift#L47-L111">Load Options</a> 与 <a href="https://github.com/onevcat/Kingfisher/blob/410984bf301f4fa224fe56277b3f8672cc465c79/Sources/Cache/ImageCache.swift#L145-L198"><code>ImageCache</code></a>. <a href="#user-content-fnref-2" data-footnote-backref="" aria-label="Back to reference 2" class="data-footnote-backref">↩</a></p>
+</li>
+<li id="user-content-fn-3">
+<p>Nuke 13.0.6 源码: <a href="https://github.com/kean/Nuke/blob/63a8fcbd6621340a2410bc3e9575ac97058615f4/Sources/Nuke/Caching/ImageCache.swift#L12-L70"><code>ImageCache</code></a>、<a href="https://github.com/kean/Nuke/blob/63a8fcbd6621340a2410bc3e9575ac97058615f4/Sources/Nuke/Caching/DataCache.swift#L10-L51"><code>DataCache</code></a>、<a href="https://github.com/kean/Nuke/blob/63a8fcbd6621340a2410bc3e9575ac97058615f4/Sources/Nuke/Internal/Extensions.swift#L7-L28">SHA-1 文件名</a>、<a href="https://github.com/kean/Nuke/blob/63a8fcbd6621340a2410bc3e9575ac97058615f4/Sources/Nuke/Caching/Cache.swift#L128-L143">写入准入</a>、<a href="https://github.com/kean/Nuke/blob/63a8fcbd6621340a2410bc3e9575ac97058615f4/Sources/Nuke/ImageRequest.swift#L303-L340"><code>ImageRequest.Options</code></a>、<a href="https://github.com/kean/Nuke/blob/63a8fcbd6621340a2410bc3e9575ac97058615f4/Sources/Nuke/Caching/ImageCaching.swift#L7-L16"><code>ImageCaching</code></a> 与 <a href="https://github.com/kean/Nuke/blob/63a8fcbd6621340a2410bc3e9575ac97058615f4/Sources/Nuke/Caching/DataCaching.swift#L7-L26"><code>DataCaching</code></a>. <a href="#user-content-fnref-3" data-footnote-backref="" aria-label="Back to reference 3" class="data-footnote-backref">↩</a></p>
+</li>
+<li id="user-content-fn-4">
+<p>测试设备为 iPhone / iOS 26.5, 每轮 20 个调用者, 关闭 Library Memory / Disk Cache, 由本地 HTTP Server 统计请求与响应字节. Processor probe 记录的是 benchmark 包装的 resize / suffix 调用次数; <code>CGImage</code> 数量只表示最终对象身份, 两者都不能直接当作 decode 次数. <a href="#user-content-fnref-4" data-footnote-backref="" aria-label="Back to reference 4" class="data-footnote-backref">↩</a></p>
+</li>
+<li id="user-content-fn-5">
+<p>Web 对 animated image 仍使用同一个 <a href="https://html.spec.whatwg.org/multipage/rendering.html#images-3"><code>img</code> element</a>; Android 的 <a href="https://developer.android.com/reference/android/graphics/ImageDecoder"><code>ImageDecoder</code></a> 会把静态图片解码为普通 <code>Drawable</code>, 把 Animated GIF / WebP 解码为 <a href="https://developer.android.com/reference/android/graphics/drawable/AnimatedImageDrawable.html"><code>AnimatedImageDrawable</code></a>. 这里借用的是统一的图片入口与可承载动画的结果类型, 不是它们具体的播放实现. <a href="#user-content-fnref-5" data-footnote-backref="" aria-label="Back to reference 5" class="data-footnote-backref">↩</a></p>
+</li>
+<li id="user-content-fn-6">
+<p>SDWebImage 5.21.7 的 <a href="https://github.com/SDWebImage/SDWebImage/blob/2de3a496eaf6df9a1312862adcfd54acd73c39c0/SDWebImage/Core/SDAnimatedImageView.h#L17-L30"><code>SDAnimatedImageView</code></a> 明确被定义为 <code>UIImageView</code> 的 drop-in replacement: 普通 <code>UIImage</code> 走静态展示, <code>SDAnimatedImage</code> 走动画播放器; <a href="https://github.com/SDWebImage/SDWebImage/blob/2de3a496eaf6df9a1312862adcfd54acd73c39c0/SDWebImage/Core/SDAnimatedImageView%2BWebCache.h#L15-L67"><code>WebCache</code></a> 仍提供相同的 URL 加载入口. <a href="#user-content-fnref-6" data-footnote-backref="" aria-label="Back to reference 6" class="data-footnote-backref">↩</a></p>
+</li>
+<li id="user-content-fn-7">
+<p>Nuke 12 将 <code>LazyImage</code> 的底层展示改为 <code>SwiftUI.Image</code>, 以对齐 <code>AsyncImage</code> 的布局与 SwiftUI 行为, 同时移除了 NukeUI 内嵌的 Gifu 播放实现; Nuke 11 以前曾直接提供这项能力. Nuke Core 并没有放弃 GIF: Decoder 仍会产生首帧并把原始 Data 留在 <code>ImageContainer</code>, 只是 <a href="https://github.com/kean/Nuke/blob/12.0.0/Documentation/Migrations/Nuke%2012%20Migration%20Guide.md#animated-images">Migration Guide</a> 要求调用者根据 <code>container.type</code> 自行选择展示 View. 参见 <a href="https://github.com/kean/Nuke/blob/12.0.0/CHANGELOG.md#nukeui-20">Nuke 12 Changelog</a> 与当前的 <a href="https://github.com/kean/Nuke/blob/13.0.6/Documentation/Nuke.docc/Customization/ImageFormats/supported-image-formats.md#gif">GIF 文档</a>. <a href="#user-content-fnref-7" data-footnote-backref="" aria-label="Back to reference 7" class="data-footnote-backref">↩</a></p>
+</li>
+<li id="user-content-fn-8">
+<p><a href="https://github.com/Weixi779/Iris">Iris</a> 当前处于 <code>0.1.0-beta.1</code>. Core、Cache、Presentation 与 Animation 的产品边界及首个 beta 的明确非目标以仓库 README 与对应设计文档为准; 这里描述的是写作时的实现状态, 后续版本仍可能发生 source-breaking 调整. <a href="#user-content-fnref-8" data-footnote-backref="" aria-label="Back to reference 8" class="data-footnote-backref">↩</a></p>
+</li>
+</ol>
+</section>
+<nav class="post-navigation" aria-label="相邻文章"><span></span><a href="/posts/wicompress-2-architecture-ai/"><span>更早文章 →</span><strong>「iOS」解构与重组：AI 时代下的 WICompress 2.0</strong></a></nav><section class="comments" aria-label="文章评论"><div id="giscus-comments" data-theme-light="light" data-theme-dark="dark"></div><script src="https://giscus.app/client.js" data-repo="Weixi779/Weixi779.github.io" data-repo-id="MDEwOlJlcG9zaXRvcnkzODE5Nzk0MzA=" data-category="Announcements" data-category-id="DIC_kwDOFsSLJs4C3eHH" data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="bottom" data-theme="preferred_color_scheme" data-lang="zh-CN" data-loading="lazy" crossorigin="anonymous" async></script></section><script type="module">function e(e){let t=document.querySelector(`iframe.giscus-frame`);t?.contentWindow&&t.contentWindow.postMessage({giscus:{setConfig:{theme:e}}},`https://giscus.app`)}window.addEventListener(`blog-theme-change`,t=>{e(t.detail.colorMode)});var t=document.querySelector(`.comments`);if(t){let n=new MutationObserver(()=>{document.querySelector(`iframe.giscus-frame`)&&(e(document.documentElement.dataset.colorMode===`dark`?`dark`:`light`),n.disconnect())});n.observe(t,{childList:!0,subtree:!0})}</script></article></div></main><footer class="site-footer"><nav class="site-footer__links" aria-label="找到我"><a class="site-footer__link" href="https://github.com/Weixi779" target="_blank" rel="me noopener noreferrer" aria-label="在 GitHub 找到我" title="GitHub"><svg class="site-footer__icon site-footer__icon--fill" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.61-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.89 1.53 2.34 1.09 2.91.83.09-.65.35-1.09.64-1.34-2.22-.25-4.56-1.11-4.56-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.03A9.6 9.6 0 0 1 12 6.84c.85 0 1.71.12 2.5.34 1.91-1.3 2.75-1.03 2.75-1.03.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.69-4.57 4.94.36.31.68.92.68 1.85v2.74c0 .27.18.58.69.48A10 10 0 0 0 12 2Z"></path></svg></a><a class="site-footer__link" href="https://leetcode.cn/u/wei-xi-d/" target="_blank" rel="noopener noreferrer" aria-label="查看我的 LeetCode 主页" title="LeetCode"><svg class="site-footer__icon site-footer__icon--fill" aria-hidden="true" viewBox="0 0 24 24"><path d="M13.483 0a1.374 1.374 0 0 0-.961.438L7.116 6.226l-3.854 4.126a5.266 5.266 0 0 0-1.209 2.104 5.35 5.35 0 0 0-.125.513 5.527 5.527 0 0 0 .062 2.362 5.83 5.83 0 0 0 .349 1.017 5.938 5.938 0 0 0 1.271 1.818l4.277 4.193.039.038c2.248 2.165 5.852 2.133 8.063-.074l2.396-2.392c.54-.54.54-1.414.003-1.955a1.378 1.378 0 0 0-1.951-.003l-2.396 2.392a3.021 3.021 0 0 1-4.205.038l-.02-.019-4.276-4.193c-.652-.64-.972-1.469-.948-2.263a2.68 2.68 0 0 1 .066-.523 2.545 2.545 0 0 1 .619-1.164L9.13 8.114c1.058-1.134 3.204-1.27 4.43-.278l3.501 2.831c.593.48 1.461.387 1.94-.207a1.384 1.384 0 0 0-.207-1.943l-3.5-2.831c-.8-.647-1.766-1.045-2.774-1.202l2.015-2.158A1.384 1.384 0 0 0 13.483 0zm-2.866 12.815a1.38 1.38 0 0 0-1.38 1.382 1.38 1.38 0 0 0 1.38 1.382H20.79a1.38 1.38 0 0 0 1.38-1.382 1.38 1.38 0 0 0-1.38-1.382z"></path></svg></a><a class="site-footer__link" href="https://space.bilibili.com/6450245" target="_blank" rel="noopener noreferrer" aria-label="查看我的哔哩哔哩主页" title="Bilibili"><svg class="site-footer__icon site-footer__icon--fill" aria-hidden="true" viewBox="0 0 24 24"><path d="M17.813 4.653h.854c1.51.054 2.769.578 3.773 1.574 1.004.995 1.524 2.249 1.56 3.76v7.36c-.036 1.51-.556 2.769-1.56 3.773s-2.262 1.524-3.773 1.56H5.333c-1.51-.036-2.769-.556-3.773-1.56S.036 18.858 0 17.347v-7.36c.036-1.511.556-2.765 1.56-3.76 1.004-.996 2.262-1.52 3.773-1.574h.774l-1.174-1.12a1.234 1.234 0 0 1-.373-.906c0-.356.124-.658.373-.907l.027-.027c.267-.249.573-.373.92-.373.347 0 .653.124.92.373L9.653 4.44c.071.071.134.142.187.213h4.267a.836.836 0 0 1 .16-.213l2.853-2.747c.267-.249.573-.373.92-.373.347 0 .662.151.929.4.267.249.391.551.391.907 0 .355-.124.657-.373.906zM5.333 7.24c-.746.018-1.373.276-1.88.773-.506.498-.769 1.13-.786 1.894v7.52c.017.764.28 1.395.786 1.893.507.498 1.134.756 1.88.773h13.334c.746-.017 1.373-.275 1.88-.773.506-.498.769-1.129.786-1.893v-7.52c-.017-.765-.28-1.396-.786-1.894-.507-.497-1.134-.755-1.88-.773zM8 11.107c.373 0 .684.124.933.373.25.249.383.569.4.96v1.173c-.017.391-.15.711-.4.96-.249.25-.56.374-.933.374s-.684-.125-.933-.374c-.25-.249-.383-.569-.4-.96V12.44c0-.373.129-.689.386-.947.258-.257.574-.386.947-.386zm8 0c.373 0 .684.124.933.373.25.249.383.569.4.96v1.173c-.017.391-.15.711-.4.96-.249.25-.56.374-.933.374s-.684-.125-.933-.374c-.25-.249-.383-.569-.4-.96V12.44c.017-.391.15-.711.4-.96.249-.249.56-.373.933-.373Z"></path></svg></a><a class="site-footer__link" href="mailto:sunshiwei418@126.com" aria-label="给我发送邮件" title="Email"><svg class="site-footer__icon site-footer__icon--stroke" aria-hidden="true" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="m4 7 8 6 8-6"></path></svg></a><a class="site-footer__link" href="/rss.xml" aria-label="订阅 RSS" title="RSS"><svg class="site-footer__icon site-footer__icon--stroke" aria-hidden="true" viewBox="0 0 24 24"><circle cx="5" cy="19" r="1"></circle><path d="M5 11a8 8 0 0 1 8 8M5 5a14 14 0 0 1 14 14"></path></svg></a></nav><p>© 2026 Weixi</p></footer></body></html>

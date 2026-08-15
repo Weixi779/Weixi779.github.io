@@ -5,8 +5,19 @@
     <link>https://weixi779.github.io/</link>
     <description>个人博客记录成长</description>
     <language>zh-CN</language>
-    <lastBuildDate>Sun, 02 Aug 2026 04:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Mon, 10 Aug 2026 07:03:40 GMT</lastBuildDate>
     <atom:link href="https://weixi779.github.io/rss.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>「iOS」一次略有遗憾的网络图片调研</title>
+      <link>https://weixi779.github.io/posts/ios-network-image-survey/</link>
+      <guid isPermaLink="true">https://weixi779.github.io/posts/ios-network-image-survey/</guid>
+      <pubDate>Mon, 10 Aug 2026 07:03:40 GMT</pubDate>
+      <description>本想在三家里选出下一个网络图片库，后来从缓存、合并走到展示，每一层都只得到一半答案。</description>
+      <category>架构</category>
+      <category>图片</category>
+      <category>缓存</category>
+      <category>技术演进</category>
+    </item>
     <item>
       <title>「iOS」解构与重组：AI 时代下的 WICompress 2.0</title>
       <link>https://weixi779.github.io/posts/wicompress-2-architecture-ai/</link>

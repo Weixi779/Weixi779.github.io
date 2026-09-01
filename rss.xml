@@ -5,8 +5,18 @@
     <link>https://weixi779.github.io/</link>
     <description>个人博客记录成长</description>
     <language>zh-CN</language>
-    <lastBuildDate>Mon, 10 Aug 2026 07:03:40 GMT</lastBuildDate>
+    <lastBuildDate>Wed, 19 Aug 2026 02:47:10 GMT</lastBuildDate>
     <atom:link href="https://weixi779.github.io/rss.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>删掉大量 Skill 以后</title>
+      <link>https://weixi779.github.io/posts/after-deleting-ai-skills/</link>
+      <guid isPermaLink="true">https://weixi779.github.io/posts/after-deleting-ai-skills/</guid>
+      <pubDate>Wed, 19 Aug 2026 02:47:10 GMT</pubDate>
+      <description>一次对照实验以后，我删掉了几千行的知识型 Skill，也重新思考 AI、作者与后来者各自站在哪里。</description>
+      <category>AI</category>
+      <category>代码人生</category>
+      <category>技术演进</category>
+    </item>
     <item>
       <title>「iOS」一次略有遗憾的网络图片调研</title>
       <link>https://weixi779.github.io/posts/ios-network-image-survey/</link>

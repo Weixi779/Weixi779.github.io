@@ -1,0 +1,49 @@
+---
+// Created by weixi on 2026/09/24.
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+import '../styles/prose.css';
+---
+
+<BaseLayout title="字体许可" description="本站字体的来源、开源许可与原始字体恢复说明。">
+  <article class="prose prose--page">
+    <h1>字体与许可</h1>
+    <p>
+      本站中文使用
+      <a href="https://github.com/lxgw/LxgwNeoXiHei">霞鹜新晰黑</a> v1.305，
+      由 LXGW 基于 IPAexGothic 改作。网站仅保留当前内容用到的字符，
+      将裁剪后的字体独立命名为 Weixi Sans，字形未作修改。
+      该字体依照 <a href="/fonts/licenses/IPA-Font-License-1.0.md">IPA Font License 1.0</a> 发布。
+    </p>
+
+    <h2>恢复为原始 IPA 字体</h2>
+    <p>
+      如果你希望使用原始字体，可以从
+      <a href="https://moji.or.jp/ipafont/ipafontdownload/">IPA 官方下载页面</a>
+      下载并安装 IPAexGothic（IPAexゴシック），然后重新打开本网站。
+      浏览器允许访问本地字体时，本站会优先使用它。
+      原始字体采用日文字形，部分汉字和标点与简体中文写法不同。
+    </p>
+    <p>
+      也可以在支持自定义字体的浏览器中选择已安装的 IPAexGothic，
+      并关闭网页指定字体。卸载本地 IPAexGothic、恢复浏览器的网页字体设置后，
+      本站会重新使用新晰黑。
+    </p>
+
+    <h2>其他字体</h2>
+    <ul>
+      <li>
+        英文与代码：<a href="https://github.com/JetBrains/JetBrainsMono">JetBrains Mono</a> v2.304，
+        <a href="/fonts/licenses/JetBrains-Mono-OFL-1.1.txt">SIL Open Font License 1.1</a>。
+      </li>
+      <li>
+        代码中的中文：<a href="https://github.com/lxgw/LxgwWenKaiGB">霞鹜文楷等宽 GB</a> v1.522，
+        <a href="/fonts/licenses/LXGW-WenKai-GB-OFL-1.1.txt">SIL Open Font License 1.1</a>。
+      </li>
+    </ul>
+    <p>
+      <a href="/fonts/SOURCES.md">字体来源与生成说明</a> ·
+      <a href="/fonts/weixi-sans-subset.woff2" download>下载本站中文字体子集</a>
+    </p>
+  </article>
+</BaseLayout>

@@ -13,6 +13,7 @@ const requiredRoutes = [
   '/404.html',
   '/about/',
   '/archive/',
+  '/fonts/',
   '/page/2/',
   '/page/3/',
   translatedPostRoute,
@@ -22,9 +23,9 @@ const requiredFontAssets = [
   'JetBrainsMono-Bold.woff2',
   'JetBrainsMono-Italic.woff2',
   'JetBrainsMono-BoldItalic.woff2',
-  'lxgw-wenkai-gb-regular-subset.woff2',
-  'lxgw-wenkai-gb-medium-subset.woff2',
+  'weixi-sans-subset.woff2',
   'lxgw-wenkai-mono-gb-regular-subset.woff2',
+  'licenses/IPA-Font-License-1.0.md',
 ];
 
 function fail(message) {

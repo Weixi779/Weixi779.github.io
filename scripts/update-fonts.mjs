@@ -4,6 +4,7 @@ import { createHash } from 'node:crypto';
 import { readdir, readFile, writeFile, mkdir } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { createFont } from 'fonteditor-core';
 import subsetFont from 'subset-font';
 
 const rootDirectory = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -11,21 +12,22 @@ const sourceDirectory = path.join(rootDirectory, 'src');
 const outputDirectory = path.join(rootDirectory, 'public/fonts');
 const cacheDirectory = path.join(rootDirectory, 'node_modules/.cache/site-fonts');
 
-const lxgwVersion = 'v1.522';
+const neoXiHeiVersion = 'v1.305';
+const wenKaiVersion = 'v1.522';
 const jetBrainsMonoVersion = 'v2.304';
 
 const lxgwFonts = [
   {
-    sourceName: 'LXGWWenKaiGB-Regular.ttf',
-    outputName: 'lxgw-wenkai-gb-regular-subset.woff2',
-    sha256: '295568c131648062107543aa159c97dd49564be791136c2abf74cad83eba3f7f',
+    repository: 'lxgw/LxgwNeoXiHei',
+    version: neoXiHeiVersion,
+    sourceName: 'LXGWNeoXiHei.ttf',
+    outputName: 'weixi-sans-subset.woff2',
+    sha256: '893cfbec604768f03785ab4f369508de68c274273359a5cadee17e2852975d5c',
+    family: 'Weixi Sans',
   },
   {
-    sourceName: 'LXGWWenKaiGB-Medium.ttf',
-    outputName: 'lxgw-wenkai-gb-medium-subset.woff2',
-    sha256: 'b885c51ec0d3f325974013801dfcefda1a9ba0bf385c607cf5f2582dafa2e5ab',
-  },
-  {
+    repository: 'lxgw/LxgwWenkaiGB',
+    version: wenKaiVersion,
     sourceName: 'LXGWWenKaiMonoGB-Regular.ttf',
     outputName: 'lxgw-wenkai-mono-gb-regular-subset.woff2',
     sha256: 'fb82a0d6b9c0a1a3c83ad303eab1cc998e6a52c1028027fc3527455bdadb4ecb',
@@ -75,7 +77,7 @@ async function download(url) {
 }
 
 async function cachedDownload(font) {
-  const cachePath = path.join(cacheDirectory, `${lxgwVersion}-${font.sourceName}`);
+  const cachePath = path.join(cacheDirectory, `${font.version}-${font.sourceName}`);
 
   try {
     const cached = await readFile(cachePath);
@@ -84,7 +86,7 @@ async function cachedDownload(font) {
     // A missing cache is expected on the first run.
   }
 
-  const url = `https://github.com/lxgw/LxgwWenkaiGB/releases/download/${lxgwVersion}/${font.sourceName}`;
+  const url = `https://github.com/${font.repository}/releases/download/${font.version}/${font.sourceName}`;
   const source = await download(url);
   const actualDigest = digest(source);
   if (actualDigest !== font.sha256) {
@@ -97,10 +99,24 @@ async function cachedDownload(font) {
 
 async function updateLxgwFonts(characters) {
   for (const font of lxgwFonts) {
-    const source = await cachedDownload(font);
+    let source = await cachedDownload(font);
+    if (font.family) {
+      const renamed = createFont(source, { type: 'ttf', hinting: true, kerning: true });
+      Object.assign(renamed.get().name, {
+        fontFamily: font.family,
+        fontSubFamily: 'Regular',
+        fullName: `${font.family} Regular`,
+        postScriptName: `${font.family.replaceAll(' ', '')}-Regular`,
+        uniqueSubFamily: `${font.family} Regular ${font.version}`,
+        preferredFamily: font.family,
+        preferredSubFamily: 'Regular',
+        compatibleFull: `${font.family} Regular`,
+      });
+      source = Buffer.from(renamed.write({ type: 'ttf', hinting: true, kerning: true }));
+    }
     const subset = await subsetFont(source, characters, {
       targetFormat: 'woff2',
-      preserveNameIds: [0, 1, 2, 3, 4, 5, 6],
+      preserveNameIds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 16, 17, 18],
     });
     await writeFile(path.join(outputDirectory, font.outputName), subset);
     console.log(`${font.outputName}: ${(subset.byteLength / 1024).toFixed(1)} KiB`);
@@ -119,8 +135,12 @@ async function updateJetBrainsMonoFonts() {
 async function updateLicenses() {
   const licenses = [
     {
+      name: 'IPA-Font-License-1.0.md',
+      url: `https://raw.githubusercontent.com/lxgw/LxgwNeoXiHei/${neoXiHeiVersion}/LICENSE.md`,
+    },
+    {
       name: 'LXGW-WenKai-GB-OFL-1.1.txt',
-      url: `https://raw.githubusercontent.com/lxgw/LxgwWenkaiGB/${lxgwVersion}/OFL.txt`,
+      url: `https://raw.githubusercontent.com/lxgw/LxgwWenkaiGB/${wenKaiVersion}/OFL.txt`,
     },
     {
       name: 'JetBrains-Mono-OFL-1.1.txt',
@@ -129,7 +149,8 @@ async function updateLicenses() {
   ];
 
   for (const license of licenses) {
-    await writeFile(path.join(outputDirectory, 'licenses', license.name), await download(license.url));
+    const text = (await download(license.url)).toString('utf8').replace(/\r\n/g, '\n').replace(/[ \t]+$/gm, '');
+    await writeFile(path.join(outputDirectory, 'licenses', license.name), text);
   }
 }
 
@@ -141,7 +162,7 @@ async function main() {
   ]);
 
   const characters = await buildCharacterSet();
-  console.log(`Subsetting LXGW WenKai GB for ${[...characters].length} unique characters.`);
+  console.log(`Subsetting Chinese fonts for ${[...characters].length} unique characters.`);
 
   await updateLxgwFonts(characters);
   await Promise.all([updateJetBrainsMonoFonts(), updateLicenses()]);

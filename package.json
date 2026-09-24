@@ -18,6 +18,7 @@
     "preview": "astro preview"
   },
   "dependencies": {
+    "@astrojs/markdown-satteri": "0.3.3",
     "astro": "7.0.7"
   },
   "devDependencies": {

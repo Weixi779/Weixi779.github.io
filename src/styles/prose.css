@@ -12,6 +12,7 @@
   --markdown-color-border-soft: var(--color-border-secondary);
 
   grid-column: 1;
+  width: 100%;
   min-width: 0;
   color: var(--markdown-color-text);
   font-family: var(--font-site);
@@ -90,9 +91,10 @@
 
 .prose blockquote {
   position: relative;
+  margin-inline: 0;
   padding: 0.75em 1em;
   border-left: 4px solid var(--markdown-color-accent);
-  border-radius: 0 6px 6px 0;
+  border-radius: 8px;
   background: var(--markdown-color-surface);
   color: var(--markdown-color-muted);
 }
@@ -164,28 +166,61 @@
   text-align: center;
 }
 
-.prose table {
-  display: block;
-  width: 100%;
+.prose-table {
+  --table-surface: color-mix(
+    in srgb,
+    var(--color-background-primary) 50%,
+    var(--color-surface-primary)
+  );
+  --table-header: color-mix(in srgb, var(--markdown-color-text) 5%, var(--table-surface));
+
+  margin: 1.05em 0;
   overflow-x: auto;
-  border-collapse: collapse;
-  font-size: 0.92em;
+  border: 1px solid var(--markdown-color-border-soft);
+  border-radius: 8px;
+  background: var(--table-surface);
+}
+
+.prose-table:focus-visible {
+  outline: 2px solid var(--markdown-color-accent);
+  outline-offset: 3px;
+}
+
+.prose table {
+  width: 100%;
+  margin: 0;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.875rem;
+  line-height: 1.75;
 }
 
 .prose :where(th, td) {
-  padding: 0.58em 0.78em;
-  border: 1px solid var(--markdown-color-border);
+  min-width: 10.625rem;
+  padding: 0.8125rem 0.875rem;
+  border: 0;
   text-align: left;
+  vertical-align: top;
+  overflow-wrap: anywhere;
 }
 
 .prose th {
-  background: var(--markdown-color-surface);
+  background: var(--table-header);
   color: var(--markdown-color-text);
-  font-weight: 700;
+  font-weight: 500;
 }
 
-.prose tr:nth-child(2n) {
-  background: color-mix(in srgb, var(--markdown-color-surface) 58%, transparent);
+.prose tbody td {
+  border-top: 1px solid var(--markdown-color-border-soft);
+}
+
+.prose table :not(pre) > code {
+  padding: 1px 3px;
+  background: var(--table-header);
+  color: inherit;
+  font-size: 0.9em;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
 }
 
 .prose hr {

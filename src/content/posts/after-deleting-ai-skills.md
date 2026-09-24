@@ -1,5 +1,5 @@
 ---
-title: "删掉大量 Skill 以后"
+title: "「后日谈」删掉大量 Skill 以后"
 slug: after-deleting-ai-skills
 publishedAt: "2026-08-19 10:47:10"
 summary: "一次对照实验以后，我删掉了几千行的知识型 Skill，也重新思考 AI、作者与后来者各自站在哪里。"

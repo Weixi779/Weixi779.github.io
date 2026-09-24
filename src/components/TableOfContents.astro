@@ -12,7 +12,9 @@ interface Props {
 
 const { headings, language = 'zh-CN' } = Astro.props;
 const isEnglish = language === 'en';
-const supportedHeadings = headings.filter(({ depth }) => depth >= 1 && depth <= 6);
+const supportedHeadings = headings.filter(
+  ({ depth, slug }) => depth >= 1 && depth <= 6 && slug !== 'footnote-label',
+);
 const baseDepth = supportedHeadings.reduce(
   (shallowestDepth, { depth }) => Math.min(shallowestDepth, depth),
   6,

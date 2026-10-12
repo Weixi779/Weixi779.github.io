@@ -119,11 +119,12 @@ if (!existsSync(distRoot)) {
 
   const archiveHtml = readFileSync(routeOutputPath('/archive/'), 'utf8');
   for (const marker of [
-    'data-archive-search-input',
-    'data-archive-result-count',
-    'data-archive-item',
-    'data-search=',
-    'data-category=',
+    'id="archive-search-input"',
+    'id="archive-result-status"',
+    'class="archive-item"',
+    'class="archive-categories"',
+    '<astro-island',
+    'client="load"',
   ]) {
     if (!archiveHtml.includes(marker)) fail(`archive is missing ${marker}`);
   }
@@ -134,6 +135,14 @@ if (!existsSync(distRoot)) {
 
   const postPages = collectPostPages();
   if (postPages.length === 0) fail('no published post pages were generated');
+
+  const archivePostLinks = [...archiveHtml.matchAll(/class="archive-item__link" href="([^"]+)"/gu)];
+  if (archivePostLinks.length !== postPages.length) {
+    fail('archive must render all published post links before React loads');
+  }
+  if (/<astro-island\b[^>]*component-url="[^"]*ArchiveBrowser\./u.test(homeHtml)) {
+    fail('home page should not load the archive React island');
+  }
 
   for (const postPage of postPages) {
     const html = readFileSync(postPage, 'utf8');

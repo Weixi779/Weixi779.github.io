@@ -1,5 +1,6 @@
 import { defineConfig } from 'astro/config';
 import { satteri } from '@astrojs/markdown-satteri';
+import react from '@astrojs/react';
 
 const proseTables = {
   name: 'prose-tables',
@@ -19,6 +20,7 @@ const proseTables = {
 export default defineConfig({
   site: 'https://weixi779.github.io',
   output: 'static',
+  integrations: [react()],
   trailingSlash: 'always',
   build: {
     assets: 'assets',

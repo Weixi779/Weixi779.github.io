@@ -315,6 +315,7 @@ input {
 
 .post-list {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 2px;
 }
 
@@ -649,6 +650,10 @@ input {
     align-items: flex-start;
     flex-direction: column;
     gap: 4px;
+  }
+
+  .post-card::before {
+    inset: 5px -12px;
   }
 
   .post-card__aside {

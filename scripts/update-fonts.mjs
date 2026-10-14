@@ -47,7 +47,7 @@ async function listSourceTextFiles(directory) {
     entries.map(async (entry) => {
       const entryPath = path.join(directory, entry.name);
       if (entry.isDirectory()) return listSourceTextFiles(entryPath);
-      return /\.(?:astro|js|json|md|mdx|mjs|ts)$/.test(entry.name) ? [entryPath] : [];
+      return /\.(?:astro|js|jsx|json|md|mdx|mjs|ts|tsx)$/.test(entry.name) ? [entryPath] : [];
     }),
   );
 

@@ -27,6 +27,16 @@ npm run dev
 npm run validate
 ```
 
+`validate` 会依次执行类型检查、自动化测试、站点构建和构建产物校验。
+测试使用 Vitest；`tests/archive.test.ts` 覆盖纯筛选规则，
+`tests/ArchiveBrowser.test.tsx` 使用 React Testing Library 和 jsdom 验证组件交互。
+jsdom 不执行真实页面布局或 View Transition 动画，视觉效果仍需在浏览器中检查。
+
+```bash
+npm test           # 执行一次测试
+npm run test:watch # 开发时随修改重新执行
+```
+
 ## 内容
 
 文章位于 `src/content/posts/`，页面内容位于 `src/content/pages/`，Banner、favicon

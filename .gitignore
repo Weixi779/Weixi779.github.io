@@ -19,5 +19,8 @@ node_modules/
 dist/
 .astro/
 
+# Vitest
+.vitest/
+
 # Local CodeGraph index
 .codegraph/

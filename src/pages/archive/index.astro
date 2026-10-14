@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import ArchiveBrowser, { type ArchivePost } from '../../components/ArchiveBrowser';
+import ArchiveBrowser from '../../components/ArchiveBrowser';
+import { normalizeArchiveSearch, type ArchivePost } from '../../utils/archive';
 import { getPostDate, getPostExcerpt, getPostPath, getPublishedPosts } from '../../utils/posts';
 import '../../styles/archive.css';
 
@@ -8,10 +9,9 @@ const posts = await getPublishedPosts();
 const archivePosts: ArchivePost[] = posts.map((post) => {
   const year = getPostDate(post).slice(0, 4);
   const excerpt = post.data.summary ?? getPostExcerpt(post, 180);
-  const searchText = [post.data.title, excerpt, post.data.category, ...post.data.tags, year]
-    .join(' ')
-    .normalize('NFKC')
-    .toLocaleLowerCase('zh-CN');
+  const searchText = normalizeArchiveSearch(
+    [post.data.title, excerpt, post.data.category, ...post.data.tags, year].join(' '),
+  );
 
   return {
     slug: post.data.slug,

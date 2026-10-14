@@ -2,9 +2,14 @@
 
 import { useEffect, useRef, useState, type MouseEvent } from 'react';
 import { flushSync } from 'react-dom';
+import {
+  ALL_CATEGORIES,
+  filterArchivePosts,
+  type ArchiveFilters,
+  type ArchivePost,
+} from '../utils/archive';
 
 const ARCHIVE_PATH = '/archive/';
-const ALL_CATEGORIES = '';
 const ARCHIVE_PARAMS = {
   query: 'q',
   category: 'category',
@@ -19,16 +24,6 @@ const ARCHIVE_TRANSITION_CLASS = 'archive-is-transitioning';
 const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)';
 const PRIMARY_MOUSE_BUTTON = 0;
 
-export interface ArchivePost {
-  slug: string;
-  href: string;
-  title: string;
-  category: string;
-  meta: string;
-  year: string;
-  searchText: string;
-}
-
 interface ArchiveCategory {
   name: string;
   count: number;
@@ -37,11 +32,6 @@ interface ArchiveCategory {
 interface ArchiveBrowserProps {
   posts: ArchivePost[];
   categories: ArchiveCategory[];
-}
-
-interface ArchiveFilters {
-  query: string;
-  category: string;
 }
 
 function readUrlFilters(categories: ArchiveCategory[]): ArchiveFilters {
@@ -125,12 +115,7 @@ export default function ArchiveBrowser({ posts, categories }: ArchiveBrowserProp
     displayFilters(nextFilters, true);
   }
 
-  const query = filters.query.normalize('NFKC').trim().toLocaleLowerCase('zh-CN');
-  const matchingPosts = posts.filter(
-    (post) =>
-      (filters.category === ALL_CATEGORIES || post.category === filters.category) &&
-      post.searchText.includes(query),
-  );
+  const matchingPosts = filterArchivePosts(posts, filters);
 
   return (
     <div className="content-container archive-page">

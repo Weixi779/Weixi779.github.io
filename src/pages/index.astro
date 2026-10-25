@@ -1,16 +1,29 @@
 ---
 import HomeHero from '../components/HomeHero.astro';
+import HomeNotes from '../components/HomeNotes.astro';
 import HomeRecentPosts from '../components/HomeRecentPosts';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getPostDate, getPostExcerpt, getPostPath, getPublishedPosts } from '../utils/posts';
 
 const posts = await getPublishedPosts();
-const recentPosts = posts.slice(0, 5).map(post => ({
+const articles = posts.filter((post) => post.data.category !== '碎碎念');
+const notes = posts.filter((post) => post.data.category === '碎碎念');
+
+const recentPosts = articles.slice(0, 5).map(post => ({
   href: getPostPath(post),
   title: post.data.title,
   category: post.data.category,
   publishedAt: getPostDate(post),
   summary: post.data.summary || getPostExcerpt(post),
+}));
+
+const recentNotes = notes.slice(0, 4).map(post => ({
+  href: getPostPath(post),
+  title: post.data.title,
+  summary: post.data.summary || getPostExcerpt(post, 120),
+  publishedAt: getPostDate(post),
+  // Give longer notes more typographic weight without displaying their cover.
+  heavy: (post.body?.length ?? 0) > 800,
 }));
 ---
 
@@ -18,9 +31,13 @@ const recentPosts = posts.slice(0, 5).map(post => ({
   <HomeHero />
   <div class="home-sections">
     <HomeRecentPosts posts={recentPosts} />
-    <aside class="home-sections__placeholder" aria-label="更多内容（占位）">
-      <h2>更多日常</h2>
-      <p>这里的内容，会慢慢添上。</p>
-    </aside>
+    {recentNotes.length > 0 ? (
+      <HomeNotes notes={recentNotes} />
+    ) : (
+      <aside class="home-sections__placeholder" aria-label="更多内容（占位）">
+        <h2>更多日常</h2>
+        <p>这里的内容，会慢慢添上。</p>
+      </aside>
+    )}
   </div>
 </BaseLayout>

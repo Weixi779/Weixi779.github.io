@@ -101,7 +101,10 @@ if (!existsSync(distRoot)) {
   const homeDocument = new JSDOM(homeHtml).window.document;
   const homePosts = [...homeDocument.querySelectorAll('.home-recent-posts article')];
   const feedDocument = new JSDOM(readFileSync(join(distRoot, 'rss.xml'), 'utf8'), { contentType: 'text/xml' }).window.document;
-  const recentFeedItems = [...feedDocument.querySelectorAll('item')].slice(0, 5);
+  // Notes live in the sidebar, so the article list mirrors the feed minus 碎碎念.
+  const recentFeedItems = [...feedDocument.querySelectorAll('item')]
+    .filter((item) => ![...item.querySelectorAll('category')].some((entry) => entry.textContent === '碎碎念'))
+    .slice(0, 5);
   const expectedHomePaths = recentFeedItems.map(item => new URL(item.querySelector('link').textContent).pathname);
   const actualHomePaths = homePosts.map(post => post.querySelector('h3 a')?.getAttribute('href'));
   if (JSON.stringify(actualHomePaths) !== JSON.stringify(expectedHomePaths)) {

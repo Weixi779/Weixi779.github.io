@@ -1,0 +1,135 @@
+---
+interface HomeNote {
+  href: string;
+  title: string;
+  summary: string;
+  publishedAt: string;
+  heavy: boolean;
+}
+
+interface Props {
+  notes: HomeNote[];
+}
+
+const { notes } = Astro.props;
+const formatDate = (value: string) => value.replaceAll('-', ' / ');
+---
+
+<aside class="home-notes" aria-labelledby="home-notes-heading">
+  <header class="home-notes__header">
+    <h2 id="home-notes-heading">碎碎念</h2>
+    <a href="/archive/?category=碎碎念">全部</a>
+  </header>
+  <ol class="home-notes__list" role="list">
+    {notes.map((note) => (
+      <li class:list={['home-notes__item', { 'home-notes__item--heavy': note.heavy }]}>
+        <time class="home-notes__date" datetime={note.publishedAt}>{formatDate(note.publishedAt)}</time>
+        <h3 class="home-notes__title"><a href={note.href}>{note.title}</a></h3>
+        {note.summary && <p class="home-notes__intro">{note.summary}</p>}
+      </li>
+    ))}
+  </ol>
+</aside>
+
+<style>
+  .home-notes {
+    min-width: 0;
+  }
+
+  .home-notes__header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px 20px;
+    margin-bottom: 14px;
+  }
+
+  .home-notes__header h2 {
+    margin: 0;
+    font: normal 400 24px/1.5 'LXGW WenKai Mono GB', 'PingFang SC', sans-serif;
+    font-synthesis: none;
+  }
+
+  .home-notes__header a {
+    color: var(--color-accent-primary);
+    font: 400 12px/1.7 'Weixi Sans', 'PingFang SC', sans-serif;
+    text-decoration: none;
+    text-underline-offset: 4px;
+  }
+
+  .home-notes__header a:hover {
+    text-decoration: underline;
+  }
+
+  .home-notes__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .home-notes__item {
+    padding: 16px 0;
+    border-top: 1px solid var(--color-border-secondary);
+  }
+
+  .home-notes__item:first-child {
+    border-top: 0;
+    padding-top: 0;
+  }
+
+  .home-notes__date {
+    display: block;
+    color: var(--color-text-secondary);
+    font: 400 11px/20px 'Source Sans 3', sans-serif;
+    letter-spacing: .02em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .home-notes__title {
+    margin: 4px 0 0;
+    font: normal 400 16px/1.65 'LXGW WenKai Mono GB', 'PingFang SC', sans-serif;
+    font-synthesis: none;
+    overflow-wrap: anywhere;
+    text-wrap: pretty;
+  }
+
+  .home-notes__title a {
+    color: var(--color-text-primary);
+    text-decoration: none;
+  }
+
+  .home-notes__title a:hover {
+    color: var(--color-accent-primary);
+  }
+
+  .home-notes__intro {
+    display: -webkit-box;
+    margin: 6px 0 0;
+    overflow: hidden;
+    color: var(--color-text-secondary);
+    font: 400 12px/1.85 'Weixi Sans', 'PingFang SC', sans-serif;
+    overflow-wrap: anywhere;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+
+  .home-notes__item--heavy .home-notes__title {
+    margin-top: 8px;
+    font-size: 23px;
+    line-height: 1.55;
+  }
+
+  .home-notes__item--heavy .home-notes__intro {
+    margin-top: 8px;
+    font-size: 13px;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+  }
+
+  .home-notes a:focus-visible {
+    outline: 2px solid var(--color-accent-primary);
+    outline-offset: 4px;
+    border-radius: 2px;
+  }
+</style>

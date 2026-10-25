@@ -1,10 +1,10 @@
 ---
-title: 「iOS」谈谈iOS图片压缩
+title: 谈谈iOS图片压缩
 slug: ios-image-compression
 publishedAt: "2025-03-04 21:56:34"
 summary: "从图片格式、压缩策略到实践细节，系统梳理 iOS 图片压缩。"
-tags: [图片压缩, 图像处理, 算法]
-category: "iOS"
+tags: [iOS, 图片压缩, 图像处理, 算法]
+category: 技术志
 toc: true
 math: true
 ---

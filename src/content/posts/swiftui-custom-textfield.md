@@ -1,10 +1,10 @@
 ---
-title: 「iOS」SwiftUI自定义TextField
+title: SwiftUI自定义TextField
 slug: swiftui-custom-textfield
 publishedAt: "2024-08-18 14:59:38"
 summary: "通过 UIKit 桥接，为 SwiftUI TextField 补齐更完整的输入与控制能力。"
-tags: [SwiftUI, 自定义组件]
-category: "iOS"
+tags: [iOS, SwiftUI, 自定义组件]
+category: 技术志
 toc: true
 math: true
 ---

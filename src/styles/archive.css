@@ -102,12 +102,19 @@
   padding: 10px 0 10px 12px;
   white-space: nowrap;
 }
+.archive-filter-block {
+  margin: 17px 0 32px;
+}
 .archive-filter-line {
   display: flex;
   justify-content: space-between;
   gap: 20px;
   align-items: center;
-  margin: 17px 0 32px;
+}
+.archive-category-note {
+  margin: 12px 0 0;
+  color: var(--color-text-secondary);
+  font: 400 12px/1.8 'Weixi Sans', sans-serif;
 }
 .archive-categories {
   display: flex;
@@ -253,11 +260,13 @@
   .archive-stats strong {
     font-size: 20px;
   }
+  .archive-filter-block {
+    margin: 10px 0 25px;
+  }
   .archive-filter-line {
     align-items: flex-start;
     flex-direction: column;
     gap: 10px;
-    margin: 10px 0 25px;
   }
   .archive-categories {
     gap: 24px;

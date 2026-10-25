@@ -1,10 +1,10 @@
 ---
-title: 「后日谈」在 AI 浪潮与现实引力之间：第四年的后日谈
+title: 在 AI 浪潮与现实引力之间：第四年的后日谈
 slug: developer-journey-year-4
 publishedAt: "2026-03-29 13:27:14"
 summary: "记录第四年里 AI、架构、工作与选择带来的变化，以及一次重新出发。"
 tags: [代码人生, AI]
-category: "后日谈"
+category: 后日谈
 hero: /images/developer-journey-year-4.webp
 toc: true
 math: false

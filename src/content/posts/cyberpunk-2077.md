@@ -1,10 +1,10 @@
 ---
-title: 「后日谈」赛博朋克2077
+title: 赛博朋克2077
 slug: cyberpunk-2077
 publishedAt: "2025-01-12 23:21:19"
 summary: "一段关于《赛博朋克 2077》、选择、遗憾与夜之城的通关后记。"
 tags: [游戏]
-category: "后日谈"
+category: 后日谈
 hero: /images/cyberpunk2077.jpg
 toc: true
 math: true

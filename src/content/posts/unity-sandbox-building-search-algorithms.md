@@ -1,10 +1,10 @@
 ---
-title: 「Unity」沙盒建造游戏设计(4) - 搜索算法
+title: 沙盒建造游戏设计(4) - 搜索算法
 slug: unity-sandbox-building-search-algorithms
 publishedAt: "2024-05-04 13:50:47"
 summary: "从占地面积、启发式到贪心策略，整理沙盒建造中的搜索算法。"
-tags: [沙盒建造, 算法, 搜索]
-category: "Unity"
+tags: [Unity, 沙盒建造, 算法, 搜索]
+category: 技术志
 hero: /images/StardewValley.jpg
 toc: true
 math: true

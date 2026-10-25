@@ -23,6 +23,12 @@ const ARCHIVE_IDS = {
 const ARCHIVE_TRANSITION_CLASS = 'archive-is-transitioning';
 const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)';
 const PRIMARY_MOUSE_BUTTON = 0;
+// A selected category explains itself; the words are not obvious to a first-time reader.
+const CATEGORY_NOTES: Record<string, string> = {
+  技术志: '解决一个具体问题，记下过程与取舍。',
+  后日谈: '一段经历之后写下来的东西。',
+  碎碎念: '短一点、不用举证的东西。',
+};
 
 interface ArchiveCategory {
   name: string;
@@ -142,11 +148,16 @@ export default function ArchiveBrowser({ posts, categories }: ArchiveBrowserProp
         onQueryChange={changeQuery}
         onSubmit={() => writeUrlFilters(filters, 'replace')}
       />
-      <div className="archive-filter-line">
-        <ArchiveCategories categories={categories} selectedCategory={filters.category} onSelect={selectCategory} />
-        <nav className="archive-year-nav" aria-label="跳转年份">
-          {Array.from(years.keys(), year => <a key={year} href={`#archive-year-${year}`}>{year}</a>)}
-        </nav>
+      <div className="archive-filter-block">
+        <div className="archive-filter-line">
+          <ArchiveCategories categories={categories} selectedCategory={filters.category} onSelect={selectCategory} />
+          <nav className="archive-year-nav" aria-label="跳转年份">
+            {Array.from(years.keys(), year => <a key={year} href={`#archive-year-${year}`}>{year}</a>)}
+          </nav>
+        </div>
+        {filters.category !== ALL_CATEGORIES && CATEGORY_NOTES[filters.category] && (
+          <p className="archive-category-note">{CATEGORY_NOTES[filters.category]}</p>
+        )}
       </div>
       <ArchiveResults years={years} onReset={resetFilters} />
     </div>

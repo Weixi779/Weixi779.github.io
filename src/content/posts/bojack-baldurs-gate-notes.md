@@ -1,10 +1,10 @@
 ---
-title: "「后日谈」《旁观者》"
+title: "《旁观者》"
 slug: observer
 publishedAt: "2026-07-04 14:01:00"
 summary: "关于《马男波杰克》《博德之门 3》、AI，以及一个程序员重新寻找未来的故事。"
 tags: [AI, 代码人生, 游戏, 影视]
-category: "后日谈"
+category: 后日谈
 hero: /images/observer-v2.webp
 heroLayout: illustration
 toc: true

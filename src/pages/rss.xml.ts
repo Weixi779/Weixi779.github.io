@@ -26,7 +26,7 @@ export async function GET({ site }: APIContext): Promise<Response> {
   const items = posts
     .map((post) => {
       const postUrl = new URL(getPostPath(post), baseUrl).href;
-      const categories = post.data.tags
+      const categories = [post.data.category, ...post.data.tags]
         .map((tag) => `      <category>${escapeXml(tag)}</category>`)
         .join('\n');
 

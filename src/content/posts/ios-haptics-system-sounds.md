@@ -1,10 +1,10 @@
 ---
-title: 「iOS」震动与系统声音
+title: 震动与系统声音
 slug: ios-haptics-system-sounds
 publishedAt: "2024-03-04 20:37:31"
 summary: "记录 Unity 接入 iOS 震动与系统声音时的方案、排查过程和踩坑。"
-tags: [触觉反馈, 系统声音]
-category: "iOS"
+tags: [iOS, 触觉反馈, 系统声音]
+category: 技术志
 toc: true
 math: true
 ---

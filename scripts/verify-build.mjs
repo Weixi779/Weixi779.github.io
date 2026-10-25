@@ -155,6 +155,15 @@ if (!existsSync(distRoot)) {
     const html = readFileSync(htmlPage, 'utf8');
     const page = new JSDOM(html);
     const document = page.window.document;
+    const headers = document.querySelectorAll('header.site-header');
+    const header = headers[0];
+    if (headers.length !== 1 || !header?.closest('astro-island[client="load"]')) {
+      fail(`expected one shared React header in ${htmlPage}`);
+    }
+    const navigationLinks = Array.from(header?.querySelectorAll('nav[aria-label="主导航"] a') ?? [], (link) => link.getAttribute('href'));
+    if (navigationLinks.join(',') !== '/,/archive/,/about/') {
+      fail(`shared header navigation is incomplete in ${htmlPage}`);
+    }
     const footers = document.querySelectorAll('footer.site-footer');
     const footer = footers[0];
     if (footers.length !== 1 || !footer?.closest('astro-island[client="load"]')) {

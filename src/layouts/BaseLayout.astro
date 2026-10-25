@@ -1,6 +1,6 @@
 ---
 import SiteFooter from '../components/SiteFooter';
-import SiteHeader from '../components/SiteHeader.astro';
+import SiteHeader from '../components/SiteHeader';
 import themeBootstrap from 'virtual:theme-bootstrap';
 import '../styles/global.css';
 
@@ -63,7 +63,7 @@ const ogLocale = language === 'en' ? 'en_US' : 'zh_CN';
     <title>{fullTitle}</title>
   </head>
   <body>
-    <SiteHeader />
+    <SiteHeader pathname={Astro.url.pathname} client:load />
     <main>
       <slot />
     </main>

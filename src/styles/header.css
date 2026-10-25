@@ -1,0 +1,88 @@
+/* Created by weixi on 2026/10/25. */
+
+.site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  height: 60px;
+  isolation: isolate;
+  opacity: var(--header-progress, 1);
+}
+
+/* Preserve static navigation without JavaScript; avoid flashing it before hydration. */
+@media (scripting: enabled) {
+  html:has(main .home-hero h1, main .page-hero h1) .site-header:not([data-ready]) { visibility: hidden; }
+}
+
+.site-header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: var(--color-background-primary);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-text-primary) 10%, transparent);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--color-surface-elevated) 45%, transparent),
+    0 4px 18px color-mix(in srgb, var(--color-text-primary) 5%, transparent);
+}
+
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .site-header::before {
+    background: color-mix(in srgb, var(--color-background-primary) 74%, transparent);
+    -webkit-backdrop-filter: blur(20px) saturate(115%);
+    backdrop-filter: blur(20px) saturate(115%);
+  }
+}
+
+.site-header__inner {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  width: min(1120px, calc(100% - 48px));
+  margin: 0 auto;
+  gap: 24px;
+  color: var(--color-text-primary);
+  font: normal 400 14px 'LXGW WenKai Mono GB', 'PingFang SC', sans-serif;
+  font-synthesis: none;
+}
+
+.site-brand { margin-right: auto; white-space: nowrap; font-size: 19px; letter-spacing: 1px; }
+.site-header a { color: inherit; text-decoration: none; }
+.site-header nav { display: flex; align-items: center; gap: 24px; }
+.site-header nav a { position: relative; display: grid; place-items: center; min-width: 28px; height: 44px; }
+.site-header__indicator { position: absolute; left: -4px; bottom: 1px; width: calc(100% + 8px); height: 8px; color: var(--color-accent-primary); opacity: .88; pointer-events: none; }
+.site-header__divider { width: 1px; height: 18px; background: currentColor; opacity: .17; flex: none; }
+.site-header a:focus-visible, .theme-toggle:focus-visible { outline: 2px solid var(--color-accent-primary); outline-offset: 4px; }
+.theme-picker { position: relative; flex: none; }
+.theme-toggle { display: grid; place-items: center; width: 40px; height: 40px; padding: 0; border: 0; border-radius: 50%; color: inherit; background: transparent; cursor: pointer; }
+.theme-toggle:hover, .theme-toggle[aria-expanded='true'] { background: var(--color-background-secondary); }
+.theme-icon { width: 20px; height: 20px; }
+.theme-icon--sun { display: none; }
+:root[data-color-mode='dark'] .theme-icon--moon { display: none; }
+:root[data-color-mode='dark'] .theme-icon--sun { display: block; }
+.theme-panel { position: absolute; top: calc(100% + 12px); right: 0; width: min(300px, calc(100vw - 32px)); padding: 16px; border: 1px solid var(--color-border-secondary); border-radius: 14px; background: var(--color-surface-elevated); box-shadow: var(--shadow-elevated); font-family: var(--font-site); }
+.theme-panel[hidden] { display: none; }
+.theme-panel fieldset { padding: 0; margin: 0; border: 0; min-width: 0; }
+.theme-panel legend { margin-bottom: 12px; color: var(--color-text-secondary); font-size: 12px; }
+.theme-modes { display: grid; grid-template-columns: repeat(3, 1fr); padding: 3px; border-radius: 9px; background: var(--color-background-secondary); }
+.theme-mode { position: relative; cursor: pointer; }
+.theme-mode input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.theme-mode span { display: grid; place-items: center; min-height: 36px; border-radius: 7px; font-size: 12px; color: var(--color-text-secondary); }
+.theme-mode input:checked + span { color: var(--color-accent-primary); background: var(--color-surface-elevated); }
+.theme-mode input:focus-visible + span { outline: 2px solid var(--color-accent-primary); outline-offset: 2px; }
+
+@media (max-width: 700px) {
+  .site-header { height: 56px; }
+  .site-header__inner { width: calc(100% - 50px); gap: 10px; }
+  .site-brand { font-size: 17px; letter-spacing: 0; }
+  .site-header nav { gap: 10px; }
+}
+@media (max-width: 359px) {
+  .site-header__inner { width: calc(100% - 24px); gap: 8px; }
+  .site-header nav { gap: 8px; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .site-header::before { background: var(--color-background-primary); backdrop-filter: none; -webkit-backdrop-filter: none; }
+}

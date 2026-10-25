@@ -14,9 +14,9 @@ const stringList = z.preprocess(
 
 const posts = defineCollection({
   loader: glob({
-    pattern: '**/*.md',
+    pattern: '**/*.{md,mdx}',
     base: './src/content/posts',
-    generateId: ({ entry }) => entry.replace(/\.md$/u, ''),
+    generateId: ({ entry }) => entry.replace(/\.mdx?$/u, ''),
   }),
   schema: z.object({
     title: z.string(),

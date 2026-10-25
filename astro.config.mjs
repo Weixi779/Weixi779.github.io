@@ -1,27 +1,16 @@
 import { defineConfig } from 'astro/config';
-import react from '@astrojs/react';
 import { satteri } from '@astrojs/markdown-satteri';
+import react from '@astrojs/react';
+import mdx from '@astrojs/mdx';
+import { unified } from '@astrojs/markdown-remark';
 import { themeBootstrapPlugin } from './scripts/theme-bootstrap-plugin.mjs';
 
-const proseTables = {
-  name: 'prose-tables',
-  element: {
-    filter: ['table'],
-    visit(node, context) {
-      context.wrapNode(node, {
-        type: 'element',
-        tagName: 'div',
-        properties: { className: ['prose-table'], tabIndex: 0 },
-        children: [],
-      });
-    },
-  },
-};
+import { satteriProseTables, rehypeProseTables } from './scripts/prose-tables.mjs';
 
 export default defineConfig({
   site: 'https://weixi779.github.io',
   output: 'static',
-  integrations: [react()],
+  integrations: [react(), mdx({ processor: unified({ rehypePlugins: [rehypeProseTables] }) })],
   vite: { plugins: [themeBootstrapPlugin()] },
   trailingSlash: 'always',
   // Preserve published pagination URLs after moving the full list to the archive.
@@ -33,7 +22,7 @@ export default defineConfig({
     assets: 'assets',
   },
   markdown: {
-    processor: satteri({ hastPlugins: [proseTables] }),
+    processor: satteri({ hastPlugins: [satteriProseTables] }),
     shikiConfig: {
       themes: {
         light: 'github-light',

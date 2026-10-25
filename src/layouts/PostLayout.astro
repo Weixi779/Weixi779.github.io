@@ -73,7 +73,7 @@ const alternates = [
           </a>
         ) : <span></span>}
       </nav>
-      <GiscusComments language={language} />
+      {!post.data.draft && <GiscusComments language={language} />}
     </article>
   </div>
 </BaseLayout>

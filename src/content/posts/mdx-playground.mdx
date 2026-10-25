@@ -1,0 +1,60 @@
+---
+title: 'MDX 试写：让性能分析动起来'
+slug: mdx-playground
+publishedAt: '2026-10-19 12:00:00'
+summary: '一份可以修改和预览的 MDX 草稿：普通正文、Swift 代码，以及一个交互示意。'
+category: '技术'
+tags: ['iOS', 'MDX']
+toc: true
+draft: true
+---
+
+import ReuseTimeline from '../../components/articles/ReuseTimeline';
+
+> 这是本地试写草稿。下面的交互使用机制示意，不是原始 Trace，也不是正式性能结论。
+
+## 大部分内容，还是 Markdown
+
+标题、**强调**、列表、链接和代码块，都可以按原来的习惯写。你可以修改这一段并保存，在浏览器里直接看到变化。
+
+这次先试一个具体问题：Cell 被复用了，内部的视图和计算结果，是不是也一起被复用了？
+
+## 在段落之间，放一个可以操作的图
+
+拖动下面的滑块，看看首次显示、准备复用、再次显示和切换主题时，两种做法分别执行哪些工作。
+
+<ReuseTimeline client:load />
+
+“保留资源”也有前提。旧图片请求、订阅和点击行为需要清理；下一次配置要完整覆盖内容；主题变化时，依赖主题的结果需要失效。
+
+## 代码仍然照常写
+
+下面是简化后的 Swift 示意，重点是区分资源和绑定状态：
+
+```swift
+override func prepareForReuse() {
+    super.prepareForReuse()
+    cancelImageRequest()
+    stopObserving()
+    onSelect = nil
+    // 保留内部视图与约束，由 configure 完整覆盖内容。
+}
+```
+
+## 这篇 MDX 是怎么写的？
+
+文章开头导入组件，然后在需要的位置放一个标签：
+
+```mdx
+import ReuseTimeline from '../../components/articles/ReuseTimeline';
+
+这里是正常的文章段落。
+
+<ReuseTimeline client:load />
+
+这里继续写分析。
+```
+
+`client:load` 让组件在浏览器中启用交互。文章里的这一行负责放图；滑块、按钮和步骤切换的实现保存在组件文件里。
+
+你可以先改一段文字试试，再决定这种阅读方式是否适合正式文章。真正整理 Trace 时，再把实测数据和机制示意分开呈现。

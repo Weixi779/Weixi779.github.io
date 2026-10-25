@@ -1,0 +1,392 @@
+[
+  {
+    "label": "初始录制",
+    "seconds": 41.110942,
+    "events": [
+      {
+        "start": 1.317197,
+        "duration": 16.666666
+      },
+      {
+        "start": 1.35053,
+        "duration": 66.666666
+      },
+      {
+        "start": 3.80053,
+        "duration": 16.666666
+      },
+      {
+        "start": 6.533864,
+        "duration": 50.0
+      },
+      {
+        "start": 8.317197,
+        "duration": 8.333166
+      },
+      {
+        "start": 9.583864,
+        "duration": 8.33325
+      },
+      {
+        "start": 9.642197,
+        "duration": 8.333333
+      },
+      {
+        "start": 9.783864,
+        "duration": 8.333333
+      },
+      {
+        "start": 9.883864,
+        "duration": 8.333333
+      },
+      {
+        "start": 10.946364,
+        "duration": 8.333333
+      },
+      {
+        "start": 14.37553,
+        "duration": 41.666666
+      },
+      {
+        "start": 14.42553,
+        "duration": 8.333333
+      },
+      {
+        "start": 17.12553,
+        "duration": 12.5
+      },
+      {
+        "start": 20.942197,
+        "duration": 12.499916
+      },
+      {
+        "start": 22.754697,
+        "duration": 8.333333
+      },
+      {
+        "start": 24.20053,
+        "duration": 12.5
+      },
+      {
+        "start": 24.30053,
+        "duration": 50.0
+      },
+      {
+        "start": 24.35053,
+        "duration": 12.5
+      },
+      {
+        "start": 25.392197,
+        "duration": 37.5
+      },
+      {
+        "start": 28.63803,
+        "duration": 37.5
+      },
+      {
+        "start": 29.379697,
+        "duration": 8.33325
+      },
+      {
+        "start": 29.646364,
+        "duration": 8.333166
+      },
+      {
+        "start": 33.929697,
+        "duration": 12.5
+      },
+      {
+        "start": 34.942197,
+        "duration": 12.499958
+      },
+      {
+        "start": 38.392197,
+        "duration": 50.0
+      },
+      {
+        "start": 39.204697,
+        "duration": 8.333208
+      }
+    ]
+  },
+  {
+    "label": "标题资源复用后",
+    "seconds": 42.107555,
+    "events": [
+      {
+        "start": 1.511923,
+        "duration": 66.666666
+      },
+      {
+        "start": 4.661923,
+        "duration": 33.333333
+      },
+      {
+        "start": 5.320256,
+        "duration": 8.333375
+      },
+      {
+        "start": 8.611923,
+        "duration": 8.333208
+      },
+      {
+        "start": 8.770256,
+        "duration": 8.333333
+      },
+      {
+        "start": 9.370256,
+        "duration": 8.333333
+      },
+      {
+        "start": 10.10359,
+        "duration": 8.333333
+      },
+      {
+        "start": 11.536923,
+        "duration": 8.333333
+      },
+      {
+        "start": 12.27859,
+        "duration": 8.33325
+      },
+      {
+        "start": 18.45359,
+        "duration": 50.000041
+      },
+      {
+        "start": 19.45359,
+        "duration": 8.333166
+      },
+      {
+        "start": 19.55359,
+        "duration": 25.0
+      },
+      {
+        "start": 29.899423,
+        "duration": 8.333333
+      },
+      {
+        "start": 30.107756,
+        "duration": 16.666666
+      },
+      {
+        "start": 30.561923,
+        "duration": 12.5
+      },
+      {
+        "start": 32.536923,
+        "duration": 16.666666
+      }
+    ]
+  },
+  {
+    "label": "条目视图复用后",
+    "seconds": 40.990525,
+    "events": [
+      {
+        "start": 0.887542,
+        "duration": 150.0
+      },
+      {
+        "start": 1.220875,
+        "duration": 83.333333
+      },
+      {
+        "start": 2.687542,
+        "duration": 16.666666
+      },
+      {
+        "start": 4.420875,
+        "duration": 37.5
+      },
+      {
+        "start": 6.766709,
+        "duration": 12.5
+      },
+      {
+        "start": 11.075042,
+        "duration": 12.5
+      },
+      {
+        "start": 12.341708,
+        "duration": 12.5
+      },
+      {
+        "start": 13.787542,
+        "duration": 16.666666
+      },
+      {
+        "start": 21.045875,
+        "duration": 12.5
+      },
+      {
+        "start": 25.933375,
+        "duration": 8.333333
+      },
+      {
+        "start": 28.470875,
+        "duration": 12.5
+      },
+      {
+        "start": 29.604209,
+        "duration": 8.33325
+      },
+      {
+        "start": 29.862542,
+        "duration": 8.333333
+      }
+    ]
+  },
+  {
+    "label": "图片加工调整后",
+    "seconds": 44.05334,
+    "events": [
+      {
+        "start": 1.326301,
+        "duration": 16.666666
+      },
+      {
+        "start": 2.926301,
+        "duration": 16.666666
+      },
+      {
+        "start": 5.151301,
+        "duration": 8.333333
+      },
+      {
+        "start": 11.530468,
+        "duration": 12.5
+      },
+      {
+        "start": 11.934634,
+        "duration": 12.5
+      },
+      {
+        "start": 15.484635,
+        "duration": 12.5
+      },
+      {
+        "start": 15.559634,
+        "duration": 12.5
+      },
+      {
+        "start": 17.267968,
+        "duration": 16.666666
+      },
+      {
+        "start": 19.255468,
+        "duration": 8.33325
+      },
+      {
+        "start": 20.905468,
+        "duration": 12.5
+      },
+      {
+        "start": 23.876301,
+        "duration": 8.333333
+      },
+      {
+        "start": 25.213801,
+        "duration": 12.5
+      },
+      {
+        "start": 25.276301,
+        "duration": 12.5
+      },
+      {
+        "start": 25.680468,
+        "duration": 12.5
+      },
+      {
+        "start": 36.651301,
+        "duration": 8.333208
+      },
+      {
+        "start": 36.867968,
+        "duration": 8.333333
+      },
+      {
+        "start": 40.001301,
+        "duration": 12.5
+      }
+    ]
+  },
+  {
+    "label": "Feed 复用调整后",
+    "seconds": 35.601021,
+    "events": [
+      {
+        "start": 1.171779,
+        "duration": 183.333333
+      },
+      {
+        "start": 1.905112,
+        "duration": 16.666666
+      },
+      {
+        "start": 5.438446,
+        "duration": 8.333458
+      },
+      {
+        "start": 5.905113,
+        "duration": 12.499958
+      },
+      {
+        "start": 14.930113,
+        "duration": 8.333125
+      },
+      {
+        "start": 15.855113,
+        "duration": 8.333291
+      },
+      {
+        "start": 15.909279,
+        "duration": 8.333333
+      },
+      {
+        "start": 19.384279,
+        "duration": 8.333375
+      },
+      {
+        "start": 20.955112,
+        "duration": 12.5
+      },
+      {
+        "start": 21.146779,
+        "duration": 8.333333
+      },
+      {
+        "start": 22.342613,
+        "duration": 12.5
+      },
+      {
+        "start": 22.830113,
+        "duration": 8.33325
+      },
+      {
+        "start": 23.171779,
+        "duration": 16.666666
+      },
+      {
+        "start": 25.905113,
+        "duration": 12.5
+      },
+      {
+        "start": 29.375946,
+        "duration": 16.666666
+      },
+      {
+        "start": 30.317612,
+        "duration": 12.5
+      },
+      {
+        "start": 32.984279,
+        "duration": 8.333333
+      },
+      {
+        "start": 33.492612,
+        "duration": 8.333291
+      }
+    ]
+  }
+]

@@ -2,6 +2,8 @@
 
 import { createMarkdownProcessor, type RemarkPlugin } from '@astrojs/markdown-remark';
 
+import { mdxProse } from './mdx-prose';
+
 interface ProseNode {
   type: string;
   value?: string;
@@ -30,9 +32,9 @@ const processor = createMarkdownProcessor({
   remarkPlugins: [collectWordCount],
 });
 
-export async function countPostWords(body: string): Promise<number> {
+export async function countPostWords(body: string, format: 'md' | 'mdx' = 'md'): Promise<number> {
   // Inline SVG is parsed as separate HTML/text siblings by Markdown; omit the whole asset.
-  const prose = body.replace(/<(svg|script|style)\b[^>]*>[\s\S]*?<\/\1\s*>/giu, '');
+  const prose = (format === 'mdx' ? mdxProse(body) : body).replace(/<(svg|script|style)\b[^>]*>[\s\S]*?<\/\1\s*>/giu, '');
   const result = await (await processor).render(prose);
   const count: unknown = result.metadata.frontmatter.proseWordCount;
   if (typeof count !== 'number') throw new Error('Missing prose word count');

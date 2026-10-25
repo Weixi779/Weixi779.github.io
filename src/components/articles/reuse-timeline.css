@@ -1,0 +1,32 @@
+/* Created by weixi on 2026/10/19. */
+.reuse-demo { margin: 2rem 0; padding: clamp(18px, 4vw, 30px); border: 1px solid var(--markdown-color-border); border-radius: 18px; background: var(--markdown-color-surface); }
+.reuse-demo__eyebrow { color: var(--markdown-color-muted); font-size: .8rem; letter-spacing: .08em; }
+.reuse-demo__heading { font-size: 1.3rem; font-weight: 700; margin: .5rem 0 1.5rem; line-height: 1.5; }
+.reuse-demo label { display: block; font-weight: 600; }
+.reuse-demo input { display: block; width: 100%; margin: 1.2rem 0; accent-color: var(--markdown-color-accent); cursor: pointer; }
+.reuse-demo__steps { display: flex; flex-wrap: wrap; gap: 8px; }
+.reuse-demo__steps button { padding: 8px 12px; border: 1px solid var(--markdown-color-border); border-radius: 8px; background: transparent; color: inherit; font: inherit; font-size: .8rem; cursor: pointer; }
+.reuse-demo__steps button[aria-pressed="true"] { background: var(--markdown-color-accent); color: var(--color-text-on-accent); border-color: var(--markdown-color-accent); }
+.reuse-demo :is(button, input):focus-visible { outline: 2px solid var(--markdown-color-accent); outline-offset: 4px; }
+.reuse-demo__comparison { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 24px; }
+.reuse-demo__comparison > div { padding: 16px; border: 1px solid var(--markdown-color-border); border-radius: 10px; }
+.reuse-demo__comparison ol { margin: 12px 0 0; padding-left: 1.4em; font-size: .9rem; }
+.reuse-demo .reuse-demo__note { margin: 20px 0 12px; }
+.reuse-demo small { display: block; color: var(--markdown-color-muted); line-height: 1.6; }
+@media (max-width: 540px) { .reuse-demo__comparison { grid-template-columns: 1fr; gap: 12px; } }
+.hitch-explorer svg { display: block; width: 100%; height: auto; margin: 18px 0; overflow: visible; }
+.hitch-explorer svg text { fill: var(--markdown-color-muted); font: 12px system-ui, sans-serif; }
+.hitch-explorer__grid { stroke: var(--markdown-color-border); stroke-dasharray: 3 4; }
+.hitch-explorer__event { stroke: var(--markdown-color-accent); stroke-width: 2; }
+.hitch-explorer__point { fill: var(--markdown-color-accent); }
+.hitch-explorer__controls { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin: 20px 0; font-size: .8rem; color: var(--markdown-color-muted); }
+.hitch-explorer__zoom { font: inherit; color: var(--markdown-color-text); padding: 8px 12px; border: 1px solid var(--markdown-color-border); border-radius: 8px; background: transparent; cursor: pointer; }
+.hitch-explorer__stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 18px; }
+.hitch-explorer__stats strong { display: block; font-size: clamp(1.3rem, 3vw, 2rem); font-variant-numeric: tabular-nums; }
+.hitch-explorer__stats span { display: block; font-size: .75rem; color: var(--markdown-color-muted); }
+.hitch-explorer__stats small { display: inline; font-size: .75rem; }
+.hitch-explorer details { margin: 16px 0; font-size: .85rem; }
+.hitch-explorer summary { cursor: pointer; }
+.hitch-explorer__events { max-height: 220px; overflow-y: auto; font-variant-numeric: tabular-nums; }
+.hitch-explorer__events span { margin-left: 24px; }
+@media (max-width: 540px) { .hitch-explorer svg text { font-size: 22px; } }

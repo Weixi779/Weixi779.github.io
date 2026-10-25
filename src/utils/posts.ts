@@ -1,3 +1,4 @@
+import { mdxProse } from './mdx-prose';
 import { getCollection, type CollectionEntry } from 'astro:content';
 
 export type PostEntry = CollectionEntry<'posts'>;
@@ -43,7 +44,7 @@ export async function getPostStaticPaths(language: PostLanguage) {
   const allPosts = await loadPublishedPosts();
   const posts = allPosts.filter((post) => post.data.lang === language);
 
-  return posts.map((post, index) => ({
+  const paths = posts.map((post, index) => ({
     params: { slug: post.data.slug },
     props: {
       post,
@@ -58,6 +59,15 @@ export async function getPostStaticPaths(language: PostLanguage) {
       olderPost: index < posts.length - 1 ? posts[index + 1] : undefined,
     } satisfies PostRouteProps,
   }));
+  // Preview drafts without including them in published navigation, lists or RSS.
+  if (import.meta.env.DEV) {
+    const drafts = await getCollection('posts', ({ data }) => data.draft && data.lang === language);
+    paths.push(...drafts.map(post => ({
+      params: { slug: post.data.slug },
+      props: { post, translation: undefined, newerPost: undefined, olderPost: undefined },
+    })));
+  }
+  return paths;
 }
 
 export function getPostPath(post: PostEntry): string {
@@ -74,7 +84,7 @@ export function getPostDate(post: PostEntry): string {
 }
 
 export function getPostExcerpt(post: PostEntry, maxLength = 240): string {
-  const source = post.body ?? '';
+  const source = post.filePath?.endsWith('.mdx') ? mdxProse(post.body ?? '') : post.body ?? '';
   const markdown = source
     .replace(/```[\s\S]*?```/gu, ' ')
     .replace(/~~~[\s\S]*?~~~/gu, ' ')

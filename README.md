@@ -95,3 +95,9 @@ Settings → Secrets and variables → Actions → Variables，变量名为
 这个地址是公开配置，不是 API 密钥。未配置时不加载统计脚本，`npm run dev`
 也不加载。后台请保持私有，并关闭公开访客计数。
 访问数据从启用后开始积累。
+
+### MDX 验证
+
+MDX 正文直接使用 Markdown 表格，滚动容器和键盘焦点由渲染配置自动添加。摘要和字数统计只提取静态正文，不执行文章中的 JavaScript。
+
+`npm run validate` 包含 `npm run verify:mdx`：启动临时本地 Astro 服务，检查已发布文章与试写草稿的表格、代码高亮、锚点和交互组件内容，然后关闭服务；同时确认文章进入正式构建、归档和 RSS，试写草稿仍被排除。交互组件的状态变化由单元测试覆盖，真实浏览器中的加载与操作仍需随相关修改检查。

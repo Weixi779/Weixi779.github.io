@@ -5,6 +5,8 @@ publishedAt: "2026-10-25 23:45:00"
 summary: "一个把事做对的人，在一个不需要他的地方，等一场没有来的回响。"
 tags: [代码人生, 职场, 创作]
 category: 碎碎念
+hero: /images/the-echo-that-never-came.webp
+heroLayout: illustration
 toc: false
 math: false
 ---

@@ -30,13 +30,7 @@ const isEnglish = language === 'en';
 </section>
 
 <script>
-  import type { ColorMode, ColorModePreference, ThemeId } from '../theme/semantic-colors';
-
-  type BlogThemeEvent = CustomEvent<{
-    themeId: ThemeId;
-    colorMode: ColorMode;
-    modePreference: ColorModePreference;
-  }>;
+  import type { ColorMode } from '../theme/types';
 
   function syncGiscusTheme(colorMode: ColorMode) {
     const frame = document.querySelector<HTMLIFrameElement>('iframe.giscus-frame');
@@ -48,18 +42,21 @@ const isEnglish = language === 'en';
   }
 
   window.addEventListener('blog-theme-change', (event) => {
-    syncGiscusTheme((event as BlogThemeEvent).detail.colorMode);
+    syncGiscusTheme(event.detail.colorMode);
   });
 
   const comments = document.querySelector('.comments');
   if (comments) {
-    const observer = new MutationObserver(() => {
-      const frame = document.querySelector('iframe.giscus-frame');
+    const observer = new MutationObserver(bindFrame);
+    function bindFrame() {
+      const frame = document.querySelector<HTMLIFrameElement>('iframe.giscus-frame');
       if (!frame) return;
-      const colorMode = document.documentElement.dataset.colorMode === 'dark' ? 'dark' : 'light';
-      syncGiscusTheme(colorMode);
+      const sync = () => syncGiscusTheme(window.blogTheme.getState().colorMode);
+      frame.addEventListener('load', sync);
+      sync();
       observer.disconnect();
-    });
+    }
     observer.observe(comments, { childList: true, subtree: true });
+    bindFrame();
   }
 </script>

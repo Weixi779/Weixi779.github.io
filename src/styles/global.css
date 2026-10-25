@@ -1,5 +1,5 @@
 @import './fonts.css';
-@import './generated/themes.css';
+@import './theme.css';
 
 :root {
   --font-site: 'JetBrains Mono', 'Weixi Sans', 'PingFang SC', 'Hiragino Sans GB',
@@ -222,9 +222,12 @@ input {
   place-content: center;
   padding: 72px 24px;
   background:
-    linear-gradient(rgb(8 17 38 / 56%), rgb(8 17 38 / 68%)),
+    linear-gradient(
+      color-mix(in srgb, var(--color-image-scrim) 56%, transparent),
+      color-mix(in srgb, var(--color-image-scrim) 68%, transparent)
+    ),
     url('/images/banner.jpg') center / cover;
-  color: #ffffff;
+  color: var(--color-image-text);
   text-align: center;
 }
 
@@ -252,17 +255,23 @@ input {
   min-height: inherit;
   place-items: end center;
   padding: 64px 24px;
-  background: linear-gradient(transparent, rgb(5 12 22 / 78%));
+  background: linear-gradient(
+    transparent,
+    color-mix(in srgb, var(--color-image-scrim) 78%, transparent)
+  );
 }
 
 .page-hero__content {
   width: min(880px, 100%);
-  color: #ffffff;
+  color: var(--color-image-text);
 }
 
 .page-hero--centered .page-hero__overlay {
   place-items: center;
-  background: linear-gradient(rgb(5 12 22 / 48%), rgb(5 12 22 / 62%));
+  background: linear-gradient(
+    color-mix(in srgb, var(--color-image-scrim) 48%, transparent),
+    color-mix(in srgb, var(--color-image-scrim) 62%, transparent)
+  );
   text-align: center;
 }
 
@@ -279,7 +288,7 @@ input {
 .page-hero__summary {
   max-width: 760px;
   margin: 14px 0 0;
-  color: rgb(255 255 255 / 82%);
+  color: var(--color-image-text-secondary);
   font-size: clamp(0.95rem, 1.8vw, 1.1rem);
   line-height: 1.7;
   text-wrap: balance;
@@ -290,18 +299,18 @@ input {
   gap: 8px;
   align-items: center;
   margin-top: 18px;
-  color: rgb(255 255 255 / 62%);
+  color: var(--color-image-text-muted);
   font-size: 0.9rem;
 }
 
 .post-language-switch a {
-  color: rgb(255 255 255 / 78%);
+  color: var(--color-image-link);
   text-decoration-thickness: 1px;
   text-underline-offset: 4px;
 }
 
 .post-language-switch a[aria-current='page'] {
-  color: #ffffff;
+  color: var(--color-image-text);
   font-weight: 800;
   text-decoration: none;
 }

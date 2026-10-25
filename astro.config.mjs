@@ -1,5 +1,6 @@
 import { defineConfig } from 'astro/config';
 import { satteri } from '@astrojs/markdown-satteri';
+import { themeBootstrapPlugin } from './scripts/theme-bootstrap-plugin.mjs';
 
 const proseTables = {
   name: 'prose-tables',
@@ -19,6 +20,7 @@ const proseTables = {
 export default defineConfig({
   site: 'https://weixi779.github.io',
   output: 'static',
+  vite: { plugins: [themeBootstrapPlugin()] },
   trailingSlash: 'always',
   build: {
     assets: 'assets',

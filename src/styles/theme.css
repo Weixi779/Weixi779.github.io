@@ -1,0 +1,42 @@
+/* Created by weixi on 2026/10/25. */
+
+/* Site palette: the latest sea-day / sea-night design studies.
+   Components consume roles, not palette names or literal colors. */
+:root {
+  color-scheme: light;
+  --color-background-primary: #fafaf8;
+  --color-background-secondary: #f0f3f6;
+  --color-surface-primary: #ffffff;
+  --color-surface-elevated: #ffffff;
+  --color-text-primary: #343a40;
+  --color-text-secondary: #686f77;
+  --color-accent-primary: #3472aa;
+  --color-accent-secondary: #edf3f8;
+  --color-text-on-accent: #ffffff;
+  --color-border-primary: #b8c4ce;
+  --color-border-secondary: #e0e5ea;
+  --color-feedback-destructive: #b42332;
+
+  /* Text over photography stays light in both appearances. */
+  --color-image-text: #ffffff;
+  --color-image-text-secondary: rgb(255 255 255 / 82%);
+  --color-image-text-muted: rgb(255 255 255 / 62%);
+  --color-image-link: rgb(255 255 255 / 78%);
+  --color-image-scrim: #101c32;
+}
+
+:root[data-color-mode='dark'] {
+  color-scheme: dark;
+  --color-background-primary: #101c32;
+  --color-background-secondary: #15253e;
+  --color-surface-primary: #192b44;
+  --color-surface-elevated: #203550;
+  --color-text-primary: #e7eff8;
+  --color-text-secondary: #a9bad1;
+  --color-accent-primary: #71c8ee;
+  --color-accent-secondary: #223e56;
+  --color-text-on-accent: #101c32;
+  --color-border-primary: #506883;
+  --color-border-secondary: #30425c;
+  --color-feedback-destructive: #ff9b9e;
+}

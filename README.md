@@ -52,8 +52,37 @@ npm run fonts:update
 
 ## 主题
 
-主题颜色来自 `vendor/themefoundry` 固定版本。`dev`、`check` 和 `build` 会先校验
-ThemeFoundry contract，并生成站点使用的 CSS 与主题目录。
+全站使用一套配色，支持浅色、深色和跟随系统。
+
+- `src/styles/theme.css` 是颜色来源。页面和组件使用语义变量；正文的
+  `--markdown-color-*` 继续映射到这些变量。图片上的文字使用独立的 image 颜色，
+  强调色填充上的文字使用 `--color-text-on-accent`。
+- `src/theme/state.ts` 的 `createThemeStore` 只管理偏好与实际外观，每次调用创建独立实例。
+  `getState()` 返回稳定的只读快照，`subscribe()` 返回取消订阅函数；不依赖浏览器或 React。
+- `src/theme/controller.ts` 的 `createThemeController` 接收 `ThemeEnvironment`，注入存储和
+  系统外观读写／监听。入口持有实例并负责 `dispose()`；单测可直接注入内存实现。
+  BFCache 恢复时入口调用 `refreshPreference()`，由 Controller 重新读取、校验存储；
+  存储不可读时保留当前会话选择，缺失或无效值回到跟随系统。入口立即同步页面外观。
+- `src/theme/bootstrap.ts` 是浏览器入口，创建实例、注入真实依赖、更新根元素颜色状态，
+  并处理减少动态效果和页面结束。回退缓存中的页面保留监听。当前 Astro 组件通过
+  `window.blogTheme` 取得入口创建的实例，工厂模块本身不创建全局实例。
+- `scripts/theme-bootstrap-plugin.mjs` 用构建工具 esbuild 把入口打包为同步内联脚本，
+  `BaseLayout` 将其放在 `<head>`，首次渲染前应用偏好。测试使用同一打包入口。
+- React 改写时，应用入口把实例传给 Provider，再用 `useSyncExternalStore` 订阅
+  `subscribe` / `getState` 即可；SSR 的初始快照由页面宿主明确提供。Provider 不另建主题状态。
+  普通组件直接使用 CSS 变量，无须订阅。
+- `blog-theme-change` 在根元素实际更新后通知评论区等 DOM 消费者。入口负责这项浏览器事件，
+  主题状态本身通过 `subscribe` 提供通知，不依赖全局事件。
+- 继续读取 `blog-theme-preference`：旧 `{ themeId, mode }` 会迁移为 `{ mode }`，
+  保留用户的显示模式。无效或不可访问的存储回退到系统；存储失败不阻止本页切换。
+- 新页面继承 `BaseLayout` 即可；有昼夜图片的页面可依据根元素的 `data-color-mode`
+  选择图片，图片内容与布局由页面自己负责。不要另行监听系统外观或读取主题存储。
+
+主题运行时不依赖 React 或 ThemeFoundry，也不再生成多配色目录。
+`vendor/themefoundry` 暂保留为原始数据快照，不参与开发和构建。
+`tests/theme-state.test.ts` 覆盖独立实例、依赖注入和释放；`tests/theme.test.ts`
+覆盖真实打包入口、旧偏好迁移、系统变化、存储失败与快速切换；
+`tests/theme-contrast.test.ts` 检查正文和控件主要文字组合的对比度。
 
 ## 访问统计
 

@@ -5,6 +5,7 @@ publishedAt: "2026-08-10 15:03:40"
 summary: "本想在三家里选出下一个网络图片库，后来从缓存、合并走到展示，每一层都只得到一半答案。"
 tags: [架构, 图片, 缓存, 技术演进]
 category: "iOS"
+hero: /images/ios-network-image-survey.webp
 toc: true
 math: false
 draft: false

@@ -5,6 +5,7 @@ publishedAt: "2026-08-02 12:00:00"
 summary: "How a 204-line image compression utility became WICompress 2.0—and what that taught me about authorship in AI-assisted engineering."
 tags: [Architecture, Image Processing, AI, Refactoring]
 category: "iOS"
+hero: /images/wicompress-2-architecture.webp
 toc: true
 math: false
 draft: false

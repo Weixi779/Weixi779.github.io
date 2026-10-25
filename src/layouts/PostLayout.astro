@@ -41,19 +41,21 @@ const alternates = [
   language={language}
   alternates={alternates}
 >
-  <SiteBanner
-    title={post.data.title}
-    summary={post.data.summary}
-    category={post.data.category}
-    publishedAt={post.data.publishedAt.slice(0, 10)}
-    image={post.data.hero}
-    nightImage={post.data.heroNight}
-    language={language}
-    translations={chinesePost && englishPost ? [
-      { href: getPostPath(chinesePost), language: 'zh-CN', label: '中文', current: !isEnglish },
-      { href: getPostPath(englishPost), language: 'en', label: 'English', current: isEnglish },
-    ] : []}
-  />
+  <div class:list={{ 'observer-banner': post.data.slug === 'observer', 'coffee-banner': post.data.slug === 'caffeine-moka-cache-notes' }}>
+    <SiteBanner
+      title={post.data.title}
+      summary={post.data.summary}
+      category={post.data.category}
+      publishedAt={post.data.publishedAt.slice(0, 10)}
+      image={post.data.hero}
+      nightImage={post.data.heroNight}
+      language={language}
+      translations={chinesePost && englishPost ? [
+        { href: getPostPath(chinesePost), language: 'zh-CN', label: '中文', current: !isEnglish },
+        { href: getPostPath(englishPost), language: 'en', label: 'English', current: isEnglish },
+      ] : []}
+    />
+  </div>
   <div class="post-shell">
     {post.data.toc && <TableOfContents headings={headings} language={language} />}
     <article class="prose">
@@ -76,3 +78,42 @@ const alternates = [
     </article>
   </div>
 </BaseLayout>
+
+<style>
+  .observer-banner :global(.site-banner__scene) {
+    width: min(84%, 890px);
+    background-size: cover;
+    background-position: right center;
+    mask-image: linear-gradient(90deg, transparent, #000 55%),
+      linear-gradient(180deg, #000 75%, transparent 100%);
+  }
+
+  @media (max-width: 700px) {
+    .coffee-banner :global(.site-banner__scene) {
+      width: 100%;
+      right: 0;
+      background-position: right top;
+    }
+
+    .observer-banner :global(.site-banner__inner) {
+      padding-bottom: 300px;
+    }
+
+    .observer-banner :global(.site-banner__scene) {
+      top: auto;
+      bottom: 0;
+      right: 0;
+      width: 100%;
+      height: 280px;
+      max-height: none;
+      background-size: cover;
+      background-position: right center;
+      opacity: .86;
+      mask-image: linear-gradient(180deg, transparent, #000 16%, #000 80%, transparent);
+    }
+
+    :global(:root[data-color-mode='dark']) .observer-banner :global(.site-banner__scene) {
+      opacity: .8;
+    }
+  }
+</style>

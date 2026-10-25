@@ -5,6 +5,8 @@ publishedAt: "2026-01-05 14:27:32"
 summary: "回顾从 Objective-C 到 Swift 的网络层演进，并重新思考抽象与控制权。"
 tags: [架构, 网络, 技术演进]
 category: "iOS"
+hero: /images/ios-network-layer-day.webp
+heroNight: /images/ios-network-layer-night.webp
 toc: true
 math: true
 ---

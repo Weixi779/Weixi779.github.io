@@ -5,6 +5,7 @@ publishedAt: "2026-07-24 14:00:00"
 summary: "顺着咖啡系缓存谱系走一遭: 从惊喜到碰壁, 再到自己动手写 Swift 库时的收敛."
 tags: [缓存, 架构, 技术演进]
 category: "iOS"
+hero: /images/caffeine-moka-cache.webp
 toc: true
 math: false
 draft: false

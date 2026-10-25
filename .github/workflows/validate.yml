@@ -16,6 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       ASTRO_TELEMETRY_DISABLED: 1
+      PUBLIC_GOATCOUNTER_ENDPOINT: ${{ vars.PUBLIC_GOATCOUNTER_ENDPOINT }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6

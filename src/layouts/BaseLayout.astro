@@ -28,6 +28,7 @@ const fullTitle = title ? `${title} - ${siteTitle}` : siteTitle;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const socialImage = new URL(image, Astro.site);
 const ogLocale = language === 'en' ? 'en_US' : 'zh_CN';
+const goatcounterEndpoint = import.meta.env.PUBLIC_GOATCOUNTER_ENDPOINT;
 ---
 
 <!doctype html>
@@ -61,6 +62,14 @@ const ogLocale = language === 'en' ? 'en_US' : 'zh_CN';
       href="/images/favicon.ico?v=xi-20260924-2"
     />
     <title>{fullTitle}</title>
+    {import.meta.env.PROD && goatcounterEndpoint && (
+      <script
+        is:inline
+        data-goatcounter={goatcounterEndpoint}
+        async
+        src="https://gc.zgo.at/count.js"
+      ></script>
+    )}
   </head>
   <body>
     <SiteHeader pathname={Astro.url.pathname} client:load />

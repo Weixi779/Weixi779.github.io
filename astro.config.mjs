@@ -1,4 +1,5 @@
 import { defineConfig } from 'astro/config';
+import react from '@astrojs/react';
 import { satteri } from '@astrojs/markdown-satteri';
 import { themeBootstrapPlugin } from './scripts/theme-bootstrap-plugin.mjs';
 
@@ -20,6 +21,7 @@ const proseTables = {
 export default defineConfig({
   site: 'https://weixi779.github.io',
   output: 'static',
+  integrations: [react()],
   vite: { plugins: [themeBootstrapPlugin()] },
   trailingSlash: 'always',
   build: {

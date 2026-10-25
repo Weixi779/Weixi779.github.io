@@ -4,7 +4,7 @@ import { createHash } from 'node:crypto';
 import { readdir, readFile, writeFile, mkdir } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { createFont } from 'fonteditor-core';
+import { createFont, woff2 } from 'fonteditor-core';
 import subsetFont from 'subset-font';
 
 const rootDirectory = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -154,12 +154,26 @@ async function updateLicenses() {
   }
 }
 
+async function updateFooterFonts() {
+  await woff2.init();
+  for (const name of ['Allura-Regular', 'SourceSans3-Regular']) {
+    const source = await readFile(path.join(rootDirectory, 'scripts/font-sources', `${name}.ttf`));
+    // Compress the complete font: preserve shaping tables, glyphs and license metadata.
+    const compressed = Buffer.from(woff2.encode(source));
+    await writeFile(path.join(outputDirectory, `${name}.woff2`), compressed);
+    console.log(`${name}.woff2: ${(compressed.byteLength / 1024).toFixed(1)} KiB`);
+  }
+}
+
 async function main() {
   await Promise.all([
     mkdir(outputDirectory, { recursive: true }),
     mkdir(path.join(outputDirectory, 'licenses'), { recursive: true }),
     mkdir(cacheDirectory, { recursive: true }),
   ]);
+
+  await updateFooterFonts();
+  if (process.argv.includes('--footer-only')) return;
 
   const characters = await buildCharacterSet();
   console.log(`Subsetting Chinese fonts for ${[...characters].length} unique characters.`);

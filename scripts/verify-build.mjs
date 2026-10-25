@@ -18,8 +18,8 @@ const requiredRoutes = [
   translatedPostRoute,
 ];
 const requiredFontAssets = [
-  'Allura-Regular.ttf',
-  'SourceSans3-Regular.ttf',
+  'Allura-Regular.woff2',
+  'SourceSans3-Regular.woff2',
   'licenses/Allura-OFL.txt',
   'licenses/SourceSans3-OFL.txt',
   'JetBrainsMono-Regular.woff2',

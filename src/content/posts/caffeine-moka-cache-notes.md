@@ -6,6 +6,7 @@ summary: "顺着咖啡系缓存谱系走一遭: 从惊喜到碰壁, 再到自己
 tags: [缓存, 架构, 技术演进]
 category: "iOS"
 hero: /images/caffeine-moka-cache.webp
+heroLayout: wide
 toc: true
 math: false
 draft: false

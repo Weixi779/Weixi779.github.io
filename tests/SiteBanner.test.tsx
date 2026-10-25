@@ -19,6 +19,22 @@ beforeEach(() => {
 afterEach(() => { cleanup(); vi.useRealTimers(); vi.unstubAllGlobals(); });
 
 describe('SiteBanner', () => {
+  it.each(['wide', 'illustration'] as const)('uses article image composition %s without changing its day/night artwork', (imageLayout) => {
+    const html = renderToStaticMarkup(<SiteBanner title="文章" image="/images/day.webp"
+      nightImage="/images/night.webp" imageLayout={imageLayout} />);
+    const document = new DOMParser().parseFromString(html, 'text/html');
+    expect(document.querySelector('section')?.getAttribute('data-image-layout')).toBe(imageLayout);
+    const style = document.querySelector<HTMLElement>('.site-banner__scene')?.style;
+    expect(style?.getPropertyValue('--banner-image-light')).toBe('url("/images/day.webp")');
+    expect(style?.getPropertyValue('--banner-image-dark')).toBe('url("/images/night.webp")');
+  });
+
+  it('ignores image composition when the article has no artwork', () => {
+    const html = renderToStaticMarkup(<SiteBanner title="无图文章" imageLayout="illustration" />);
+    const document = new DOMParser().parseFromString(html, 'text/html');
+    expect(document.querySelector('section')?.hasAttribute('data-image-layout')).toBe(false);
+    expect(document.querySelector('.site-banner__scene')).toBeNull();
+  });
   it('places an optional avatar immediately above the title before hydration', () => {
     const html = renderToStaticMarkup(<SiteBanner title="关于" summary="继续做喜欢的事情"
       avatar={{ src: '/images/avatar.jpg', alt: '伟兮的头像' }} />);

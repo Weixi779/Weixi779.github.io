@@ -19,6 +19,7 @@ interface Props {
   publishedAt?: string;
   image?: string;
   nightImage?: string;
+  imageLayout?: 'default' | 'wide' | 'illustration';
   translations?: BannerTranslation[];
   language?: 'zh-CN' | 'en';
   avatar?: { src: string; alt: string };
@@ -81,7 +82,7 @@ function TypedQuote({ text }: { text: string }) {
 
 export default function SiteBanner({
   variant = 'page', title, summary, eyebrow, category, publishedAt,
-  image, nightImage, translations = [], language = 'zh-CN', avatar, children,
+  image, nightImage, imageLayout = 'default', translations = [], language = 'zh-CN', avatar, children,
 }: Props) {
   const prefix = category ? `「${category}」` : '';
   const withoutPrefix = prefix && title.startsWith(prefix) ? title.slice(prefix.length).trimStart() : title;
@@ -93,7 +94,8 @@ export default function SiteBanner({
   } as CSSProperties : undefined;
 
   return (
-    <section className={`site-banner ${variant === 'home' ? 'home-hero' : 'page-hero'}`}>
+    <section className={`site-banner ${variant === 'home' ? 'home-hero' : 'page-hero'}`}
+      data-image-layout={image && imageLayout !== 'default' ? imageLayout : undefined}>
       {image && <div className="site-banner__scene" style={sceneStyle} aria-hidden="true" />}
       <div className="site-banner__inner">
         {eyebrow && <p className="site-banner__eyebrow">{eyebrow}</p>}

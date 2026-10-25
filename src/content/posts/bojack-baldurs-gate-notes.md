@@ -6,6 +6,7 @@ summary: "关于《马男波杰克》《博德之门 3》、AI，以及一个程
 tags: [AI, 代码人生, 游戏, 影视]
 category: "后日谈"
 hero: /images/observer-v2.webp
+heroLayout: illustration
 toc: true
 math: false
 ---

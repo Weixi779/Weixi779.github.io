@@ -1,6 +1,6 @@
 // Created by weixi on 2026/10/25.
 
-import { useLayoutEffect, useState, type CSSProperties } from 'react';
+import { useLayoutEffect, useState, type CSSProperties, type ReactNode } from 'react';
 import '../styles/banner.css';
 
 interface BannerTranslation {
@@ -21,6 +21,7 @@ interface Props {
   nightImage?: string;
   translations?: BannerTranslation[];
   language?: 'zh-CN' | 'en';
+  children?: ReactNode;
 }
 
 function TypedQuote({ text }: { text: string }) {
@@ -79,7 +80,7 @@ function TypedQuote({ text }: { text: string }) {
 
 export default function SiteBanner({
   variant = 'page', title, summary, eyebrow, category, publishedAt,
-  image, nightImage, translations = [], language = 'zh-CN',
+  image, nightImage, translations = [], language = 'zh-CN', children,
 }: Props) {
   const prefix = category ? `「${category}」` : '';
   const withoutPrefix = prefix && title.startsWith(prefix) ? title.slice(prefix.length).trimStart() : title;
@@ -103,6 +104,7 @@ export default function SiteBanner({
         {summary && <p className={variant === 'home' ? 'site-banner__quote' : 'page-hero__summary'}>
           {variant === 'home' ? <TypedQuote text={summary} /> : summary}
         </p>}
+        {children}
         {translations.length > 1 && <nav className="post-language-switch" aria-label={language === 'en' ? 'Article language' : '文章语言'}>
           {translations.map(({ href, language: lang, label, current }) => (
             <a key={lang} href={href} lang={lang} aria-current={current ? 'page' : undefined}>{label}</a>

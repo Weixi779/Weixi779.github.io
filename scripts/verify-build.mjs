@@ -117,11 +117,12 @@ if (!existsSync(distRoot)) {
 
   const archiveHtml = readFileSync(routeOutputPath('/archive/'), 'utf8');
   for (const marker of [
-    'data-archive-search-input',
-    'data-archive-result-count',
-    'data-archive-item',
-    'data-search=',
-    'data-category=',
+    'id="archive-search-input"',
+    'id="archive-result-status"',
+    'class="archive-item"',
+    'class="archive-categories"',
+    '<astro-island',
+    'client="load"',
   ]) {
     if (!archiveHtml.includes(marker)) fail(`archive is missing ${marker}`);
   }
@@ -132,6 +133,24 @@ if (!existsSync(distRoot)) {
 
   const postPages = collectPostPages();
   if (postPages.length === 0) fail('no published post pages were generated');
+
+  const archivePostLinks = [...archiveHtml.matchAll(/class="archive-item__link" href="([^"]+)"/gu)];
+  if (archivePostLinks.length !== postPages.length) {
+    fail('archive must render all published post links before React loads');
+  }
+  const archiveDocument = new JSDOM(archiveHtml).window.document;
+  const archiveTotals = archiveDocument.querySelectorAll('.archive-stats strong');
+  if (Number(archiveTotals[0]?.textContent) !== postPages.length || !(Number(archiveTotals[1]?.textContent) > 0)) {
+    fail('archive banner must server-render published article and word totals');
+  }
+  for (const group of archiveDocument.querySelectorAll('.archive-year')) {
+    const count = Number(group.querySelector('.archive-year__count')?.textContent.replace(/\D/gu, ''));
+    if (count !== group.querySelectorAll('.archive-item').length) fail('archive year count must match its articles');
+    if (!archiveDocument.querySelector(`.archive-year-nav a[href="#${group.id}"]`)) fail('archive year must have an anchor destination');
+  }
+  if (/<astro-island\b[^>]*component-url="[^"]*ArchiveBrowser\./u.test(homeHtml)) {
+    fail('home page should not load the archive React island');
+  }
 
   for (const postPage of postPages) {
     const html = readFileSync(postPage, 'utf8');

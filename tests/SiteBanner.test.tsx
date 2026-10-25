@@ -19,6 +19,14 @@ beforeEach(() => {
 afterEach(() => { cleanup(); vi.useRealTimers(); vi.unstubAllGlobals(); });
 
 describe('SiteBanner', () => {
+  it('places page-specific content after the summary without replacing the title', () => {
+    const html = renderToStaticMarkup(<SiteBanner title="归档" summary="一点一滴">
+      <p aria-label="归档统计">共 27 篇文章，累计约 6.2 万字</p>
+    </SiteBanner>);
+    const document = new DOMParser().parseFromString(html, 'text/html');
+    expect(document.querySelector('h1')?.textContent).toBe('归档');
+    expect(document.querySelector('.page-hero__summary')?.nextElementSibling?.textContent).toBe('共 27 篇文章，累计约 6.2 万字');
+  });
   it('separates only an exact category prefix and preserves the rest of the title', () => {
     render(<SiteBanner title="「后日谈」热爱也有难以回答的问题" category="后日谈" publishedAt="2026-09-24" />);
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/^热爱也有难以回答的问题$/);

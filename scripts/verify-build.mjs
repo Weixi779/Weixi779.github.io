@@ -1,6 +1,7 @@
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { JSDOM } from 'jsdom';
 
 const scriptDirectory = dirname(fileURLToPath(import.meta.url));
 const projectRoot = resolve(scriptDirectory, '..');
@@ -17,6 +18,10 @@ const requiredRoutes = [
   translatedPostRoute,
 ];
 const requiredFontAssets = [
+  'Allura-Regular.ttf',
+  'SourceSans3-Regular.ttf',
+  'licenses/Allura-OFL.txt',
+  'licenses/SourceSans3-OFL.txt',
   'JetBrainsMono-Regular.woff2',
   'JetBrainsMono-Bold.woff2',
   'JetBrainsMono-Italic.woff2',
@@ -148,6 +153,23 @@ if (!existsSync(distRoot)) {
   const htmlPages = collectHtmlPages(distRoot);
   for (const htmlPage of htmlPages) {
     const html = readFileSync(htmlPage, 'utf8');
+    const page = new JSDOM(html);
+    const document = page.window.document;
+    const footers = document.querySelectorAll('footer.site-footer');
+    const footer = footers[0];
+    if (footers.length !== 1 || !footer?.closest('astro-island[client="load"]')) {
+      fail(`expected one shared React footer in ${htmlPage}`);
+    }
+    const footerLinks = Array.from(footer?.querySelectorAll('nav a') ?? [], (link) => link.getAttribute('href'));
+    if (footerLinks.join(',') !== 'https://github.com/Weixi779,https://leetcode.cn/u/wei-xi-d/,https://space.bilibili.com/6450245,mailto:sunshiwei418@126.com,/rss.xml') {
+      fail(`shared footer destinations are incomplete before hydration in ${htmlPage}`);
+    }
+    if (!footer?.textContent.includes(`© 2021–${new Date().getFullYear()} Weixi All Rights Reserved`)
+      || footer.querySelector('a[href="/fonts/"]')?.textContent !== 'Font Licenses'
+      || !footer.textContent.includes('Stay hungry. Stay foolish.')) {
+      fail(`shared footer copyright or license is missing in ${htmlPage}`);
+    }
+    page.window.close();
     const themeScript = html.match(/<script\b[^>]*data-theme-bootstrap[^>]*>[\s\S]*?<\/script>/u);
     if (!themeScript || !html.slice(0, html.indexOf('</head>')).includes(themeScript[0])) {
       fail(`synchronous theme bootstrap is missing from the head in ${htmlPage}`);

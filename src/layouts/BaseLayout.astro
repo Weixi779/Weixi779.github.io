@@ -1,5 +1,5 @@
 ---
-import SiteFooter from '../components/SiteFooter.astro';
+import SiteFooter from '../components/SiteFooter';
 import SiteHeader from '../components/SiteHeader.astro';
 import themeBootstrap from 'virtual:theme-bootstrap';
 import '../styles/global.css';
@@ -67,6 +67,6 @@ const ogLocale = language === 'en' ? 'en_US' : 'zh_CN';
     <main>
       <slot />
     </main>
-    <SiteFooter />
+    <SiteFooter year={new Date().getFullYear()} client:load />
   </body>
 </html>

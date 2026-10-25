@@ -1,0 +1,98 @@
+/* Created by weixi on 2026/10/25. */
+
+@font-face {
+  font-family: 'Allura';
+  src: url('/fonts/Allura-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Source Sans 3';
+  src: url('/fonts/SourceSans3-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+.site-footer {
+  padding-top: 48px;
+  color: var(--color-text-secondary);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Weixi Sans', sans-serif;
+  background: linear-gradient(180deg,
+    var(--color-background-primary),
+    color-mix(in srgb, var(--color-accent-primary) 4%, var(--color-background-primary)) 60%,
+    color-mix(in srgb, var(--color-accent-primary) 8%, var(--color-background-primary)));
+}
+
+.site-footer__inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  width: min(1120px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: 30px 0 36px;
+  gap: 6px 36px;
+}
+
+.site-footer__signature {
+  grid-column: 1;
+  grid-row: 1;
+  margin: 0;
+  color: var(--color-text-primary);
+  font: 400 36px/1.2 'Allura', cursive;
+  letter-spacing: 0;
+}
+.site-footer__legal {
+  grid-column: 1;
+  grid-row: 2;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 0;
+  font: 400 11px/1.65 'Source Sans 3', sans-serif;
+}
+.site-footer__legal p { margin: 0; font: inherit; letter-spacing: .05px; }
+.site-footer a { color: inherit; text-decoration: none; }
+.site-footer a:hover { color: var(--color-accent-primary); }
+.site-footer__license { font: inherit; white-space: nowrap; }
+.site-footer__license::before { content: '·'; display: inline-block; margin: 0 6px; color: var(--color-text-secondary); }
+.site-footer__license:hover { text-decoration: underline; text-underline-offset: 4px; }
+.site-footer a:focus-visible { outline: 2px solid var(--color-accent-primary); outline-offset: 4px; }
+.site-footer__links { grid-column: 2; grid-row: 1 / 3; display: flex; align-items: center; gap: 15px; margin-right: -9px; }
+.site-footer__link { position: relative; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 9px; }
+.site-footer__icon { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.45; stroke-linecap: round; stroke-linejoin: round; }
+.site-footer__touch-label { display: none; }
+.site-footer__tooltip {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 5px 9px;
+  white-space: nowrap;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--color-text-primary);
+  background: var(--color-background-primary);
+  border: 1px solid var(--color-border-secondary);
+  border-radius: 6px;
+  box-shadow: 0 3px 14px color-mix(in srgb, var(--color-text-primary) 4%, transparent);
+}
+.site-footer__link:last-child .site-footer__tooltip { left: auto; right: 0; transform: none; }
+/* Bridge the small gap so the pointer can reach the label without dismissing it. */
+.site-footer__link::after { content: ''; position: absolute; bottom: 100%; left: 0; right: 0; height: 7px; }
+
+@media (max-width: 700px) {
+  .site-footer__inner { width: calc(100% - 50px); grid-template-columns: minmax(0, 1fr); padding: 20px 0 28px; row-gap: 7px; }
+  .site-footer__signature { font-size: 32px; }
+  .site-footer__links { grid-column: 1; grid-row: 3; justify-self: end; margin-top: 15px; }
+}
+@media (max-width: 359px) {
+  .site-footer__inner { width: calc(100% - 24px); }
+}
+@media (hover: none) {
+  .site-footer__link { height: 62px; grid-template-rows: 36px auto; gap: 2px; }
+  .site-footer__touch-label { display: block; color: var(--color-text-secondary); font-size: 10px; white-space: nowrap; }
+  .site-footer__tooltip { display: none; }
+}

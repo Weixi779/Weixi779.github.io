@@ -21,6 +21,7 @@ interface Props {
   nightImage?: string;
   translations?: BannerTranslation[];
   language?: 'zh-CN' | 'en';
+  avatar?: { src: string; alt: string };
   children?: ReactNode;
 }
 
@@ -80,7 +81,7 @@ function TypedQuote({ text }: { text: string }) {
 
 export default function SiteBanner({
   variant = 'page', title, summary, eyebrow, category, publishedAt,
-  image, nightImage, translations = [], language = 'zh-CN', children,
+  image, nightImage, translations = [], language = 'zh-CN', avatar, children,
 }: Props) {
   const prefix = category ? `「${category}」` : '';
   const withoutPrefix = prefix && title.startsWith(prefix) ? title.slice(prefix.length).trimStart() : title;
@@ -100,6 +101,7 @@ export default function SiteBanner({
           {category && <span className="site-banner__category">{category}</span>}
           {publishedAt && <time dateTime={publishedAt}>{publishedAt}</time>}
         </div>}
+        {avatar && <img className="site-banner__avatar" src={avatar.src} alt={avatar.alt} width="72" height="72" />}
         <h1>{displayTitle}</h1>
         {summary && <p className={variant === 'home' ? 'site-banner__quote' : 'page-hero__summary'}>
           {variant === 'home' ? <TypedQuote text={summary} /> : summary}

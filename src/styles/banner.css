@@ -33,6 +33,15 @@
   opacity: .65;
 }
 
+.site-banner__avatar {
+  display: block;
+  width: 72px;
+  height: 72px;
+  margin-bottom: 16px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
 .site-banner h1 {
   max-width: 760px;
   margin: 0 0 22px;

@@ -19,6 +19,18 @@ beforeEach(() => {
 afterEach(() => { cleanup(); vi.useRealTimers(); vi.unstubAllGlobals(); });
 
 describe('SiteBanner', () => {
+  it('places an optional avatar immediately above the title before hydration', () => {
+    const html = renderToStaticMarkup(<SiteBanner title="关于" summary="继续做喜欢的事情"
+      avatar={{ src: '/images/avatar.jpg', alt: '伟兮的头像' }} />);
+    const document = new DOMParser().parseFromString(html, 'text/html');
+    const avatar = document.querySelector('h1')?.previousElementSibling;
+    expect(avatar?.tagName).toBe('IMG');
+    expect(avatar?.getAttribute('src')).toBe('/images/avatar.jpg');
+    expect(avatar?.getAttribute('alt')).toBe('伟兮的头像');
+    expect(document.querySelector('h1')?.nextElementSibling?.textContent).toBe('继续做喜欢的事情');
+    const plain = renderToStaticMarkup(<SiteBanner title="归档" />);
+    expect(new DOMParser().parseFromString(plain, 'text/html').querySelector('img')).toBeNull();
+  });
   it('places page-specific content after the summary without replacing the title', () => {
     const html = renderToStaticMarkup(<SiteBanner title="归档" summary="一点一滴">
       <p aria-label="归档统计">共 27 篇文章，累计约 6.2 万字</p>

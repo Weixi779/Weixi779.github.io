@@ -7,14 +7,14 @@ const scriptDirectory = dirname(fileURLToPath(import.meta.url));
 const projectRoot = resolve(scriptDirectory, '..');
 const distRoot = join(projectRoot, 'dist');
 const translatedPostRoute = '/en/posts/wicompress-2-architecture-ai/';
+const legacyPaginationRoutes = ['/page/2/', '/page/3/'];
 const requiredRoutes = [
   '/',
   '/404.html',
   '/about/',
   '/archive/',
   '/fonts/',
-  '/page/2/',
-  '/page/3/',
+  ...legacyPaginationRoutes,
   translatedPostRoute,
 ];
 const requiredFontAssets = [
@@ -83,6 +83,17 @@ if (!existsSync(distRoot)) {
 
   for (const route of requiredRoutes) {
     if (!existsSync(routeOutputPath(route))) fail(`missing required route ${route}`);
+  }
+
+  for (const route of legacyPaginationRoutes) {
+    if (!existsSync(routeOutputPath(route))) continue;
+    const document = new JSDOM(readFileSync(routeOutputPath(route), 'utf8')).window.document;
+    const refresh = document.querySelector('meta[http-equiv="refresh"]')?.getAttribute('content');
+    if (!refresh || !/^0;\s*url=\/archive\/$/iu.test(refresh)) fail(`${route} must redirect immediately to the archive`);
+    if (document.querySelector('link[rel="canonical"]')?.getAttribute('href') !== 'https://weixi779.github.io/archive/') {
+      fail(`${route} must canonicalize to the archive`);
+    }
+    if (document.querySelector('.post-card, .pager')) fail(`${route} must not render the retired pagination`);
   }
 
   const homeHtml = readFileSync(routeOutputPath('/'), 'utf8');
@@ -191,6 +202,7 @@ if (!existsSync(distRoot)) {
   const htmlPages = collectHtmlPages(distRoot);
   for (const htmlPage of htmlPages) {
     const html = readFileSync(htmlPage, 'utf8');
+    if (legacyPaginationRoutes.some(route => htmlPage === routeOutputPath(route))) continue;
     const page = new JSDOM(html);
     const document = page.window.document;
     const utilityPage = htmlPage === routeOutputPath('/fonts/') || htmlPage === routeOutputPath('/404.html');

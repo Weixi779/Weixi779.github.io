@@ -24,6 +24,11 @@ export default defineConfig({
   integrations: [react()],
   vite: { plugins: [themeBootstrapPlugin()] },
   trailingSlash: 'always',
+  // Preserve published pagination URLs after moving the full list to the archive.
+  redirects: {
+    '/page/2/': '/archive/',
+    '/page/3/': '/archive/',
+  },
   build: {
     assets: 'assets',
   },

@@ -26,6 +26,7 @@ const posts = defineCollection({
     tags: stringList,
     category: z.string(),
     hero: optionalString,
+    heroNight: optionalString,
     toc: z.boolean().default(false),
     math: z.boolean().default(false),
     draft: z.boolean().default(false),

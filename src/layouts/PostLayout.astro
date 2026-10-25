@@ -47,6 +47,7 @@ const alternates = [
     category={post.data.category}
     publishedAt={post.data.publishedAt.slice(0, 10)}
     image={post.data.hero}
+    nightImage={post.data.heroNight}
     language={language}
     translations={chinesePost && englishPost ? [
       { href: getPostPath(chinesePost), language: 'zh-CN', label: '中文', current: !isEnglish },

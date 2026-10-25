@@ -5,6 +5,8 @@ publishedAt: "2024-07-15 13:26:27"
 summary: "回望成为程序员的第三年，记录工作、成长，以及对过去和未来的重新理解。"
 tags: [代码人生]
 category: "后日谈"
+hero: /images/developer-journey-year-3-day.webp
+heroNight: /images/developer-journey-year-3-night.webp
 toc: true
 math: true
 ---

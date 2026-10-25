@@ -5,6 +5,7 @@ import '@testing-library/jest-dom/vitest';
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import SiteHeader from '../src/components/SiteHeader';
+import SiteBanner from '../src/components/SiteBanner';
 import { createThemeController } from '../src/theme/controller';
 
 let titleTop = 180;
@@ -48,7 +49,7 @@ afterEach(() => {
 
 function mount(pathname = '/', title = true) {
   // The Astro page's title is a sibling outside the React island.
-  const result = render(<><SiteHeader pathname={pathname} /><main>{title && <section className={pathname === '/' ? 'home-hero' : 'page-hero'}><h1>页面标题</h1></section>}</main></>, { reactStrictMode: true });
+  const result = render(<><SiteHeader pathname={pathname} /><main>{title && <SiteBanner variant={pathname === '/' ? 'home' : 'page'} title="页面标题" />}</main></>, { reactStrictMode: true });
   return { ...result, header: result.container.querySelector('header')! };
 }
 

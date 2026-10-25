@@ -9,9 +9,10 @@ The footer fonts below are vendored separately and preserved by that command.
   (IPA), 2003–2019. Distributed under
   [IPA Font License 1.0](licenses/IPA-Font-License-1.0.md).
 - [LXGW WenKai Mono GB v1.522](https://github.com/lxgw/LxgwWenKaiGB/releases/tag/v1.522):
-  Regular subset for the header site name and navigation, and CJK text inside code blocks.
+  Regular subset for the header site name and navigation, banner headings and categories,
+  and CJK text inside code blocks.
   [SIL Open Font License 1.1](licenses/LXGW-WenKai-GB-OFL-1.1.txt).
-- JetBrains Mono v2.304: official webfonts for Latin text and code.
+- JetBrains Mono v2.304: official webfonts for Latin text and code, including the homepage banner eyebrow and quote.
 
 The Chinese subsets contain the unique characters currently used by text-bearing
 files under `src`. Run the update command after adding new site or Markdown content.

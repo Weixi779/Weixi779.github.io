@@ -2,6 +2,7 @@
 import type { PostEntry } from '../utils/posts';
 import GiscusComments from '../components/GiscusComments.astro';
 import TableOfContents from '../components/TableOfContents.astro';
+import SiteBanner from '../components/SiteBanner';
 import BaseLayout from './BaseLayout.astro';
 import '../styles/prose.css';
 import { getPostPath } from '../utils/posts';
@@ -40,29 +41,18 @@ const alternates = [
   language={language}
   alternates={alternates}
 >
-  <header class="page-hero" style={`--hero-image: url('${heroImage}')`}>
-    <div class="page-hero__overlay">
-      <div class="page-hero__content">
-        <h1>{post.data.title}</h1>
-        <p class="page-hero__summary">{post.data.summary}</p>
-        {chinesePost && englishPost && (
-          <nav class="post-language-switch" aria-label={isEnglish ? 'Article language' : '文章语言'}>
-            <a
-              href={getPostPath(chinesePost)}
-              lang="zh-CN"
-              aria-current={!isEnglish ? 'page' : undefined}
-            >中文</a>
-            <span aria-hidden="true">/</span>
-            <a
-              href={getPostPath(englishPost)}
-              lang="en"
-              aria-current={isEnglish ? 'page' : undefined}
-            >English</a>
-          </nav>
-        )}
-      </div>
-    </div>
-  </header>
+  <SiteBanner
+    title={post.data.title}
+    summary={post.data.summary}
+    category={post.data.category}
+    publishedAt={post.data.publishedAt.slice(0, 10)}
+    image={post.data.hero}
+    language={language}
+    translations={chinesePost && englishPost ? [
+      { href: getPostPath(chinesePost), language: 'zh-CN', label: '中文', current: !isEnglish },
+      { href: getPostPath(englishPost), language: 'en', label: 'English', current: isEnglish },
+    ] : []}
+  />
   <div class="post-shell">
     {post.data.toc && <TableOfContents headings={headings} language={language} />}
     <article class="prose">

@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import SiteBanner from '../../components/SiteBanner';
 import { getPostDate, getPostExcerpt, getPostPath, getPublishedPosts } from '../../utils/posts';
 import '../../styles/archive.css';
 
@@ -31,14 +32,7 @@ for (const archivePost of archivePosts) {
 ---
 
 <BaseLayout title="归档" description="一点一滴，直到汇聚成改变世界的力量">
-  <header class="page-hero page-hero--centered" style="--hero-image: url('/images/archive_banner.png')">
-    <div class="page-hero__overlay">
-      <div class="page-hero__content">
-        <h1>归档</h1>
-        <p>一点一滴，直到汇聚成改变世界的力量</p>
-      </div>
-    </div>
-  </header>
+  <SiteBanner title="归档" summary="一点一滴，直到汇聚成改变世界的力量" image="/images/archive_banner.png" />
   <div class="content-container archive-page" data-archive-page>
     <div class="archive-controls">
       <form class="archive-search" role="search" data-archive-search>

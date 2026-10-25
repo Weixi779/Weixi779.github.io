@@ -155,6 +155,38 @@ if (!existsSync(distRoot)) {
     const html = readFileSync(htmlPage, 'utf8');
     const page = new JSDOM(html);
     const document = page.window.document;
+    const utilityPage = htmlPage === routeOutputPath('/fonts/') || htmlPage === routeOutputPath('/404.html');
+    const banners = document.querySelectorAll('main .site-banner');
+    if (banners.length !== (utilityPage ? 0 : 1)) {
+      fail(`expected ${utilityPage ? 'no' : 'one shared'} banner in ${htmlPage}`);
+    }
+    const banner = banners[0];
+    if (banner) {
+      if (banner.querySelectorAll('h1').length !== 1 || !banner.querySelector('h1')?.textContent.trim()) {
+        fail(`banner must expose one complete heading before JavaScript in ${htmlPage}`);
+      }
+      const category = banner.querySelector('.site-banner__category')?.textContent;
+      if (category && banner.querySelector('h1')?.textContent.startsWith(`「${category}」`)) {
+        fail(`banner repeats its category in the heading in ${htmlPage}`);
+      }
+      if (postPages.includes(htmlPage) || htmlPage === translatedPostPath) {
+        if (!category || !banner.querySelector('time[datetime]')) {
+          fail(`article banner lost its category or date in ${htmlPage}`);
+        }
+      }
+      const scene = banner.querySelector('.site-banner__scene');
+      for (const property of ['--banner-image-light', '--banner-image-dark']) {
+        const image = scene?.style.getPropertyValue(property).match(/^url\("([^"]+)"\)$/u)?.[1];
+        if (scene && (!image || !existsSync(localUrlOutputPath(image)))) {
+          fail(`banner image is missing for ${property} in ${htmlPage}`);
+        }
+      }
+      if (banner.classList.contains('home-hero')) {
+        if (!banner.closest('astro-island[client="load"]') || !banner.querySelector('.site-banner__quote-text')?.textContent) {
+          fail(`home banner must retain its quote before hydrating the typewriter in ${htmlPage}`);
+        }
+      }
+    }
     const headers = document.querySelectorAll('header.site-header');
     const header = headers[0];
     if (headers.length !== 1 || !header?.closest('astro-island[client="load"]')) {

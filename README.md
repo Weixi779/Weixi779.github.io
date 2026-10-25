@@ -94,18 +94,6 @@ npm run fonts:update
 覆盖真实打包入口、旧偏好迁移、系统变化、存储失败与快速切换；
 `tests/theme-contrast.test.ts` 检查正文和控件主要文字组合的对比度。
 
-## 访问统计
-
-配置后，生产构建通过 [GoatCounter](https://www.goatcounter.com/) 记录访问，页面不展示访问量。
-在 GoatCounter 创建站点后，将后台提供的完整统计地址（例如
-`https://你的站点.goatcounter.com/count`）填入 GitHub 仓库的
-Settings → Secrets and variables → Actions → Variables，变量名为
-`PUBLIC_GOATCOUNTER_ENDPOINT`，然后重新运行部署工作流。
-
-这个地址是公开配置，不是 API 密钥。未配置时不加载统计脚本，`npm run dev`
-也不加载。后台请保持私有，并关闭公开访客计数。
-访问数据从启用后开始积累。
-
 ### MDX 验证
 
 MDX 正文直接使用 Markdown 表格，滚动容器和键盘焦点由渲染配置自动添加。摘要和字数统计只提取静态正文，不执行文章中的 JavaScript。

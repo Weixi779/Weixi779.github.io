@@ -86,6 +86,25 @@ if (!existsSync(distRoot)) {
   }
 
   const homeHtml = readFileSync(routeOutputPath('/'), 'utf8');
+  // Homepage is a short, server-rendered introduction to the published archive.
+  const homeDocument = new JSDOM(homeHtml).window.document;
+  const homePosts = [...homeDocument.querySelectorAll('.home-recent-posts article')];
+  const feedDocument = new JSDOM(readFileSync(join(distRoot, 'rss.xml'), 'utf8'), { contentType: 'text/xml' }).window.document;
+  const recentFeedItems = [...feedDocument.querySelectorAll('item')].slice(0, 5);
+  const expectedHomePaths = recentFeedItems.map(item => new URL(item.querySelector('link').textContent).pathname);
+  const actualHomePaths = homePosts.map(post => post.querySelector('h3 a')?.getAttribute('href'));
+  if (JSON.stringify(actualHomePaths) !== JSON.stringify(expectedHomePaths)) {
+    fail('home page must show only the five newest published articles, in feed order');
+  }
+  homePosts.forEach((post, index) => {
+    if (post.querySelector('p')?.textContent !== recentFeedItems[index]?.querySelector('description')?.textContent) {
+      fail('home article introductions must match the complete published summaries');
+    }
+  });
+  if (homeDocument.querySelector('.home-recent-posts__archive a')?.getAttribute('href') !== '/archive/') {
+    fail('home page must link to the full archive');
+  }
+  if (homeDocument.querySelector('.pager, .post-card')) fail('home page must not retain the old cards or pagination');
   for (const marker of [
     'data-theme-picker',
     'data-theme-mode-input',

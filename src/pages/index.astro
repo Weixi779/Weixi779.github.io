@@ -1,23 +1,26 @@
 ---
 import HomeHero from '../components/HomeHero.astro';
-import PostList from '../components/PostList.astro';
+import HomeRecentPosts from '../components/HomeRecentPosts';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { getPublishedPosts } from '../utils/posts';
+import { getPostDate, getPostExcerpt, getPostPath, getPublishedPosts } from '../utils/posts';
 
-const pageSize = 10;
 const posts = await getPublishedPosts();
-const totalPages = Math.ceil(posts.length / pageSize);
+const recentPosts = posts.slice(0, 5).map(post => ({
+  href: getPostPath(post),
+  title: post.data.title,
+  category: post.data.category,
+  publishedAt: getPostDate(post),
+  summary: post.data.summary || getPostExcerpt(post),
+}));
 ---
 
 <BaseLayout>
   <HomeHero />
-  <section class="content-container" aria-label="文章列表">
-    <PostList posts={posts.slice(0, pageSize)} />
-    {totalPages > 1 && (
-      <nav class="pager" aria-label="文章分页">
-        <span></span>
-        <a href="/page/2/">更早文章 →</a>
-      </nav>
-    )}
-  </section>
+  <div class="home-sections">
+    <HomeRecentPosts posts={recentPosts} />
+    <aside class="home-sections__placeholder" aria-label="更多内容（占位）">
+      <h2>更多日常</h2>
+      <p>这里的内容，会慢慢添上。</p>
+    </aside>
+  </div>
 </BaseLayout>

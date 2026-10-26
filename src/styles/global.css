@@ -60,9 +60,15 @@ input {
 
 .post-shell {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 240px;
+  grid-template-columns: minmax(0, 1fr) 264px;
   gap: 64px;
   align-items: start;
+}
+
+/* Match the quieter B directory study; the article still owns its typography. */
+.post-shell--without-toc {
+  display: block;
+  max-width: 960px;
 }
 
 .toc {
@@ -70,63 +76,62 @@ input {
   top: 92px;
   grid-column: 2;
   grid-row: 1;
-  max-height: calc(100vh - 120px);
+  max-height: calc(100dvh - 120px);
   overflow: auto;
-  padding: 16px;
-  border: 1px solid var(--color-border-secondary);
-  border-radius: 12px;
-  background: var(--color-surface-primary);
+  scrollbar-width: thin;
+  padding: 4px 0 4px 28px;
+  font-family: 'Weixi Sans', 'PingFang SC', sans-serif;
 }
 
 .toc summary {
-  font-weight: 800;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.7;
   cursor: pointer;
-}
-
-.toc ol {
-  margin: 12px 0 0;
-  padding: 0;
   list-style: none;
 }
-
-.toc li + li {
-  margin-top: 8px;
-}
-
+.toc summary::-webkit-details-marker { display: none; }
+.toc ol { margin: 0; padding: 0; list-style: none; }
+.toc .toc__chapters { margin-top: 19px; }
+.toc__chapter { margin-bottom: 16px; }
+.toc__chapter:last-child { margin-bottom: 0; }
 .toc a {
   display: block;
   color: var(--color-text-secondary);
-  font-size: 0.875rem;
-  line-height: 1.55;
   overflow-wrap: anywhere;
   text-decoration: none;
+  transition: color 160ms ease-out;
 }
-
-.toc a[aria-current='location'] {
+.toc__heading { position: relative; font-size: 15px; line-height: 1.75; text-wrap: pretty; }
+.toc__chapter[data-active] > .toc__heading,
+.toc a[aria-current='location'],
+.toc a:hover { color: var(--color-accent-primary); }
+.toc :is(a, summary):focus-visible { outline: 2px solid var(--color-accent-primary); outline-offset: 4px; }
+.toc__indicator {
+  position: absolute;
+  left: -15px;
+  top: 4px;
+  width: 6px;
+  height: calc(100% - 8px);
   color: var(--color-accent-primary);
-  font-weight: 700;
+  opacity: 0;
+  transition: opacity 160ms ease-out;
+  pointer-events: none;
 }
-
-.toc__level-1:not(:first-child) {
-  margin-top: 14px;
+.toc__chapter[data-active] > .toc__heading .toc__indicator { opacity: .88; }
+.toc__children {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  visibility: hidden;
+  transition: grid-template-rows 180ms ease-out, opacity 180ms ease-out, visibility 180ms;
 }
-
-.toc__level-1 > a {
-  color: var(--color-text-primary);
-  font-weight: 700;
-}
-
-.toc__level-2 {
-  padding-left: 12px;
-}
-
-.toc__level-3 {
-  padding-left: 24px;
-}
-
-.toc__level-4 {
-  padding-left: 36px;
-}
+.toc__chapter[data-active] > .toc__children { grid-template-rows: 1fr; opacity: 1; visibility: visible; }
+.toc__children > div { min-height: 0; overflow: hidden; }
+.toc__children ol { padding: 9px 0 0 12px; }
+.toc__children li { margin-bottom: 6px; padding-left: var(--toc-indent, 0); }
+.toc__children a { font-size: 13px; line-height: 1.8; }
 
 .not-found {
   display: grid;
@@ -150,9 +155,8 @@ input {
     order: -1;
   }
 
-  .toc details:not([open]) {
-    padding-bottom: 0;
-  }
+  .toc summary::after { content: '＋'; margin-left: 8px; font-size: 12px; }
+  .toc details[open] > summary::after { content: '−'; }
 
 }
 
@@ -174,6 +178,7 @@ input {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .toc a, .toc__indicator, .toc__children { transition: none; }
   html {
     scroll-behavior: auto;
   }

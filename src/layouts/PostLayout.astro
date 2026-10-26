@@ -6,6 +6,7 @@ import SiteBanner from '../components/SiteBanner';
 import BaseLayout from './BaseLayout.astro';
 import '../styles/prose.css';
 import { getPostPath } from '../utils/posts';
+import { groupTocHeadings } from '../utils/toc';
 
 interface Heading {
   depth: number;
@@ -25,8 +26,8 @@ const { post, translation, headings, newerPost, olderPost } = Astro.props;
 const heroImage = post.data.hero || '/images/banner.jpg';
 const language = post.data.lang;
 const isEnglish = language === 'en';
-// A note reads as one column; a full article keeps the TOC rail.
-const isNote = post.data.category === '碎碎念';
+const chapters = post.data.toc ? groupTocHeadings(headings) : [];
+const hasToc = chapters.length > 0;
 const chinesePost = language === 'zh-CN' ? post : translation;
 const englishPost = language === 'en' ? post : translation;
 const alternates = [
@@ -57,8 +58,8 @@ const alternates = [
       { href: getPostPath(englishPost), language: 'en', label: 'English', current: isEnglish },
     ] : []}
   />
-  <div class:list={['post-shell', { 'post-shell--note': isNote }]}>
-    {post.data.toc && <TableOfContents headings={headings} language={language} />}
+  <div class:list={['post-shell', { 'post-shell--without-toc': !hasToc }]}>
+    {hasToc && <TableOfContents chapters={chapters} language={language} />}
     <article class="prose">
       <slot />
       <nav class="post-navigation" aria-label={isEnglish ? 'Adjacent posts' : '相邻文章'}>
@@ -79,20 +80,3 @@ const alternates = [
     </article>
   </div>
 </BaseLayout>
-
-<style>
-  .post-shell--note {
-    display: block;
-    width: min(1120px, calc(100% - 48px));
-  }
-
-  .post-shell--note .prose {
-    width: min(760px, 100%);
-  }
-
-  @media (max-width: 700px) {
-    .post-shell--note {
-      width: calc(100% - 50px);
-    }
-  }
-</style>

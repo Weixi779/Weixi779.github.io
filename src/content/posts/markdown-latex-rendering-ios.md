@@ -1,5 +1,6 @@
 ---
 title: 聊聊Markdown中的LaTeX
+recommended: true
 slug: markdown-latex-rendering-ios
 publishedAt: "2025-09-06 22:32:48"
 summary: "梳理 iOS Markdown 中的 LaTeX 提取、解析、渲染与双引擎兜底方案。"

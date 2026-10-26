@@ -25,6 +25,7 @@ const archivePosts: ArchivePost[] = posts.map((post) => {
     tags: post.data.tags,
     year,
     searchText,
+    recommended: post.data.recommended,
   };
 });
 const categoryCounts = posts.reduce((counts, post) => {

@@ -1,5 +1,6 @@
 ---
 title: 一次略有遗憾的网络图片调研
+recommended: true
 slug: ios-network-image-survey
 publishedAt: "2026-08-10 15:03:40"
 summary: "本想在三家里选出下一个网络图片库，后来从缓存、合并走到展示，每一层都只得到一半答案。"

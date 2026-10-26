@@ -15,6 +15,15 @@ const posts: HomePost[] = [
 afterEach(cleanup);
 
 describe('HomeRecentPosts', () => {
+  it('marks only recommended titles without changing article order or link destinations', () => {
+    render(<HomeRecentPosts posts={[posts[0], { ...posts[1], recommended: true }]} />);
+    const articles = screen.getAllByRole('article');
+    expect(within(articles[0]).queryByRole('img', { name: '作者推荐' })).toBeNull();
+    const title = within(articles[1]).getByRole('heading', { level: 3 });
+    expect(within(title).getByRole('img', { name: '作者推荐' })).toBeInTheDocument();
+    expect(within(title).getByRole('link')).toHaveAttribute('href', posts[1].href);
+    expect(title.textContent).toBe('解构与重组：AI 时代下的 WICompress 2.0');
+  });
   it('renders mixed short and long copy in full, with one introduction per article', () => {
     render(<HomeRecentPosts posts={posts} />);
     const articles = screen.getAllByRole('article');

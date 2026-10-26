@@ -1,5 +1,6 @@
 ---
 title: "《旁观者》"
+recommended: true
 slug: observer
 publishedAt: "2026-07-04 14:01:00"
 summary: "关于《马男波杰克》《博德之门 3》、AI，以及一个程序员重新寻找未来的故事。"

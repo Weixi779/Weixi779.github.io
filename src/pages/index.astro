@@ -15,6 +15,7 @@ const recentPosts = articles.slice(0, 5).map(post => ({
   category: post.data.category,
   publishedAt: getPostDate(post),
   summary: post.data.summary || getPostExcerpt(post),
+  recommended: post.data.recommended,
 }));
 
 const recentNotes = notes.slice(0, 4).map(post => ({
@@ -24,6 +25,7 @@ const recentNotes = notes.slice(0, 4).map(post => ({
   publishedAt: getPostDate(post),
   // Give longer notes more typographic weight without displaying their cover.
   heavy: (post.body?.length ?? 0) > 800,
+  recommended: post.data.recommended,
 }));
 ---
 

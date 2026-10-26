@@ -1,10 +1,13 @@
 ---
+import PostTitle from './PostTitle';
+
 interface HomeNote {
   href: string;
   title: string;
   summary: string;
   publishedAt: string;
   heavy: boolean;
+  recommended?: boolean;
 }
 
 interface Props {
@@ -24,7 +27,7 @@ const formatDate = (value: string) => value.replaceAll('-', ' / ');
     {notes.map((note) => (
       <li class:list={['home-notes__item', { 'home-notes__item--heavy': note.heavy }]}>
         <time class="home-notes__date" datetime={note.publishedAt}>{formatDate(note.publishedAt)}</time>
-        <h3 class="home-notes__title"><a href={note.href}>{note.title}</a></h3>
+        <h3 class="home-notes__title"><a href={note.href}><PostTitle title={note.title} recommended={note.recommended} /></a></h3>
         {note.summary && <p class="home-notes__intro">{note.summary}</p>}
       </li>
     ))}

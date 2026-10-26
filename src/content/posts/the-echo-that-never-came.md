@@ -1,5 +1,6 @@
 ---
 title: 回响
+recommended: true
 slug: the-echo-that-never-came
 publishedAt: "2026-10-25 23:45:00"
 summary: "一个把事做对的人，在一个不需要他的地方，等一场没有来的回响。"

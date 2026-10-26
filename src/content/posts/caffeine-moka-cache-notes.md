@@ -1,5 +1,6 @@
 ---
 title: 现代缓存体系探索
+recommended: true
 slug: caffeine-moka-cache-notes
 publishedAt: "2026-07-24 14:00:00"
 summary: "顺着咖啡系缓存谱系走一遭: 从惊喜到碰壁, 再到自己动手写 Swift 库时的收敛."

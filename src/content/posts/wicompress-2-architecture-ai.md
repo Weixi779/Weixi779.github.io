@@ -1,5 +1,6 @@
 ---
 title: "解构与重组：AI 时代下的 WICompress 2.0"
+recommended: true
 slug: wicompress-2-architecture-ai
 publishedAt: "2026-08-02 12:00:00"
 summary: "从 204 行的图片压缩工具到 WICompress 2.0，也重新理解人在 AI 编程中的位置。"

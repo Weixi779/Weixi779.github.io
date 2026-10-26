@@ -29,6 +29,7 @@ const posts = defineCollection({
     heroNight: optionalString,
     heroLayout: z.enum(['default', 'wide', 'illustration']).default('default'),
     toc: z.boolean().default(false),
+    recommended: z.boolean().default(false),
     math: z.boolean().default(false),
     draft: z.boolean().default(false),
     lang: z.enum(['zh-CN', 'en']).default('zh-CN'),

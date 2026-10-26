@@ -10,6 +10,7 @@ export interface ArchivePost {
   tags: string[];
   year: string;
   searchText: string;
+  recommended?: boolean;
 }
 
 export interface ArchiveFilters {

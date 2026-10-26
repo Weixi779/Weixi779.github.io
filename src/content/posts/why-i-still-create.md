@@ -1,5 +1,6 @@
 ---
 title: "热爱也有难以回答的问题"
+recommended: true
 slug: why-i-still-create
 publishedAt: "2026-09-24 14:51:29"
 summary: "从编程与开源出发，记录热爱、创作与自我安慰，以及那些作出选择以后仍然存在的问题。"

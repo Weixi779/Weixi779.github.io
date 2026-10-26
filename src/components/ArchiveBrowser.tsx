@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type MouseEvent, type RefObject } from 'react';
 import { flushSync } from 'react-dom';
+import PostTitle from './PostTitle';
 import {
   ALL_CATEGORIES,
   filterArchivePosts,
@@ -276,7 +277,7 @@ function ArchiveResults({ years, onReset }: ArchiveResultsProps) {
                   className="archive-item"
                   style={{ viewTransitionName: `archive-${post.slug}` }}
                 >
-                  <a className="archive-item__link" href={post.href}>{title}</a>
+                  <a className="archive-item__link" href={post.href}><PostTitle title={title} recommended={post.recommended} /></a>
                   {post.tags.map(tag => <span className="archive-item__tag" key={tag}>
                     <span className="archive-item__dot" aria-hidden="true" />{tag}
                   </span>)}

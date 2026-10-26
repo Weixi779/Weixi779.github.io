@@ -1,6 +1,7 @@
 // Created by weixi on 2026/10/25.
 
 import '../styles/home-recent-posts.css';
+import PostTitle from './PostTitle';
 
 export interface HomePost {
   href: string;
@@ -8,6 +9,7 @@ export interface HomePost {
   category: string;
   publishedAt: string;
   summary: string;
+  recommended?: boolean;
 }
 
 export default function HomeRecentPosts({ posts }: { posts: HomePost[] }) {
@@ -35,7 +37,7 @@ export default function HomeRecentPosts({ posts }: { posts: HomePost[] }) {
                 <span className="home-recent-posts__dot" aria-hidden="true" />
                 <span className="home-recent-posts__category">{post.category}</span>
               </div>
-              <h3 className="home-recent-posts__title"><a href={post.href}>{title}</a></h3>
+              <h3 className="home-recent-posts__title"><a href={post.href}><PostTitle title={title} recommended={post.recommended} /></a></h3>
               <p className="home-recent-posts__intro">{post.summary}</p>
             </article>
           </li>;

@@ -36,6 +36,16 @@ function articleTitles() {
 }
 
 describe('ArchiveBrowser', () => {
+  it('keeps the recommendation attached to its title through filtering', async () => {
+    const user = userEvent.setup();
+    render(<ArchiveBrowser posts={posts.map((post, index) => ({ ...post, recommended: index === 0 }))} categories={categories} />);
+    expect(screen.getAllByRole('img', { name: '作者推荐' })).toHaveLength(1);
+    expect(screen.getByRole('img', { name: '作者推荐' }).closest('a')).toHaveAttribute('href', posts[0].href);
+    await user.type(searchInput(), '网络图片');
+    expect(screen.queryByRole('img', { name: '作者推荐' })).toBeNull();
+    await user.clear(searchInput());
+    expect(screen.getByRole('img', { name: '作者推荐' }).closest('a')).toHaveAttribute('href', posts[0].href);
+  });
   it('renders the full archive grouped by year with working article links', () => {
     renderArchive();
 

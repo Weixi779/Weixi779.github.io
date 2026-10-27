@@ -6,7 +6,6 @@ interface HomeNote {
   title: string;
   summary: string;
   publishedAt: string;
-  heavy: boolean;
   recommended?: boolean;
 }
 
@@ -25,7 +24,7 @@ const formatDate = (value: string) => value.replaceAll('-', ' / ');
   </header>
   <ol class="home-notes__list" role="list">
     {notes.map((note) => (
-      <li class:list={['home-notes__item', { 'home-notes__item--heavy': note.heavy }]}>
+      <li class="home-notes__item">
         <time class="home-notes__date" datetime={note.publishedAt}>{formatDate(note.publishedAt)}</time>
         <h3 class="home-notes__title"><a href={note.href}><PostTitle title={note.title} recommended={note.recommended} /></a></h3>
         {note.summary && <p class="home-notes__intro">{note.summary}</p>}
@@ -115,19 +114,6 @@ const formatDate = (value: string) => value.replaceAll('-', ' / ');
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
     line-clamp: 2;
-  }
-
-  .home-notes__item--heavy .home-notes__title {
-    margin-top: 8px;
-    font-size: 23px;
-    line-height: 1.55;
-  }
-
-  .home-notes__item--heavy .home-notes__intro {
-    margin-top: 8px;
-    font-size: 13px;
-    -webkit-line-clamp: 3;
-    line-clamp: 3;
   }
 
   .home-notes a:focus-visible {

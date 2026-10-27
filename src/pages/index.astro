@@ -23,8 +23,6 @@ const recentNotes = notes.slice(0, 4).map(post => ({
   title: post.data.title,
   summary: post.data.summary || getPostExcerpt(post, 120),
   publishedAt: getPostDate(post),
-  // Give longer notes more typographic weight without displaying their cover.
-  heavy: (post.body?.length ?? 0) > 800,
   recommended: post.data.recommended,
 }));
 ---

@@ -12,6 +12,7 @@ const requiredRoutes = [
   '/',
   '/404.html',
   '/about/',
+  '/about/timeline/',
   '/archive/',
   '/fonts/',
   ...legacyPaginationRoutes,
@@ -208,10 +209,24 @@ if (!existsSync(distRoot)) {
     if (legacyPaginationRoutes.some(route => htmlPage === routeOutputPath(route))) continue;
     const page = new JSDOM(html);
     const document = page.window.document;
-    const utilityPage = htmlPage === routeOutputPath('/fonts/') || htmlPage === routeOutputPath('/404.html');
+    const timelinePage = htmlPage === routeOutputPath('/about/timeline/');
+    const bannerlessPage = timelinePage || htmlPage === routeOutputPath('/fonts/') || htmlPage === routeOutputPath('/404.html');
+    if (timelinePage && (!document.querySelector('.life-timeline h1') || !document.querySelector('.life-timeline')?.closest('astro-island[client="load"]'))) {
+      fail('timeline must server-render its heading and hydrate as a React island');
+    }
+    if (htmlPage === routeOutputPath('/about/') && !document.querySelector('.site-banner a[href="/about/timeline/"]')) {
+      fail('about banner must link to the timeline');
+    }
+    if (timelinePage) {
+      const nodes = [...document.querySelectorAll('.life-timeline [data-story]')];
+      if (!nodes.length || new Set(nodes.map(node => node.dataset.story)).size !== nodes.length) fail('timeline must render distinct curated story entries');
+      if (document.querySelector('[data-story="the-echo-that-never-came"]')?.getAttribute('data-level') !== 'large') fail('Echo must remain a large independent timeline story');
+      const expectedLinks = new Set(postPages.map(path => `/posts/${path.split('/').at(-2)}/`));
+      for (const link of document.querySelectorAll('.story-label a')) if (!expectedLinks.has(link.getAttribute('href'))) fail('timeline record links must resolve to published articles');
+    }
     const banners = document.querySelectorAll('main .site-banner');
-    if (banners.length !== (utilityPage ? 0 : 1)) {
-      fail(`expected ${utilityPage ? 'no' : 'one shared'} banner in ${htmlPage}`);
+    if (banners.length !== (bannerlessPage ? 0 : 1)) {
+      fail(`expected ${bannerlessPage ? 'no' : 'one shared'} banner in ${htmlPage}`);
     }
     const banner = banners[0];
     if (banner) {

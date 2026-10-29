@@ -1,0 +1,9 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getPublishedPosts, getPostDate, getPostExcerpt } from '../../utils/posts';
+import LifeTimeline from '../../components/timeline/LifeTimeline';
+const articles = (await getPublishedPosts()).map(post => ({ slug: post.data.slug, date: getPostDate(post), title: post.data.title, excerpt: getPostExcerpt(post) })).sort((a, b) => a.date.localeCompare(b.date));
+---
+<BaseLayout title="一路走来" description="经历、作品，以及当时的记录。">
+  <LifeTimeline articles={articles} client:load />
+</BaseLayout>

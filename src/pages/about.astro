@@ -20,7 +20,9 @@ const metaDescription = about.data.description?.replace(/\s*\n\s*/gu, ' ');
 <BaseLayout title={about.data.title} description={metaDescription} image={heroImage}>
   <div class="about-banner">
     <SiteBanner title={about.data.title} summary={about.data.description} image={heroImage}
-      avatar={{ src: '/images/avatar.webp', alt: '伟兮的头像' }} />
+      avatar={{ src: '/images/avatar.webp', alt: '伟兮的头像' }}>
+      <a class="timeline-entry" href="/about/timeline/">一路走来 ↗</a>
+    </SiteBanner>
   </div>
   <div class="content-container about-body">
     <article class="prose prose--page">
@@ -30,6 +32,9 @@ const metaDescription = about.data.description?.replace(/\s*\n\s*/gu, ' ');
 </BaseLayout>
 
 <style>
+  .timeline-entry { display: inline-block; margin-top: 20px; font-size: 13px; text-decoration: none; }
+  .timeline-entry:hover { text-decoration: underline; text-underline-offset: 5px; }
+  .timeline-entry:focus-visible { outline: 2px solid var(--color-accent-primary); outline-offset: 5px; }
   .about-banner :global(.site-banner__scene) {
     width: 70%;
     background-position: center top;

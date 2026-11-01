@@ -1,10 +1,12 @@
 // @vitest-environment jsdom
 // Created by weixi on 2026/10/28.
 import '@testing-library/jest-dom/vitest';
-import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { renderToStaticMarkup } from 'react-dom/server';
+import { act, cleanup, fireEvent, render, screen, within } from '@testing-library/react';
 import { afterEach, expect, it, vi } from 'vitest';
 import { periods } from '../src/components/timeline/data';
 import LifeTimeline from '../src/components/timeline/LifeTimeline';
+import ArticlePreview from '../src/components/timeline/ArticlePreview';
 
 // Articles are routes; experience spans above remain dialog entries.
 const articles = [
@@ -18,7 +20,7 @@ const articles = [
   { slug: 'observer', date: '2026-07-04', title: '旁观者' },
 ];
 
-afterEach(() => { cleanup(); vi.unstubAllGlobals(); });
+afterEach(() => { cleanup(); vi.unstubAllGlobals(); vi.useRealTimers(); });
 it('previews article prose without replacing its direct link, switches previews, and dismisses outside', () => {
   Object.defineProperty(HTMLElement.prototype, 'clientWidth', { configurable: true, get: () => 1200 });
   vi.stubGlobal('ResizeObserver', class { observe() {} disconnect() {} });
@@ -53,18 +55,22 @@ it('opens an event, returns to the canvas, and releases its observer on unmount'
   Object.defineProperty(HTMLElement.prototype, 'clientWidth', { configurable: true, get: () => 1200 });
   Object.defineProperty(HTMLElement.prototype, 'clientHeight', { configurable: true, get: () => 600 });
   const view = render(<LifeTimeline articles={articles} />);
-  expect(screen.getByRole('button', { name: /碰爪 · iOS13/ })).toBeVisible();
-  expect(screen.getByRole('button', { name: /7850 · Unity2D2022.03/ })).toBeVisible();
-  fireEvent.click(screen.getByRole('button', { name: /第一份工作2021.11/ }));
-  expect(screen.getByRole('dialog')).toHaveAttribute('open');
-  expect(screen.getByRole('link', { name: /三年阶段总结/ })).toHaveAttribute('href', '/posts/developer-journey-year-3/');
-  fireEvent.click(screen.getByRole('button', { name: /回到刚才的时间/ }));
+  expect(screen.queryByRole('button', { name: /碰爪 · iOS13/ })).toBeNull();
+  expect(screen.queryByRole('button', { name: /7850 · Unity2D2022.03/ })).toBeNull();
+  fireEvent.click(screen.getByRole('button', { name: /天津 · 云账户2021.11/ }));
+  expect(screen.getByRole('dialog')).toBeVisible();
+  expect(screen.getByRole('dialog').querySelectorAll('details')).toHaveLength(4);
+  expect(within(screen.getByRole('dialog')).getByText('7850 · Unity2D')).toBeInTheDocument();
+  fireEvent.wheel(screen.getByRole('dialog'), { deltaY: 120 });
+  expect(screen.getByRole('dialog')).toBeVisible();
+  expect(within(screen.getByRole('dialog')).getByRole('link', { name: /三年阶段总结/ })).toHaveAttribute('href', '/posts/developer-journey-year-3/');
+  fireEvent.click(screen.getByRole('button', { name: /天津 · 云账户2021.11/ }));
   expect(screen.queryByRole('dialog')).toBeNull();
   view.unmount();
   expect(disconnect).toHaveBeenCalledOnce();
 });
 
-it('navigates by year and keyboard, filters spans, and supports anchored zoom', () => {
+it('navigates by year and keyboard and supports anchored zoom without a project filter', () => {
   vi.stubGlobal('ResizeObserver', class { observe() {} disconnect() {} });
   vi.stubGlobal('matchMedia', () => ({ matches: true }));
   const frames: FrameRequestCallback[] = [];
@@ -78,18 +84,24 @@ it('navigates by year and keyboard, filters spans, and supports anchored zoom', 
   fireEvent.keyDown(canvas, { key: 'ArrowRight' });
   act(() => { frames.shift()?.(0); });
   expect(screen.getByLabelText('当前年份')).not.toHaveTextContent('2022 / 07');
+  const beforeScroll = screen.getByLabelText('当前年份').textContent;
+  const queuedFrames = frames.length;
+  for (const deltaX of [0, 10]) {
+    const vertical = new WheelEvent('wheel', { deltaX, deltaY: 80, cancelable: true });
+    act(() => { canvas.dispatchEvent(vertical); });
+    expect(vertical.defaultPrevented).toBe(false);
+    expect(frames).toHaveLength(queuedFrames);
+    expect(screen.getByLabelText('当前年份').textContent).toBe(beforeScroll);
+  }
+  const horizontal = new WheelEvent('wheel', { deltaX: 80, deltaY: 10, cancelable: true });
+  act(() => { canvas.dispatchEvent(horizontal); });
+  expect(horizontal.defaultPrevented).toBe(true);
   const beforeZoom = screen.getByLabelText('可见时间跨度').textContent;
   const zoom = new WheelEvent('wheel', { ctrlKey: true, deltaY: -50, clientX: 600, cancelable: true });
   act(() => { canvas.dispatchEvent(zoom); });
   expect(zoom.defaultPrevented).toBe(true);
   expect(screen.getByLabelText('可见时间跨度').textContent).not.toBe(beforeZoom);
-  fireEvent.click(screen.getByRole('button', { name: '工作项目' }));
-  act(() => { frames.shift()?.(0); });
-  expect(screen.getByRole('button', { name: /碰爪 · iOS13/ })).toBeVisible();
-  expect(screen.queryByRole('button', { name: /大学/ })).toBeNull();
-  expect(screen.getByRole('button', { name: '工作项目' })).toHaveAttribute('aria-pressed', 'true');
-  fireEvent.click(screen.getByRole('button', { name: '全部' }));
-  expect(screen.getByRole('button', { name: /大学/ })).toBeVisible();
+  expect(screen.queryByRole('button', { name: '工作项目' })).toBeNull();
 });
 
 it('pans without accidentally opening the dragged event and cancels pending work on unmount', () => {
@@ -103,7 +115,7 @@ it('pans without accidentally opening the dragged event and cancels pending work
   HTMLElement.prototype.setPointerCapture = vi.fn();
   const view = render(<LifeTimeline articles={articles} />);
   const canvas = screen.getByLabelText('时间画布：滚动或拖动浏览，方向键移动');
-  const eventButton = screen.getByRole('button', { name: /第一份工作2021.11/ });
+  const eventButton = screen.getByRole('button', { name: /天津 · 云账户2021.11/ });
   fireEvent.pointerDown(eventButton, { button: 0, clientX: 600 });
   fireEvent.pointerMove(canvas, { clientX: 700 });
   fireEvent.pointerUp(canvas);
@@ -111,11 +123,11 @@ it('pans without accidentally opening the dragged event and cancels pending work
   expect(screen.queryByRole('dialog')).toBeNull();
   act(() => { frames.shift()?.(0); });
   expect(screen.getByLabelText('当前年份')).not.toHaveTextContent('2022 / 10');
-  fireEvent.wheel(canvas, { deltaY: 80 });
+  fireEvent.wheel(canvas, { deltaX: 80 });
   expect(frames).toHaveLength(1);
   view.unmount();
   expect(cancel).toHaveBeenCalled();
-  fireEvent.wheel(canvas, { deltaY: 80 });
+  fireEvent.wheel(canvas, { deltaX: 80 });
   expect(frames).toHaveLength(1);
 });
 
@@ -163,6 +175,9 @@ it('offers zoom controls and keeps all series members directly reachable', () =>
   fireEvent.click(screen.getByRole('button', { name: '跳转到 2024 年' }));
   act(() => { frames.shift()?.(0); });
   fireEvent.click(screen.getByRole('button', { name: '选中《沙盒建造游戏设计》' }));
+  act(() => { frames.shift()?.(0); });
+  expect(screen.queryByRole('link', { name: /相机控制/ })).toBeNull();
+  fireEvent.click(screen.getByRole('button', { name: '沙盒建造游戏设计 2 篇' }));
   expect(screen.getByRole('link', { name: /相机控制/ })).toHaveAttribute('href', '/posts/unity-sandbox-building-camera-control/');
   expect(screen.getByRole('link', { name: /命令模式/ })).toHaveAttribute('href', '/posts/unity-sandbox-building-command-pattern/');
   const before = screen.getByLabelText('可见时间跨度').textContent;
@@ -171,7 +186,7 @@ it('offers zoom controls and keeps all series members directly reachable', () =>
   expect(screen.getByLabelText('可见时间跨度').textContent).not.toBe(before);
   expect(screen.getByLabelText('当前年份').textContent).toBe(dateBefore);
   fireEvent.click(screen.getByRole('button', { name: '重置' }));
-  expect(screen.getByLabelText('可见时间跨度')).toHaveTextContent(before!);
+  expect(Number.parseFloat(screen.getByLabelText('可见时间跨度').textContent!)).toBeGreaterThan(Number.parseFloat(before!));
 });
 
 it('handles two-finger pinch with the same scale controls and releases touch listeners', () => {
@@ -255,7 +270,7 @@ it('pans a selected mobile title completely into view with room for emphasis', (
   const left = Number.parseFloat(story.style.left);
   expect(left).toBeGreaterThanOrEqual(23.9);
   expect(left + Number.parseFloat(label.style.width) * 1.065).toBeLessThanOrEqual(366.1);
-  expect(screen.getByLabelText('时间画布：滚动或拖动浏览，方向键移动').style.height).toBe('652px');
+  expect(screen.getByLabelText('时间画布：滚动或拖动浏览，方向键移动').style.height).toBe('714px');
   Object.defineProperty(HTMLElement.prototype, 'clientWidth', { configurable: true, get: () => 1200 });
 });
 
@@ -327,4 +342,174 @@ it('replays on refresh even when a previous document already played', () => {
   expect(screen.getByRole('region', { name: '一路走来' })).toHaveAttribute('inert');
   navigation.mockRestore();
   sessionStorage.clear();
+});
+
+it.each([
+  ['unity-series', '沙盒建造游戏设计', 2024, [
+    ['unity-sandbox-building-camera-control', '相机控制'],
+    ['unity-sandbox-building-command-pattern', '命令模式'],
+    ['unity-sandbox-building-state-pattern', '状态模式'],
+    ['unity-sandbox-building-search-algorithms', '搜索算法'],
+  ]],
+  ['cache-images', '缓存与网络图片', 2026, [
+    ['caffeine-moka-cache-notes', '缓存研究'], ['ios-network-image-survey', '网络图片'],
+  ]],
+] as const)('shows %s members together in one stable directory', (_id, title, year, members) => {
+  Object.defineProperty(HTMLElement.prototype, 'clientWidth', { configurable: true, get: () => 1200 });
+  vi.stubGlobal('ResizeObserver', class { observe() {} disconnect() {} });
+  vi.stubGlobal('matchMedia', () => ({ matches: true }));
+  vi.stubGlobal('PointerEvent', MouseEvent);
+  const frames: FrameRequestCallback[] = [];
+  vi.stubGlobal('requestAnimationFrame', (callback: FrameRequestCallback) => { frames.push(callback); return frames.length; });
+  vi.stubGlobal('cancelAnimationFrame', vi.fn());
+  render(<LifeTimeline articles={members.map(([slug, title]) => ({ slug, title, date: `${year}-04-14` }))} />);
+  fireEvent.click(screen.getByRole('button', { name: `跳转到 ${year} 年` }));
+  act(() => { frames.shift()?.(0); });
+  fireEvent.click(screen.getByRole('button', { name: `选中《${title}》` }));
+  act(() => { frames.shift()?.(0); });
+  const trigger = screen.getByRole('button', { name: `${title} ${members.length} 篇` });
+  expect(screen.queryByRole('link')).toBeNull();
+  fireEvent.pointerEnter(trigger);
+  const directory = screen.getByRole('region', { name: `${title}系列目录` });
+  expect(directory.querySelectorAll('a')).toHaveLength(members.length);
+  for (const [slug, name] of members) {
+    const link = screen.getByRole('link', { name: new RegExp(name) });
+    expect(link).toHaveAttribute('href', `/posts/${slug}/`);
+    fireEvent.pointerEnter(link);
+    expect(screen.getByRole('region', { name: `${title}系列目录` })).toBe(directory);
+  }
+  expect(trigger).toHaveAttribute('aria-expanded', 'true');
+  fireEvent.click(document.body);
+  expect(screen.queryByRole('region', { name: `${title}系列目录` })).toBeNull();
+  fireEvent.click(trigger);
+  expect(screen.getByRole('region', { name: `${title}系列目录` })).toBeInTheDocument();
+  fireEvent.keyDown(document, { key: 'Escape' });
+  expect(trigger).toHaveAttribute('aria-expanded', 'false');
+});
+
+it('places a tall series directory beside its trigger instead of covering the opening click', () => {
+  vi.stubGlobal('innerWidth', 1280);
+  vi.stubGlobal('innerHeight', 720);
+  vi.stubGlobal('ResizeObserver', class { observe() {} disconnect() {} });
+  const trigger = document.createElement('button');
+  document.body.append(trigger);
+  const bounds = (left: number, top: number, width: number, height: number) => ({ left, top, width, height, right: left + width, bottom: top + height, x: left, y: top, toJSON() {} });
+  const rect = vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(function (this: HTMLElement) {
+    return this === trigger ? bounds(300, 400, 260, 40) : bounds(0, 0, 450, 350);
+  });
+  const offset = vi.spyOn(HTMLElement.prototype, 'offsetWidth', 'get').mockReturnValue(450);
+  try {
+    render(<ArticlePreview anchor={trigger} onDismiss={() => {}} story={{ id: 'series', title: '系列', date: '2024-04-14', endDate: '2024-05-04', level: 'medium', intro: '导读', related: [], articles: articles.slice(0, 2) }} />);
+    const bubble = screen.getByRole('region', { name: '系列系列目录' });
+    const left = Number.parseFloat(bubble.style.left), top = Number.parseFloat(bubble.style.top);
+    expect(left + 450 <= 300 || left >= 560 || top + 350 <= 400 || top >= 440).toBe(true);
+    expect(top).toBeGreaterThanOrEqual(72);
+    expect(top + 350).toBeLessThanOrEqual(704);
+  } finally {
+    rect.mockRestore(); offset.mockRestore(); trigger.remove();
+  }
+});
+
+it('fits the whole elastic timeline when zooming out from the last year', () => {
+  vi.useFakeTimers();
+  vi.setSystemTime(new Date('2026-10-31T00:00:00Z'));
+  Object.defineProperty(HTMLElement.prototype, 'clientWidth', { configurable: true, get: () => 1200 });
+  vi.stubGlobal('ResizeObserver', class { observe() {} disconnect() {} });
+  vi.stubGlobal('matchMedia', () => ({ matches: true }));
+  const frames: FrameRequestCallback[] = [];
+  vi.stubGlobal('requestAnimationFrame', (callback: FrameRequestCallback) => { frames.push(callback); return frames.length; });
+  vi.stubGlobal('cancelAnimationFrame', vi.fn());
+  const view = render(<LifeTimeline articles={articles} />);
+  fireEvent.click(screen.getByRole('button', { name: '跳转到 2026 年' }));
+  act(() => { frames.shift()?.(0); });
+  for (let i = 0; i < 20; i++) fireEvent.click(screen.getByRole('button', { name: '缩小时间轴' }));
+  expect(screen.getByLabelText('可见时间跨度')).toHaveTextContent('8.8 年');
+  expect(Array.from(view.container.querySelectorAll('.axis-label')).map(el => el.textContent)).toEqual(expect.arrayContaining(['2018', '2026']));
+  expect(screen.queryByRole('link', { name: /旁观者/ })).toBeNull();
+  fireEvent.click(screen.getByRole('button', { name: '跳转到 2026 年' }));
+  act(() => { frames.shift()?.(0); });
+  expect(screen.getByLabelText('可见时间跨度')).not.toHaveTextContent('9.0 年');
+});
+
+it('keeps previews dismissed while titles move during a zoom', () => {
+  sessionStorage.setItem('life-timeline:entered-v2', '1');
+  vi.stubGlobal('ResizeObserver', class { observe() {} disconnect() {} });
+  vi.stubGlobal('matchMedia', () => ({ matches: false }));
+  vi.stubGlobal('requestAnimationFrame', () => 1);
+  vi.stubGlobal('cancelAnimationFrame', vi.fn());
+  vi.stubGlobal('PointerEvent', MouseEvent);
+  render(<LifeTimeline articles={articles.map(a => ({ ...a, excerpt: a.title }))} />);
+  fireEvent.click(screen.getByRole('button', { name: '放大时间轴' }));
+  fireEvent.pointerEnter(screen.getByRole('button', { name: '选中《甚至没有机会告别》' }));
+  expect(screen.queryByRole('link', { name: /^预览/ })).toBeNull();
+  sessionStorage.clear();
+});
+
+it('updates the current end across New Year while retaining the reading position', () => {
+  vi.useFakeTimers();
+  vi.setSystemTime(new Date('2026-12-31T15:59:59Z'));
+  vi.stubGlobal('ResizeObserver', class { observe() {} disconnect() {} });
+  vi.stubGlobal('matchMedia', () => ({ matches: true }));
+  Object.defineProperty(HTMLElement.prototype, 'clientWidth', { configurable: true, get: () => 1200 });
+  const { unmount } = render(<LifeTimeline articles={articles} initialDate="2026-10-31" />);
+  const position = screen.getByLabelText('当前年份').textContent;
+  expect(screen.queryByRole('button', { name: '跳转到 2027 年' })).toBeNull();
+  act(() => { vi.advanceTimersByTime(1001); });
+  expect(screen.getByRole('button', { name: '跳转到 2027 年' })).toBeInTheDocument();
+  expect(screen.getByLabelText('当前年份')).toHaveTextContent(position!);
+  unmount();
+  expect(vi.getTimerCount()).toBe(0);
+});
+
+
+it('keeps hand-drawn SVG paths identical across insignificant math rounding differences', () => {
+  const paths = () => {
+    const html = renderToStaticMarkup(<LifeTimeline articles={articles} initialDate="2026-10-31" />);
+    const document = new DOMParser().parseFromString(html, 'text/html');
+    return Array.from(document.querySelectorAll('.branch-main'), path => path.getAttribute('d'));
+  };
+  const server = paths();
+  expect(server.length).toBeGreaterThan(0);
+  const sin = Math.sin;
+  const alternateEngine = vi.spyOn(Math, 'sin').mockImplementation(value => sin(value) + Number.EPSILON);
+  try {
+    expect(paths()).toEqual(server);
+  } finally {
+    alternateEngine.mockRestore();
+  }
+});
+
+
+it('guides exploration without previewing an unreadable title', () => {
+  vi.stubGlobal('ResizeObserver', class { observe() {} disconnect() {} });
+  vi.stubGlobal('matchMedia', () => ({ matches: true }));
+  vi.stubGlobal('PointerEvent', MouseEvent);
+  render(<LifeTimeline articles={articles.map((a, i) => ({ ...a, date: `2022-07-${String(i + 1).padStart(2, '0')}`, excerpt: a.title }))} />);
+  const marker = screen.getByRole('button', { name: '选中《甚至没有机会告别》', hidden: true });
+  expect(marker.closest('.story')?.querySelector('.story-label')).toHaveAttribute('aria-hidden', 'true');
+  fireEvent.pointerEnter(marker);
+  expect(screen.queryByRole('link', { name: /^预览/ })).toBeNull();
+  expect(screen.queryByText('点击展开')).toBeNull();
+  expect(screen.queryByText(/条记录未展开/)).toBeNull();
+  const story = marker.closest<HTMLElement>('.story')!;
+  const before = parseFloat(story.style.getPropertyValue('--stem'));
+  fireEvent.pointerMove(screen.getByLabelText('时间画布：滚动或拖动浏览，方向键移动'), {
+    clientX: parseFloat(story.style.left), clientY: parseFloat(story.style.top) - 20,
+  });
+  expect(parseFloat(story.style.getPropertyValue('--stem'))).toBeGreaterThan(before);
+  expect(screen.queryByRole('link', { name: /^预览/ })).toBeNull();
+});
+
+it('leaves a recognizable stem below a measured multi-line introduction', () => {
+  vi.stubGlobal('ResizeObserver', class { observe() {} disconnect() {} });
+  vi.stubGlobal('matchMedia', () => ({ matches: true }));
+  const height = vi.spyOn(HTMLElement.prototype, 'offsetHeight', 'get').mockImplementation(function (this: HTMLElement) { return this.tagName === 'P' ? 72 : 0; });
+  try {
+    const view = render(<LifeTimeline articles={articles.filter(a => ['year-2021-afterword', 'year-2022-afterword'].includes(a.slug))} />);
+    const story = view.container.querySelector<HTMLElement>('[data-story="year-2022-afterword"]')!;
+    const stem = parseFloat(story.style.getPropertyValue('--stem'));
+    const bottom = parseFloat(story.style.getPropertyValue('--label-bottom'));
+    expect(stem).toBeGreaterThanOrEqual(48);
+    expect(bottom - stem).toBeGreaterThanOrEqual(72 + 10 + 14);
+  } finally { height.mockRestore(); }
 });

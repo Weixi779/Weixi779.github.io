@@ -28,3 +28,15 @@ it('keeps cross-year relationships at their publication dates without inventing 
   ]);
   expect(stories.map(story => story.id)).toEqual(['image-compression-fundamentals', 'observer', 'wicompress-2-architecture-ai']);
 });
+
+it('rejects missing references, duplicate membership and malformed editorial choices at publication', async () => {
+  const { validateTimelineConfig } = await import('../src/components/timeline/timeline-config');
+  const posts = [{ slug: 'a', title: 'A', date: '2026-01-01' }];
+  const story = { id: 'a', level: 'large', intro: '导读' };
+  expect(() => validateTimelineConfig({ stories: [story] }, posts)).not.toThrow();
+  expect(() => validateTimelineConfig({ stories: [{ ...story, id: 'missing' }] }, posts)).toThrow(/missing/);
+  expect(() => validateTimelineConfig({ stories: [story, story] }, posts)).toThrow(/重复/);
+  expect(() => validateTimelineConfig({ stories: [{ ...story, level: 'larg' }] }, posts)).toThrow();
+  expect(() => validateTimelineConfig({ stories: [{ ...story, related: ['missing'] }] }, posts)).toThrow(/missing/);
+  expect(() => validateTimelineConfig({ stories: [story, { ...story, id: 'series', title: '系列', members: ['a', 'b'] }] }, [...posts, { ...posts[0], slug: 'b' }])).toThrow(/重复/);
+});

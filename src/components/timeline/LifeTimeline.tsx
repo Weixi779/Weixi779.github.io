@@ -70,13 +70,16 @@ export default function LifeTimeline({ articles, initialDate = timelineToday() }
   };
   const [activeArticle, setActiveArticle] = useState<string | null>(null);
   const [hoveredArticle, setHoveredArticle] = useState<string | null>(null);
-  const [preview, setPreview] = useState<{ story: TimelineStory; anchor: HTMLElement } | null>(null);
+  const [preview, setPreview] = useState<{ story: TimelineStory; anchor: HTMLElement; focusOnOpen?: boolean } | null>(null);
   const dismissPreview = useCallback(() => setPreview(null), []);
-  function showPreview(story: TimelineStory, anchor: HTMLElement) {
-    if ((story.articles.length === 1 && !story.articles[0].excerpt) || dragging || frame.current || entrancePlaying.current) return;
+  function showPreview(story: TimelineStory, anchor: HTMLElement, focusOnOpen = false) {
+    if (selected || (story.articles.length === 1 && !story.articles[0].excerpt) || dragging || frame.current || entrancePlaying.current) return;
     const label = layout.labels.find(label => label.story.id === story.id);
     if (!label || storyVisibility(label, scaleRef.current, viewBounds.current.minScale).title <= .7) return;
-    setPreview(current => current?.story.id === story.id ? current : { story, anchor });
+    if (focusOnOpen && preview?.story.id === story.id) {
+      document.getElementById('timeline-preview')?.querySelector<HTMLElement>('a')?.focus({ preventScroll: true });
+    }
+    setPreview(current => current?.story.id === story.id && !focusOnOpen ? current : { story, anchor, focusOnOpen });
   }
   const [hover, setHover] = useState<number | null>(null);
   const [pointerY, setPointerY] = useState<number | null>(null);
@@ -161,7 +164,7 @@ export default function LifeTimeline({ articles, initialDate = timelineToday() }
     setActiveArticle(id);
     const label = layout.labels.find(label => label.story.id === id);
     if (!label) return;
-    if (storyVisibility(label, scaleRef.current, viewBounds.current.minScale).title < .7) {
+    if (storyVisibility(label, scaleRef.current, viewBounds.current.minScale).title <= .7) {
       scaleTarget.current = Math.min(20000, Math.max(scaleRef.current * 1.65, (label.clearance + 85) / label.gap, viewBounds.current.minScale * 4.2));
       target.current = clamp(label.position + 100 / scaleTarget.current, scaleTarget.current);
       zoomAnchor.current = null;
@@ -169,7 +172,6 @@ export default function LifeTimeline({ articles, initialDate = timelineToday() }
       animateView();
       return;
     }
-    if (!mobile) return;
     const left = (label.position - centerRef.current) * scaleRef.current + width / 2;
     const right = left + labelWidthFor(label.width) * 1.065;
     const shift = left < 24 ? left - 24 : right > width - 24 ? right - (width - 24) : 0;
@@ -291,6 +293,7 @@ export default function LifeTimeline({ articles, initialDate = timelineToday() }
       if (event.key === 'Escape') { setSelected(null); anchor.focus({ preventScroll: true }); }
     };
     place();
+    panel.querySelector<HTMLElement>('.reader-prose')?.focus({ preventScroll: true });
     panel.addEventListener('toggle', place, true);
     window.addEventListener('resize', place);
     window.addEventListener('scroll', place, true);
@@ -397,6 +400,8 @@ export default function LifeTimeline({ articles, initialDate = timelineToday() }
         const length = shortLength + (labelBottom - introSpace - 14 - shortLength) * titleOpacity + proximity * 22;
         const markerOpacity = smooth(1.03, 1.5, scale / minScale);
         const readable = titleOpacity > .7;
+        const labelInView = left >= 0 && left + labelWidthFor(labelWidth) * 1.065 <= width;
+        const markerInView = left >= 18 && left <= width - 18;
         return <div key={story.id} hidden={hidden} data-story={story.id} data-level={story.level}
           className={`story story-${story.level}${!readable ? ' story-collapsed' : ''}${proximity > 0 ? ' story-nearby' : ''}${selectedStory ? ' selected' : ''}${hoveredArticle === story.id ? ' hovered' : ''}`}
           onPointerEnter={event => {
@@ -410,17 +415,23 @@ export default function LifeTimeline({ articles, initialDate = timelineToday() }
           }}
           onPointerLeave={() => setHoveredArticle(null)}
           style={{ left, top: axis, '--stem': `${length}px`, '--label-bottom': `${labelBottom}px`, '--title-opacity': titleOpacity, '--marker-opacity': markerOpacity } as CSSProperties}>
-          <button className="story-marker" tabIndex={markerOpacity > .7 ? 0 : -1} aria-hidden={markerOpacity < .1} style={{ pointerEvents: markerOpacity < .1 ? 'none' : undefined }} aria-label={`选中《${story.title}》`} aria-pressed={activeArticle === story.id}
+          <button className="story-marker" tabIndex={markerOpacity > .7 && markerInView ? 0 : -1} aria-hidden={markerOpacity < .1} style={{ pointerEvents: markerOpacity < .1 ? 'none' : undefined }} aria-label={`选中《${story.title}》`} aria-pressed={activeArticle === story.id}
             onClick={() => selectStory(story.id)} onFocus={event => { if (event.currentTarget.matches(':focus-visible')) selectStory(story.id); }}>
             <span className="story-stem" />
           </button>
-          <div className={`story-label${readable ? ' label-visible' : ''}`} inert={!readable} aria-hidden={!readable} style={{ left: 0, width: labelWidthFor(labelWidth) }}
+          <div className={`story-label${readable ? ' label-visible' : ''}`} inert={titleOpacity <= .01} aria-hidden={!readable} style={{ left: 0, width: labelWidthFor(labelWidth) }}
+            onClickCapture={event => { if (!readable) { event.preventDefault(); event.stopPropagation(); selectStory(story.id); } }}
             onPointerEnter={() => setHover(left)} onFocus={() => setActiveArticle(story.id)}>
             <span className="date">{story.date.replaceAll('-', '.')}{story.articles.length > 1 && ` — ${story.endDate.replaceAll('-', '.')}`}</span>
-            {story.articles.length === 1 ? <h2><a href={`/posts/${story.articles[0].slug}/`}
+            {story.articles.length === 1 ? <h2><a tabIndex={readable && labelInView ? 0 : -1} href={`/posts/${story.articles[0].slug}/`}
               onPointerEnter={event => { if (event.pointerType !== 'touch') showPreview(story, event.currentTarget); }}
               onFocus={event => showPreview(story, event.currentTarget)}>{story.title} <span className="read-arrow">↗</span></a></h2>
-              : <h2><button className="series-trigger" aria-expanded={preview?.story.id === story.id}
+              : <h2><button className="series-trigger" tabIndex={readable && labelInView ? 0 : -1} aria-controls={preview?.story.id === story.id ? "timeline-preview" : undefined} aria-expanded={preview?.story.id === story.id}
+                onKeyDown={event => {
+                  if (event.key === 'ArrowDown' || event.key === 'Enter' || event.key === ' ' || (event.key === 'Tab' && !event.shiftKey && preview?.story.id === story.id)) {
+                    event.preventDefault(); showPreview(story, event.currentTarget, true);
+                  }
+                }}
                 onClick={event => showPreview(story, event.currentTarget)}
                 onFocus={event => { if (event.currentTarget.matches(':focus-visible')) showPreview(story, event.currentTarget); }}>
                 {story.title} <span className="group-count">{story.articles.length} 篇</span>
@@ -442,7 +453,7 @@ export default function LifeTimeline({ articles, initialDate = timelineToday() }
       })}
     </div>
     <p className="timeline-hint">年份按内容疏密展开 · 拖动或横向滚动平移 · 双指捏合或 ＋ / − 缩放 · 移入节点查看 · 点标题阅读</p>
-    {preview && layout.labels.some(label => label.story.id === preview.story.id && storyVisibility(label, scale, minScale).title > .7) && <ArticlePreview key={preview.story.id} story={preview.story} anchor={preview.anchor} onDismiss={dismissPreview} />}
+    {preview && !selected && layout.labels.some(label => label.story.id === preview.story.id && storyVisibility(label, scale, minScale).title > .7) && <ArticlePreview key={preview.story.id} story={preview.story} anchor={preview.anchor} focusOnOpen={preview.focusOnOpen} onDismiss={dismissPreview} />}
     {entry && <section key={selected} ref={dialog} id="period-reader" role="dialog" className="reader" aria-labelledby="reading-title">
       <svg className="reader-outline" viewBox="0 0 860 560" preserveAspectRatio="none" aria-hidden="true">
         <path d="M30 8 Q220 1 432 7 T828 8 Q853 10 851 35 L855 513 Q859 547 828 550 Q620 559 420 551 T30 552 Q7 550 9 525 L6 40 Q5 12 30 8Z" />

@@ -379,6 +379,16 @@ it.each([
     expect(screen.getByRole('region', { name: `${title}系列目录` })).toBe(directory);
   }
   expect(trigger).toHaveAttribute('aria-expanded', 'true');
+  fireEvent.keyDown(trigger, { key: 'ArrowDown' });
+  expect(directory.querySelector('a')).toHaveFocus();
+  fireEvent.keyDown(directory.querySelector('a')!, { key: 'Tab', shiftKey: true });
+  expect(trigger).toHaveFocus();
+  expect(screen.queryByRole('region', { name: `${title}系列目录` })).toBeNull();
+  fireEvent.keyDown(trigger, { key: 'ArrowDown' });
+  expect(screen.getByRole('region', { name: `${title}系列目录` }).querySelector('a')).toHaveFocus();
+  fireEvent.keyDown(document, { key: 'Escape' });
+  expect(trigger).toHaveFocus();
+  fireEvent.pointerEnter(trigger);
   fireEvent.click(document.body);
   expect(screen.queryByRole('region', { name: `${title}系列目录` })).toBeNull();
   fireEvent.click(trigger);
@@ -512,4 +522,59 @@ it('leaves a recognizable stem below a measured multi-line introduction', () => 
     expect(stem).toBeGreaterThanOrEqual(48);
     expect(bottom - stem).toBeGreaterThanOrEqual(72 + 10 + 14);
   } finally { height.mockRestore(); }
+});
+
+
+it('keeps previews closed while an experience card is open and focuses its reading area', () => {
+  vi.stubGlobal('ResizeObserver', class { observe() {} disconnect() {} });
+  vi.stubGlobal('matchMedia', () => ({ matches: true }));
+  render(<LifeTimeline articles={articles.map(article => ({ ...article, excerpt: article.title }))} />);
+  const trigger = screen.getByRole('button', { name: /天津 · 云账户2021.11/ });
+  fireEvent.click(trigger);
+  expect(screen.getByLabelText('阶段正文')).toHaveFocus();
+  fireEvent.pointerEnter(screen.getByRole('button', { name: '选中《甚至没有机会告别》' }));
+  expect(screen.queryByRole('link', { name: /^预览/ })).toBeNull();
+  fireEvent.keyDown(document, { key: 'Escape' });
+  expect(trigger).toHaveFocus();
+});
+
+it('removes clipped title links and offscreen markers from the tab order', () => {
+  vi.stubGlobal('ResizeObserver', class { observe() {} disconnect() {} });
+  vi.stubGlobal('matchMedia', () => ({ matches: true }));
+  const { container } = render(<LifeTimeline articles={articles} />);
+  const canvas = container.querySelector('.canvas')!;
+  for (const story of container.querySelectorAll<HTMLElement>('.story:not([hidden])')) {
+    const left = parseFloat(story.style.left);
+    const label = story.querySelector<HTMLElement>('.story-label')!;
+    if (left < 0 || left + parseFloat(label.style.width) * 1.065 > canvas.clientWidth) {
+      expect(label.querySelector('a, button')).toHaveAttribute('tabindex', '-1');
+    }
+    if (left < 18 || left > canvas.clientWidth - 18) {
+      expect(story.querySelector('.story-marker')).toHaveAttribute('tabindex', '-1');
+    }
+  }
+});
+
+
+it('expands a partially revealed title on click without navigating or opening a preview', () => {
+  vi.stubGlobal('ResizeObserver', class { observe() {} disconnect() {} });
+  vi.stubGlobal('matchMedia', () => ({ matches: true }));
+  const frames: FrameRequestCallback[] = [];
+  vi.stubGlobal('requestAnimationFrame', (callback: FrameRequestCallback) => { frames.push(callback); return frames.length; });
+  vi.stubGlobal('cancelAnimationFrame', vi.fn());
+  const { container } = render(<LifeTimeline articles={articles.map(article => ({ ...article, excerpt: article.title }))} />);
+  fireEvent.click(screen.getByRole('button', { name: '缩小时间轴' }));
+  const story = [...container.querySelectorAll<HTMLElement>('.story')].find(element => {
+    const opacity = Number(element.style.getPropertyValue('--title-opacity'));
+    return opacity > 0 && opacity <= .7;
+  });
+  expect(story).toBeDefined();
+  const title = story!.querySelector('a')!;
+  expect(title.closest('[inert]')).toBeNull();
+  const click = new MouseEvent('click', { bubbles: true, cancelable: true });
+  act(() => { title.dispatchEvent(click); });
+  expect(click.defaultPrevented).toBe(true);
+  expect(screen.queryByRole('link', { name: /^预览/ })).toBeNull();
+  act(() => { frames.shift()?.(0); });
+  expect(story).not.toHaveClass('story-collapsed');
 });

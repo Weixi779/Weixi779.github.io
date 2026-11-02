@@ -3,10 +3,11 @@ import { useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import type { TimelineStory } from './curation';
 
-export default function ArticlePreview({ story, anchor, onDismiss }: {
+export default function ArticlePreview({ story, anchor, onDismiss, focusOnOpen = false }: {
   story: TimelineStory;
   anchor: HTMLElement;
   onDismiss: () => void;
+  focusOnOpen?: boolean;
 }) {
   const link = useRef<HTMLElement>(null);
   const [position, setPosition] = useState<{ left: number; top: number } | null>(null);
@@ -52,6 +53,27 @@ export default function ArticlePreview({ story, anchor, onDismiss }: {
       if (bubble.contains(document.activeElement)) anchor.focus({ preventScroll: true });
       onDismiss();
     };
+    // The portal is visually beside its trigger, so Tab should leave it there too.
+    const tabOut = (event: KeyboardEvent) => {
+      if (event.key !== 'Tab') return;
+      const links = Array.from(bubble.querySelectorAll<HTMLElement>('a'));
+      if (event.shiftKey && document.activeElement === links[0]) {
+        event.preventDefault();
+        anchor.focus({ preventScroll: true });
+        onDismiss();
+      } else if (!event.shiftKey && document.activeElement === links.at(-1)) {
+        const next = Array.from(document.querySelectorAll<HTMLElement>('a[href], button, [tabindex]')).find(element =>
+          element.tabIndex >= 0 && !element.matches(':disabled') && !element.closest('[inert], [hidden]') &&
+          !bubble.contains(element) && element.getClientRects().length > 0 &&
+          Boolean(anchor.compareDocumentPosition(element) & Node.DOCUMENT_POSITION_FOLLOWING));
+        if (next) {
+          event.preventDefault();
+          next.focus({ preventScroll: true });
+          onDismiss();
+        }
+      }
+    };
+    bubble.addEventListener('keydown', tabOut);
     place();
     const observer = new ResizeObserver(place);
     observer.observe(bubble);
@@ -60,6 +82,7 @@ export default function ArticlePreview({ story, anchor, onDismiss }: {
     document.addEventListener('click', outside);
     document.addEventListener('keydown', key);
     return () => {
+      bubble.removeEventListener('keydown', tabOut);
       observer.disconnect();
       window.removeEventListener('resize', place);
       window.removeEventListener('scroll', place, true);
@@ -67,6 +90,10 @@ export default function ArticlePreview({ story, anchor, onDismiss }: {
       document.removeEventListener('keydown', key);
     };
   }, [anchor, onDismiss]);
+
+  useLayoutEffect(() => {
+    if (focusOnOpen && position) link.current?.querySelector<HTMLElement>('a')?.focus({ preventScroll: true });
+  }, [focusOnOpen, position !== null]);
 
   const series = story.articles.length > 1;
   const article = story.articles[0];
@@ -85,7 +112,7 @@ export default function ArticlePreview({ story, anchor, onDismiss }: {
   </>;
   const style = { ...position, visibility: position ? 'visible' as const : 'hidden' as const };
   return createPortal(series
-    ? <section ref={element => { link.current = element; }} className="timeline-article-preview series-preview"
+    ? <section id="timeline-preview" ref={element => { link.current = element; }} className="timeline-article-preview series-preview"
         aria-label={`${story.title}系列目录`} style={style}>{content}</section>
     : <a ref={element => { link.current = element; }} className="timeline-article-preview"
         aria-label={`预览《${article.title}》`} href={`/posts/${article.slug}/`} style={style}>{content}</a>, document.body);

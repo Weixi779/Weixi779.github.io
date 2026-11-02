@@ -2,6 +2,7 @@
 // Build-time validation; no schema library is shipped to the timeline island.
 import { z } from 'astro/zod';
 import config from './timeline.json';
+import { entries, type TimelineEntry } from './data';
 import type { TimelineArticle } from './layout';
 
 const slug = z.string().trim().min(1);
@@ -38,4 +39,18 @@ export function validateTimelineConfig(input: unknown, articles: TimelineArticle
   }
   return parsed;
 }
-export const validatePublishedTimeline = (articles: TimelineArticle[]) => validateTimelineConfig(config, articles);
+export function validateEntryLinks(items: Record<string, TimelineEntry>, articles: TimelineArticle[]) {
+  const published = new Set(articles.map(article => article.slug));
+  for (const [id, entry] of Object.entries(items)) {
+    for (const [, slug, status] of entry.links) {
+      if (status !== 'pending' && !published.has(slug)) {
+        throw new Error(`timeline: ${id} 引用了不存在或未发布的文章：${slug}`);
+      }
+    }
+  }
+}
+export function validatePublishedTimeline(articles: TimelineArticle[]) {
+  const parsed = validateTimelineConfig(config, articles);
+  validateEntryLinks(entries, articles);
+  return parsed;
+}

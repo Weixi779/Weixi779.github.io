@@ -40,3 +40,14 @@ it('rejects missing references, duplicate membership and malformed editorial cho
   expect(() => validateTimelineConfig({ stories: [{ ...story, related: ['missing'] }] }, posts)).toThrow(/missing/);
   expect(() => validateTimelineConfig({ stories: [story, { ...story, id: 'series', title: '系列', members: ['a', 'b'] }] }, [...posts, { ...posts[0], slug: 'b' }])).toThrow(/重复/);
 });
+
+
+it('validates experience links while allowing explicitly pending articles', async () => {
+  const { validateEntryLinks } = await import('../src/components/timeline/timeline-config');
+  const entry = { date: '', kind: '', title: '', body: '', links: [['文章', 'missing']] as [string, string, 'pending'?][] };
+  expect(() => validateEntryLinks({ university: entry }, [])).toThrow(/university.*missing/);
+  entry.links[0][2] = 'pending';
+  expect(() => validateEntryLinks({ university: entry }, [])).not.toThrow();
+  entry.links[0][2] = undefined;
+  expect(() => validateEntryLinks({ university: entry }, [{ slug: 'missing', title: '', date: '2026-01-01' }])).not.toThrow();
+});

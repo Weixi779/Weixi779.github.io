@@ -1,8 +1,8 @@
 // Created by weixi on 2026/10/25.
 // Real-browser regression check, not a jsdom layout test.
 // After fonts load, evaluate this function on the homepage at widths
-// 320, 390, 520 and 1280, in both appearances. At 390 pass
-// { mixedTitles: true }; at 520 pass { mixedIntros: true }.
+// 320, 390, 520 and 1280, in both appearances. The optional mixed-copy
+// assertions are for controlled fixtures, not changing published content.
 // The caller must assert that the returned failures array is empty.
 export function checkHomeRecentPostsLayout({ mixedTitles = false, mixedIntros = false } = {}) {
   const failures = [];
@@ -24,6 +24,7 @@ export function checkHomeRecentPostsLayout({ mixedTitles = false, mixedIntros = 
     if (!near(article.top - rect.top, top) || !near(rect.bottom - article.bottom, bottom)) failures.push(`Row ${index + 1}: extra space around content`);
     if (!near(meta.top + meta.height / 2, number.top + number.height / 2)) failures.push(`Row ${index + 1}: number not centered on metadata`);
     if (number.left < 0) failures.push(`Row ${index + 1}: number cropped`);
+    if (window.innerWidth <= 700 && (number.left < meta.left || number.right > meta.right)) failures.push(`Row ${index + 1}: mobile number must stay inside metadata`);
     for (const text of [title, intro]) {
       const css = getComputedStyle(text);
       if (text.scrollHeight > text.clientHeight + 1 || text.scrollWidth > text.clientWidth + 1) failures.push(`Row ${index + 1}: text clipped or overflowing`);
@@ -46,14 +47,18 @@ export function checkHomeRecentPostsLayout({ mixedTitles = false, mixedIntros = 
   const content = document.querySelector('.home-sections').getBoundingClientRect();
   const posts = document.querySelector('.home-recent-posts').getBoundingClientRect();
   const rail = getComputedStyle(document.querySelector('.home-recent-posts'), '::before');
-  if (!near(px(rail.height), posts.height) || !near(px(rail.top), 0)) failures.push('Blue rail must extend from the section heading through the list');
-  const placeholder = document.querySelector('.home-sections__placeholder').getBoundingClientRect();
+  if (window.innerWidth <= 700) {
+    if (rail.display !== 'none') failures.push('Hide the outside rail on mobile');
+  } else if (!near(px(rail.height), posts.height) || !near(px(rail.top), 0)) failures.push('Blue rail must extend from the section heading through the list');
+  const sidebar = document.querySelector('.home-notes, .home-sections__placeholder');
+  if (!sidebar) return { failures: [...failures, 'Missing homepage notes or empty state'], rows };
+  const notes = sidebar.getBoundingClientRect();
   const divider = getComputedStyle(document.querySelector('.home-sections'), '::before');
   if (window.innerWidth > 900) {
-    if (!near(posts.width / 3, placeholder.width / 2) || !near(posts.top, placeholder.top) || placeholder.left <= posts.right) failures.push('Expected 6:4 columns with a gutter');
+    if (!near(posts.width / 3, notes.width / 2) || !near(posts.top, notes.top) || notes.left <= posts.right) failures.push('Expected 6:4 columns with a gutter');
     const dividerX = content.left + px(divider.left);
-    if (divider.content === 'none' || divider.display === 'none' || dividerX <= posts.right || dividerX >= placeholder.left) failures.push('Divider must sit between columns');
-  } else if (placeholder.top < posts.bottom || !near(posts.width, placeholder.width)) {
+    if (divider.content === 'none' || divider.display === 'none' || dividerX <= posts.right || dividerX >= notes.left) failures.push('Divider must sit between columns');
+  } else if (notes.top < posts.bottom || !near(posts.width, notes.width)) {
     failures.push('Expected full-width stacked sections on small screens');
   }
   if (window.innerWidth <= 900 && divider.display !== 'none') failures.push('Hide the column divider in stacked layout');

@@ -53,8 +53,13 @@ const formatDate = (value: string) => value.replaceAll('-', ' / ');
   }
 
   .home-notes__header a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-end;
+    min-width: 44px;
+    min-height: 44px;
     color: var(--color-accent-primary);
-    font: 400 12px/1.7 'Weixi Sans', 'PingFang SC', sans-serif;
+    font: 400 14px/1.7 'Weixi Sans', 'PingFang SC', sans-serif;
     text-decoration: none;
     text-underline-offset: 4px;
   }
@@ -89,7 +94,7 @@ const formatDate = (value: string) => value.replaceAll('-', ' / ');
 
   .home-notes__title {
     margin: 4px 0 0;
-    font: normal 400 16px/1.65 'LXGW WenKai Mono GB', 'PingFang SC', sans-serif;
+    font: normal 400 18px/1.65 'LXGW WenKai Mono GB', 'PingFang SC', sans-serif;
     font-synthesis: none;
     overflow-wrap: anywhere;
     text-wrap: pretty;
@@ -109,7 +114,7 @@ const formatDate = (value: string) => value.replaceAll('-', ' / ');
     margin: 6px 0 0;
     overflow: hidden;
     color: var(--color-text-secondary);
-    font: 400 12px/1.85 'Weixi Sans', 'PingFang SC', sans-serif;
+    font: 400 14px/1.85 'Weixi Sans', 'PingFang SC', sans-serif;
     overflow-wrap: anywhere;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;

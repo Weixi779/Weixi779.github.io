@@ -213,7 +213,7 @@ if (!existsSync(distRoot)) {
     const page = new JSDOM(html);
     const document = page.window.document;
     const timelinePage = htmlPage === routeOutputPath('/about/timeline/');
-    const bannerlessPage = timelinePage || htmlPage === routeOutputPath('/fonts/') || htmlPage === routeOutputPath('/404.html');
+    const bannerlessPage = timelinePage || htmlPage === routeOutputPath('/fonts/');
     if (timelinePage && (!document.querySelector('.life-timeline .timeline-toolbar') || !document.querySelector('.life-timeline')?.closest('astro-island[client="load"]'))) {
       fail('timeline must server-render its controls and hydrate as a React island');
     }

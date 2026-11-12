@@ -52,6 +52,7 @@
 }
 
 .site-banner h1 {
+  opacity: var(--page-title-opacity, 1);
   max-width: 760px;
   margin: 0 0 22px;
   font: normal 400 40px/1.45 'LXGW WenKai Mono GB', 'PingFang SC', sans-serif;

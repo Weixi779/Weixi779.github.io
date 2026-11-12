@@ -67,7 +67,7 @@ input {
   align-items: start;
 }
 
-/* Match the quieter B directory study; the article still owns its typography. */
+/* Wide content uses the article area; prose.css limits the reading column. */
 .post-shell--without-toc {
   display: block;
   max-width: 960px;
@@ -134,14 +134,6 @@ input {
 .toc__children ol { padding: 9px 0 0 12px; }
 .toc__children li { margin-bottom: 6px; padding-left: var(--toc-indent, 0); }
 .toc__children a { font-size: 13px; line-height: 1.8; }
-
-.not-found {
-  display: grid;
-  min-height: 70vh;
-  place-content: center;
-  padding: 48px 24px;
-  text-align: center;
-}
 
 @media (max-width: 820px) {
   .post-shell {

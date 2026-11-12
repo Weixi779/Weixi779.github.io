@@ -4,6 +4,8 @@
 import '@testing-library/jest-dom/vitest';
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { hydrateRoot } from 'react-dom/client';
+import { renderToString } from 'react-dom/server';
 import SiteHeader from '../../src/components/site/SiteHeader';
 import SiteBanner from '../../src/components/site/SiteBanner';
 import { createThemeController } from '../../src/lib/theme/controller';
@@ -64,23 +66,48 @@ function scrollToTitle(top: number, event = 'scroll') {
 }
 
 describe('SiteHeader title handoff', () => {
-  it('hides the whole navigation while the title is present, then reveals and keeps it pinned', () => {
+  it('leaves a separately hydrated banner consistent with its server markup', async () => {
+    const main = document.createElement('main');
+    const banner = <SiteBanner variant="home" title="页面标题" />;
+    main.innerHTML = renderToString(banner);
+    document.body.append(main);
+    const error = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const header = render(<SiteHeader pathname="/" />);
+    const hydrationError = vi.fn();
+    let bannerRoot: ReturnType<typeof hydrateRoot> | undefined;
+    try {
+      await act(async () => { bannerRoot = hydrateRoot(main, banner, { onRecoverableError: hydrationError }); });
+      expect(hydrationError).not.toHaveBeenCalled();
+      expect(error).not.toHaveBeenCalled();
+      expect(main.querySelector('h1')).not.toHaveAttribute('style');
+    } finally {
+      header.unmount();
+      act(() => bannerRoot?.unmount());
+      main.remove();
+    }
+  });
+  it('keeps navigation available while the brand trades places with the page title', () => {
     const { header } = mount();
-    expect(header).toHaveAttribute('inert');
-    expect(screen.queryByRole('navigation')).not.toBeInTheDocument();
+    expect(header).not.toHaveAttribute('inert');
+    expect(screen.getByRole('navigation', { name: '主导航' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: '打开主题设置' })).toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: '伟兮の小屋' })).not.toBeInTheDocument();
     scrollToTitle(30);
     expect(header.style.getPropertyValue('--header-progress')).toBe('0.5');
-    expect(screen.getByRole('heading')).toHaveStyle({ opacity: '0.5' });
+    expect(document.documentElement.style.getPropertyValue('--page-title-opacity')).toBe('0.5');
     scrollToTitle(-60);
     expect(header).not.toHaveAttribute('inert');
     expect(screen.getByRole('navigation', { name: '主导航' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: '伟兮の小屋' })).toBeInTheDocument();
     scrollToTitle(-400);
     expect(header.style.getPropertyValue('--header-progress')).toBe('1');
     scrollToTitle(-250); // Reversing direction in the content must not hide it.
     expect(header.style.getPropertyValue('--header-progress')).toBe('1');
     scrollToTitle(180);
-    expect(header).toHaveAttribute('inert');
-    expect(screen.getByRole('heading')).toHaveStyle({ opacity: '1' });
+    expect(header).not.toHaveAttribute('inert');
+    expect(screen.getByRole('navigation', { name: '主导航' })).toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: '伟兮の小屋' })).not.toBeInTheDocument();
+    expect(document.documentElement.style.getPropertyValue('--page-title-opacity')).toBe('1');
   });
 
   it('shows a full navigation on pages without a title', () => {
@@ -89,7 +116,7 @@ describe('SiteHeader title handoff', () => {
   });
 
   it('keeps navigation available on utility pages with a heading but no banner', () => {
-    render(<><SiteHeader pathname="/404.html" /><main><section className="not-found"><h1>页面不存在</h1></section></main></>);
+    render(<><SiteHeader pathname="/fonts/" /><main><article className="prose"><h1>字体与许可</h1></article></main></>);
     expect(screen.getByRole('navigation')).toBeInTheDocument();
     expect(screen.getByRole('heading').style.opacity).toBe('');
   });
@@ -99,7 +126,9 @@ describe('SiteHeader title handoff', () => {
     const { header } = mount('/posts/example/');
     expect(header).not.toHaveAttribute('inert');
     scrollToTitle(180, 'pageshow');
-    expect(header).toHaveAttribute('inert');
+    expect(header.style.getPropertyValue('--header-progress')).toBe('0');
+    expect(screen.queryByRole('link', { name: '伟兮の小屋' })).not.toBeInTheDocument();
+    expect(screen.getByRole('navigation')).toBeInTheDocument();
   });
 
   it('recalculates on resize and uses a discrete handoff with reduced motion', () => {
@@ -111,7 +140,8 @@ describe('SiteHeader title handoff', () => {
       media.dispatchEvent(new Event('change'));
       const callbacks = [...frames.values()]; frames.clear(); callbacks.forEach((cb) => cb(0));
     });
-    expect(header).toHaveAttribute('inert');
+    expect(header.style.getPropertyValue('--header-progress')).toBe('0');
+    expect(screen.getByRole('navigation')).toBeInTheDocument();
     scrollToTitle(0);
     expect(header.style.getPropertyValue('--header-progress')).toBe('1');
   });
@@ -125,6 +155,7 @@ describe('SiteHeader title handoff', () => {
     unmount();
     expect(frames.size).toBe(0);
     expect(title.style.opacity).toBe('');
+    expect(document.documentElement.style.getPropertyValue('--page-title-opacity')).toBe('');
     window.dispatchEvent(new Event('scroll'));
     expect(frames.size).toBe(0);
   });
@@ -168,12 +199,14 @@ describe('SiteHeader appearance controls', () => {
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 
-  it('closes an open panel when the header retreats into the banner', () => {
-    titleTop = -100;
+  it('opens over the banner and keeps the panel available throughout the title handoff', () => {
     mount();
     fireEvent.click(screen.getByRole('button', { name: '打开主题设置' }));
-    scrollToTitle(180);
+    expect(screen.getByRole('radio', { name: '跟随系统' })).toHaveFocus();
     scrollToTitle(-100);
-    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    scrollToTitle(180);
+    expect(screen.getByRole('dialog', { name: '主题设置' })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('radio', { name: '深色' }));
+    expect(window.blogTheme.getState().modePreference).toBe('dark');
   });
 });

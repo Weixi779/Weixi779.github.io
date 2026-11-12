@@ -28,6 +28,17 @@
   padding: 64px 0;
 }
 
+/* Keep normal document flow and collapsing margins while sharing one reading column. */
+.prose.prose--article > * {
+  max-width: 760px;
+  margin-inline: auto;
+}
+
+/* These existing content containers may use the full article width. */
+.prose.prose--article > :where(pre, figure, img, .prose-table, astro-island, p:has(> img:only-child)) {
+  max-width: 100%;
+}
+
 .prose :where(h1, h2, h3, h4, h5, h6) {
   scroll-margin-top: 88px;
   margin: 2.1em 0 0.8em;
@@ -203,12 +214,11 @@
 }
 
 .prose :where(th, td) {
-  min-width: 10.625rem;
   padding: 0.8125rem 0.875rem;
   border: 0;
   text-align: left;
   vertical-align: top;
-  overflow-wrap: anywhere;
+  overflow-wrap: normal;
 }
 
 .prose th {

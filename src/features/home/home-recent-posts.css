@@ -43,7 +43,7 @@
 .home-sections__placeholder { color: var(--color-text-secondary); }
 .home-sections__placeholder p {
   margin: 12px 0 0;
-  font: 400 13px/1.95 'Weixi Sans', 'PingFang SC', sans-serif;
+  font: 400 14px/1.95 'Weixi Sans', 'PingFang SC', sans-serif;
 }
 
 .home-recent-posts__list {
@@ -115,14 +115,14 @@
   max-width: 960px;
   margin: 10px 0 0;
   color: var(--color-text-secondary);
-  font: 400 13px/1.95 'Weixi Sans', 'PingFang SC', sans-serif;
+  font: 400 14px/1.95 'Weixi Sans', 'PingFang SC', sans-serif;
   overflow-wrap: anywhere;
 }
 
 .home-recent-posts__archive {
-  font: 400 12px/1.7 'Weixi Sans', 'PingFang SC', sans-serif;
+  font: 400 14px/1.7 'Weixi Sans', 'PingFang SC', sans-serif;
 }
-.home-recent-posts__archive a { color: var(--color-accent-primary); text-decoration: none; text-underline-offset: 4px; }
+.home-recent-posts__archive a { display: inline-flex; align-items: center; min-height: 44px; color: var(--color-accent-primary); text-decoration: none; text-underline-offset: 4px; }
 .home-recent-posts__archive a:hover { color: var(--color-accent-primary); text-decoration: underline; }
 
 @media (max-width: 1200px) {
@@ -137,15 +137,15 @@
 
 @media (max-width: 700px) {
   .home-sections { width: calc(100% - 50px); }
+  .home-recent-posts::before { display: none; }
+  .home-recent-posts__number { position: static; transform: none; padding: 0; background: transparent; font-size: 14px; }
   .home-recent-posts__item { padding-block: 16px; }
   .home-recent-posts__meta { gap: 8px; margin-bottom: 8px; }
   .home-recent-posts__category { font-size: 12px; }
   .home-recent-posts__title { font-size: 24px; line-height: 1.55; letter-spacing: 0; }
-  .home-recent-posts__intro { margin-top: 9px; font-size: 12px; }
-  .home-recent-posts__archive { font-size: 11px; }
+  .home-recent-posts__intro { margin-top: 9px; }
 }
 
 @media (max-width: 359px) {
-  .home-sections { width: calc(100% - 24px); padding-left: 10px; }
-  .home-recent-posts { --recent-rail-offset: -10px; }
+  .home-sections { width: calc(100% - 24px); }
 }

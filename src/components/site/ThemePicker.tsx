@@ -13,16 +13,12 @@ const modes = [
   { value: 'dark', label: '深色' },
 ] as const;
 
-export default function ThemePicker({ hidden = false }: { hidden?: boolean }) {
+export default function ThemePicker() {
   const state = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
   const [open, setOpen] = useState(false);
   const pickerRef = useRef<HTMLDivElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
   const panelId = useId();
-
-  useEffect(() => {
-    if (hidden) setOpen(false);
-  }, [hidden]);
 
   useEffect(() => {
     if (!open) return;

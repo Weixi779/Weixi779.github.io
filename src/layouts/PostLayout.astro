@@ -60,7 +60,7 @@ const alternates = [
   />
   <div class:list={['post-shell', { 'post-shell--without-toc': !hasToc }]}>
     {hasToc && <TableOfContents chapters={chapters} language={language} />}
-    <article class="prose">
+    <article class="prose prose--article">
       <slot />
       <nav class="post-navigation" aria-label={isEnglish ? 'Adjacent posts' : '相邻文章'}>
         {newerPost ? (

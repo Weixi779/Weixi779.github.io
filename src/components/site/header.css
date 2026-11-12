@@ -8,12 +8,16 @@
   z-index: 50;
   height: 60px;
   isolation: isolate;
-  opacity: var(--header-progress, 1);
+  background: linear-gradient(to bottom,
+    color-mix(in srgb, var(--color-background-primary) 94%, transparent),
+    color-mix(in srgb, var(--color-background-primary) 86%, transparent) 70%,
+    transparent);
 }
 
-/* Preserve static navigation without JavaScript; avoid flashing it before hydration. */
+/* Navigation stays available while only the brand and backdrop join the title handoff. */
 @media (scripting: enabled) {
-  html:has(main .home-hero h1, main .page-hero h1) .site-header:not([data-ready]) { visibility: hidden; }
+  html:has(main .home-hero h1, main .page-hero h1) .site-header:not([data-ready]) .site-brand { visibility: hidden; }
+  html:has(main .home-hero h1, main .page-hero h1) .site-header:not([data-ready])::before { opacity: 0; }
 }
 
 .site-header::before {
@@ -22,6 +26,7 @@
   inset: 0;
   z-index: -1;
   pointer-events: none;
+  opacity: var(--header-progress, 1);
   background: var(--color-background-primary);
   border-bottom: 1px solid color-mix(in srgb, var(--color-text-primary) 10%, transparent);
   box-shadow: inset 0 1px 0 color-mix(in srgb, var(--color-surface-elevated) 45%, transparent),
@@ -48,7 +53,7 @@
   font-synthesis: none;
 }
 
-.site-brand { margin-right: auto; white-space: nowrap; font-size: 19px; letter-spacing: 1px; }
+.site-brand { margin-right: auto; white-space: nowrap; font-size: 19px; letter-spacing: 1px; opacity: var(--header-progress, 1); }
 .site-header a { color: inherit; text-decoration: none; }
 .site-header nav { display: flex; align-items: center; gap: 24px; }
 .site-header nav a { position: relative; display: grid; place-items: center; min-width: 28px; height: 44px; }

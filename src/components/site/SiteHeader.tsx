@@ -23,7 +23,9 @@ export default function SiteHeader({ pathname }: { pathname: string }) {
     }
 
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const originalOpacity = title.style.opacity;
+    // The banner may hydrate later as a separate island. Keep its DOM untouched.
+    const pageStyle = document.documentElement.style;
+    const originalOpacity = pageStyle.getPropertyValue('--page-title-opacity');
     let frame: number | undefined;
     let disposed = false;
 
@@ -35,7 +37,7 @@ export default function SiteHeader({ pathname }: { pathname: string }) {
       const next = reducedMotion.matches
         ? (bounds.bottom <= edge ? 1 : 0)
         : Math.max(0, Math.min(1, (edge - bounds.top) / Math.max(1, bounds.height)));
-      title.style.opacity = String(1 - next);
+      pageStyle.setProperty('--page-title-opacity', String(1 - next));
       setProgress(next);
     }
 
@@ -61,21 +63,21 @@ export default function SiteHeader({ pathname }: { pathname: string }) {
       window.removeEventListener('pageshow', scheduleUpdate);
       reducedMotion.removeEventListener('change', scheduleUpdate);
       observer?.disconnect();
-      title.style.opacity = originalOpacity;
+      if (originalOpacity) pageStyle.setProperty('--page-title-opacity', originalOpacity);
+      else pageStyle.removeProperty('--page-title-opacity');
     };
   }, []);
 
-  const hidden = progress === 0;
+  const brandHidden = progress === 0;
   const isCurrentPage = (href: string) => href === '/'
     ? pathname === '/' || pathname.startsWith('/page/')
     : pathname === href.slice(0, -1) || pathname.startsWith(href);
 
   return (
     <header ref={headerRef} className="site-header" data-ready={progress !== null ? '' : undefined}
-      inert={hidden} aria-hidden={hidden || undefined}
       style={{ '--header-progress': progress ?? 1 } as CSSProperties}>
       <div className="site-header__inner">
-        <a className="site-brand" href="/">伟兮の小屋</a>
+        <a className="site-brand" href="/" inert={brandHidden} aria-hidden={brandHidden || undefined}>伟兮の小屋</a>
         <nav aria-label="主导航">
           {navigation.map(({ href, label }) => (
             <a key={href} href={href} aria-current={isCurrentPage(href) ? 'page' : undefined}>
@@ -87,7 +89,7 @@ export default function SiteHeader({ pathname }: { pathname: string }) {
           ))}
         </nav>
         <span className="site-header__divider" aria-hidden="true" />
-        <ThemePicker hidden={hidden} />
+        <ThemePicker />
       </div>
     </header>
   );

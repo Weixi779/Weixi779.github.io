@@ -98,8 +98,9 @@
   background: none;
   border: 0;
   color: var(--color-accent-primary);
-  font-size: 12px;
+  font-size: 14px;
   padding: 10px 0 10px 12px;
+  min-height: 44px;
   white-space: nowrap;
 }
 .archive-filter-block {
@@ -114,7 +115,7 @@
 .archive-category-note {
   margin: 12px 0 0;
   color: var(--color-text-secondary);
-  font: 400 12px/1.8 'Weixi Sans', sans-serif;
+  font: 400 13px/1.8 'Weixi Sans', sans-serif;
 }
 .archive-categories {
   display: flex;
@@ -279,10 +280,7 @@
     font-size: 13px;
   }
   .archive-search input {
-    font-size: 13px;
-  }
-  .archive-search button {
-    font-size: 11px;
+    font-size: 16px;
   }
   .archive-timeline {
     --archive-rail-inset: 21px;

@@ -107,6 +107,7 @@ npm run new -- post-slug "文章标题" "分类"
 表示「作者推荐」。省略或设为 `false` 不显示；此标记不影响文章排序或筛选。
 
 新增或修改文章、页面内容后，更新中文字体子集以包含新增字符：
+生成思源黑体子集需要 Python 3 与 `fonttools`（首次使用运行 `python3 -m pip install fonttools`）。
 
 ```bash
 npm run fonts:update

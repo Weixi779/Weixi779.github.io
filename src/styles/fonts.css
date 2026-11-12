@@ -43,9 +43,27 @@
 }
 
 @font-face {
+  /* CSS role alias: use the designed Medium face for semantic bold CJK text.
+     Keeping the requested weight at 700 preserves JetBrains Mono Bold for Latin. */
+  font-family: 'Weixi Prose Emphasis';
+  src: url('/fonts/weixi-prose-medium-subset.woff2') format('woff2');
+  font-display: swap;
+  font-style: normal;
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: 'Weixi Prose Heading';
+  src: url('/fonts/weixi-prose-bold-subset.woff2') format('woff2');
+  font-display: swap;
+  font-style: normal;
+  font-weight: 700;
+}
+
+@font-face {
   font-family: 'LXGW WenKai Mono GB';
   src: url('/fonts/lxgw-wenkai-mono-gb-regular-subset.woff2') format('woff2');
   font-display: swap;
   font-style: normal;
-  font-weight: 400 900;
+  font-weight: 400;
 }

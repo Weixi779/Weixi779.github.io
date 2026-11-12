@@ -28,6 +28,9 @@ const requiredFontAssets = [
   'JetBrainsMono-Italic.woff2',
   'JetBrainsMono-BoldItalic.woff2',
   'weixi-sans-subset.woff2',
+  'weixi-prose-medium-subset.woff2',
+  'weixi-prose-bold-subset.woff2',
+  'licenses/Source-Han-Sans-OFL-1.1.txt',
   'lxgw-wenkai-mono-gb-regular-subset.woff2',
   'licenses/IPA-Font-License-1.0.md',
 ];

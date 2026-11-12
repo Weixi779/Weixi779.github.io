@@ -1,8 +1,8 @@
 /* Created by weixi on 2026/10/19. */
 .reuse-demo { margin: 2rem 0; padding: clamp(18px, 4vw, 30px); border: 1px solid var(--markdown-color-border); border-radius: 18px; background: var(--markdown-color-surface); }
 .reuse-demo__eyebrow { color: var(--markdown-color-muted); font-size: .8rem; letter-spacing: .08em; }
-.reuse-demo__heading { font-size: 1.3rem; font-weight: 700; margin: .5rem 0 1.5rem; line-height: 1.5; }
-.reuse-demo label { display: block; font-weight: 600; }
+.reuse-demo__heading { font-family: var(--font-prose-heading); font-size: 1.3rem; font-weight: 700; font-synthesis-weight: none; margin: .5rem 0 1.5rem; line-height: 1.5; }
+.reuse-demo label { display: block; font-family: var(--font-prose-emphasis); font-weight: 700; font-synthesis-weight: none; }
 .reuse-demo input { display: block; width: 100%; margin: 1.2rem 0; accent-color: var(--markdown-color-accent); cursor: pointer; }
 .reuse-demo__steps { display: flex; flex-wrap: wrap; gap: 8px; }
 .reuse-demo__steps button { padding: 8px 12px; border: 1px solid var(--markdown-color-border); border-radius: 8px; background: transparent; color: inherit; font: inherit; font-size: .8rem; cursor: pointer; }

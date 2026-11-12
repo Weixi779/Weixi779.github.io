@@ -32,8 +32,9 @@
   scroll-margin-top: 88px;
   margin: 2.1em 0 0.8em;
   color: var(--markdown-color-text);
-  font-family: var(--font-site);
+  font-family: var(--font-prose-heading);
   font-weight: 700;
+  font-synthesis-weight: none;
   letter-spacing: -0.025em;
   line-height: 1.4;
 }
@@ -109,7 +110,13 @@
 
 .prose :where(strong, b) {
   color: var(--markdown-color-text);
+  font-family: var(--font-prose-emphasis);
   font-weight: 700;
+  font-synthesis-weight: none;
+}
+
+.prose :where(h1, h2, h3, h4, h5, h6) :where(strong, b) {
+  font-family: inherit;
 }
 
 .prose :not(pre) > code {

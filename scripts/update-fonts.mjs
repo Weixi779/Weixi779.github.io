@@ -4,6 +4,8 @@ import { createHash } from 'node:crypto';
 import { readdir, readFile, writeFile, mkdir } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { execFile } from 'node:child_process';
+import { promisify } from 'node:util';
 import { createFont, woff2 } from 'fonteditor-core';
 import subsetFont from 'subset-font';
 
@@ -15,8 +17,10 @@ const cacheDirectory = path.join(rootDirectory, 'node_modules/.cache/site-fonts'
 const neoXiHeiVersion = 'v1.305';
 const wenKaiVersion = 'v1.522';
 const jetBrainsMonoVersion = 'v2.304';
+const sourceHanSansVersion = '2.005R';
+const runFile = promisify(execFile);
 
-const lxgwFonts = [
+const chineseFonts = [
   {
     repository: 'lxgw/LxgwNeoXiHei',
     version: neoXiHeiVersion,
@@ -32,6 +36,18 @@ const lxgwFonts = [
     outputName: 'lxgw-wenkai-mono-gb-regular-subset.woff2',
     sha256: 'fb82a0d6b9c0a1a3c83ad303eab1cc998e6a52c1028027fc3527455bdadb4ecb',
   },
+  ...[
+    ['Medium', 'a94e558a2fe972bee4f46bce0843abff37063fd68c33f1e7d9058f6f09432b01'],
+    ['Bold', '62383707c086a32f3afd5e293f34c7eff64c7fea31f579fdc6cbe34d920519a6'],
+  ].map(([style, sha256]) => ({
+    version: sourceHanSansVersion,
+    sourceName: `SourceHanSansCN-${style}.otf`,
+    url: `https://raw.githubusercontent.com/adobe-fonts/source-han-sans/${sourceHanSansVersion}/SubsetOTF/CN/SourceHanSansCN-${style}.otf`,
+    outputName: `weixi-prose-${style.toLowerCase()}-subset.woff2`,
+    sha256,
+    family: 'Weixi Prose',
+    style,
+  })),
 ];
 
 const jetBrainsMonoFonts = [
@@ -86,7 +102,7 @@ async function cachedDownload(font) {
     // A missing cache is expected on the first run.
   }
 
-  const url = `https://github.com/${font.repository}/releases/download/${font.version}/${font.sourceName}`;
+  const url = font.url ?? `https://github.com/${font.repository}/releases/download/${font.version}/${font.sourceName}`;
   const source = await download(url);
   const actualDigest = digest(source);
   if (actualDigest !== font.sha256) {
@@ -97,10 +113,19 @@ async function cachedDownload(font) {
   return source;
 }
 
-async function updateLxgwFonts(characters) {
-  for (const font of lxgwFonts) {
+async function updateChineseFonts(characters) {
+  for (const font of chineseFonts) {
     let source = await cachedDownload(font);
-    if (font.family) {
+    if (font.family && font.sourceName.endsWith('.otf')) {
+      // Rename both OpenType and CFF names without converting outlines or dropping layout tables.
+      const sourcePath = path.join(cacheDirectory, `${font.version}-${font.sourceName}`);
+      const renamedPath = path.join(cacheDirectory, `${font.version}-renamed-${font.sourceName}`);
+      await runFile('python3', [
+        path.join(rootDirectory, 'scripts/build/rename-cff-font.py'),
+        sourcePath, renamedPath, font.family, font.style,
+      ]);
+      source = await readFile(renamedPath);
+    } else if (font.family) {
       const renamed = createFont(source, { type: 'ttf', hinting: true, kerning: true });
       Object.assign(renamed.get().name, {
         fontFamily: font.family,
@@ -146,6 +171,10 @@ async function updateLicenses() {
       name: 'JetBrains-Mono-OFL-1.1.txt',
       url: `https://raw.githubusercontent.com/JetBrains/JetBrainsMono/${jetBrainsMonoVersion}/OFL.txt`,
     },
+    {
+      name: 'Source-Han-Sans-OFL-1.1.txt',
+      url: `https://raw.githubusercontent.com/adobe-fonts/source-han-sans/${sourceHanSansVersion}/LICENSE.txt`,
+    },
   ];
 
   for (const license of licenses) {
@@ -178,7 +207,7 @@ async function main() {
   const characters = await buildCharacterSet();
   console.log(`Subsetting Chinese fonts for ${[...characters].length} unique characters.`);
 
-  await updateLxgwFonts(characters);
+  await updateChineseFonts(characters);
   await Promise.all([updateJetBrainsMonoFonts(), updateLicenses()]);
 }
 

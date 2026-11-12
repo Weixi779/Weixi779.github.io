@@ -70,7 +70,7 @@ npm run dev
 npm run validate
 ```
 
-`validate` 会依次执行类型检查、自动化测试、站点构建和构建产物校验。
+`validate` 会依次执行类型检查、自动化测试、站点构建、构建产物校验、MDX 检查和开发路由检查。
 测试使用 Vitest；`tests/archive/archive.test.ts` 覆盖纯筛选规则，
 `tests/archive/ArchiveBrowser.test.tsx` 使用 React Testing Library 和 jsdom 验证组件交互。
 jsdom 不执行真实页面布局或 View Transition 动画，视觉效果仍需在浏览器中检查。
@@ -79,6 +79,10 @@ jsdom 不执行真实页面布局或 View Transition 动画，视觉效果仍需
 npm test           # 执行一次测试
 npm run test:watch # 开发时随修改重新执行
 ```
+
+`npm run verify:dev` 在临时开发服务上逐页核对已构建页面的状态码、标题、主题入口和重定向，
+结束后关闭临时服务。也可以用 `npm run verify:dev -- http://127.0.0.1:4321` 检查正在使用的服务；
+目录或构建配置调整后，旧进程可能仍持有原来的路径，需要重启，构建通过不能替代这项检查。
 
 ## 内容
 

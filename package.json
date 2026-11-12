@@ -8,13 +8,14 @@
     "check": "astro check",
     "build": "astro build",
     "verify": "node scripts/verify-build.mjs",
-    "validate": "npm run check && npm test && npm run build && npm run verify && npm run verify:mdx",
+    "validate": "npm run check && npm test && npm run build && npm run verify && npm run verify:mdx && npm run verify:dev",
     "fonts:update": "node scripts/update-fonts.mjs",
     "new": "node scripts/new-post.mjs",
     "preview": "astro preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "verify:mdx": "node scripts/verify-mdx.mjs"
+    "verify:mdx": "node scripts/verify-mdx.mjs",
+    "verify:dev": "node scripts/verify-dev.mjs"
   },
   "dependencies": {
     "@astrojs/markdown-remark": "7.2.1",

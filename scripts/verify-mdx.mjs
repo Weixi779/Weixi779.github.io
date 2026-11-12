@@ -4,7 +4,9 @@ import { dev } from 'astro';
 import { existsSync, readFileSync } from 'node:fs';
 import { JSDOM } from 'jsdom';
 
-const server = await dev({ server: { host: '127.0.0.1', port: 0 }, logLevel: 'error' });
+const existingUrl = process.argv[2];
+const server = existingUrl ? null : await dev({ server: { host: '127.0.0.1', port: 0 }, logLevel: 'error' });
+const base = existingUrl ?? `http://127.0.0.1:${server.address.port}`;
 try {
   for (const { slug, draft } of [
     { slug: 'ios-performance-unnecessary-work', draft: false },
@@ -17,7 +19,7 @@ try {
         assert.equal(readFileSync(file, 'utf8').includes(`/posts/${slug}/`), !draft, `${slug}: incorrect visibility in ${file}`);
       }
     }
-    const response = await fetch(`http://127.0.0.1:${server.address.port}/posts/${slug}/`);
+    const response = await fetch(new URL(`/posts/${slug}/`, base), { signal: AbortSignal.timeout(15000) });
     assert.equal(response.status, 200, slug);
     const dom = new JSDOM(await response.text());
     const document = dom.window.document;
@@ -47,5 +49,5 @@ try {
   }
   console.log('Verified published and draft MDX routes: tables, code, anchors and server-rendered controls (browser interaction requires a separate check).');
 } finally {
-  await server.stop();
+  await server?.stop();
 }

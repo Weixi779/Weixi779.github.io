@@ -95,6 +95,7 @@ export default function SiteBanner({
 
   return (
     <section className={`site-banner ${variant === 'home' ? 'home-hero' : 'page-hero'}`}
+      data-single-image={variant === 'page' && image && !nightImage ? '' : undefined}
       data-image-layout={image && imageLayout !== 'default' ? imageLayout : undefined}>
       {image && <div className="site-banner__scene" style={sceneStyle} aria-hidden="true" />}
       <div className="site-banner__inner">

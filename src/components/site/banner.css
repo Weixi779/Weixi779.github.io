@@ -42,6 +42,14 @@
   opacity: .65;
 }
 
+/* Single artwork needs a night treatment; dedicated night artwork keeps its own colors. */
+:root[data-color-mode='dark'] [data-single-image] .site-banner__scene {
+  opacity: .9;
+  filter: brightness(.88) contrast(1.04);
+  mask-image: linear-gradient(90deg, transparent 0%, transparent 12%, rgb(0 0 0 / .25) 38%, #000 75%),
+    linear-gradient(180deg, #000 55%, transparent 100%);
+}
+
 .site-banner__avatar {
   display: block;
   width: 72px;
@@ -217,5 +225,15 @@
 
   :root[data-color-mode='dark'] [data-image-layout="illustration"] .site-banner__scene {
     opacity: .8;
+  }
+
+  :root[data-color-mode='dark'] [data-single-image] .site-banner__scene {
+    opacity: .9;
+    mask-image: linear-gradient(90deg, transparent, rgb(0 0 0 / .25) 30%, #000 75%),
+      linear-gradient(180deg, #000 10%, transparent 85%);
+  }
+
+  :root[data-color-mode='dark'] [data-single-image][data-image-layout="illustration"] .site-banner__scene {
+    mask-image: linear-gradient(180deg, transparent, #000 16%, #000 80%, transparent);
   }
 }

@@ -19,6 +19,18 @@ beforeEach(() => {
 afterEach(() => { cleanup(); vi.useRealTimers(); vi.unstubAllGlobals(); });
 
 describe('SiteBanner', () => {
+  it.each([
+    { variant: 'page' as const, image: '/images/day.webp', nightImage: undefined, treated: true },
+    { variant: 'page' as const, image: '/images/day.webp', nightImage: '/images/night.webp', treated: false },
+    { variant: 'page' as const, image: undefined, nightImage: undefined, treated: false },
+    { variant: 'home' as const, image: '/images/day.webp', nightImage: undefined, treated: false },
+    { variant: 'home' as const, image: '/images/day.webp', nightImage: '/images/night.webp', treated: false },
+  ])('limits the night treatment to single-image pages: $variant / $nightImage', ({ treated, ...props }) => {
+    const html = renderToStaticMarkup(<SiteBanner title="封面" {...props} />);
+    const document = new DOMParser().parseFromString(html, 'text/html');
+    expect(document.querySelector('section')?.hasAttribute('data-single-image')).toBe(treated);
+  });
+
   it.each(['wide', 'illustration'] as const)('uses article image composition %s without changing its day/night artwork', (imageLayout) => {
     const html = renderToStaticMarkup(<SiteBanner title="文章" image="/images/day.webp"
       nightImage="/images/night.webp" imageLayout={imageLayout} />);

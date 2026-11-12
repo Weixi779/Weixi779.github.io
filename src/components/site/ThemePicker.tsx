@@ -63,7 +63,11 @@ export default function ThemePicker() {
             <label className="theme-mode" key={value}>
               <input type="radio" name={panelId} value={value} data-theme-mode-input
                 checked={state.modePreference === value} onChange={() => window.blogTheme.setPreference(value)} />
-              <span>{label}</span>
+              <span>{label}
+                <svg className="theme-mode__check" aria-hidden="true" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="m3 8 3 3 7-7" />
+                </svg>
+              </span>
             </label>
           ))}</div>
         </fieldset>

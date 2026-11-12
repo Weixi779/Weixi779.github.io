@@ -2,6 +2,7 @@
 import SiteFooter from '../components/site/SiteFooter';
 import SiteHeader from '../components/site/SiteHeader';
 import themeBootstrap from 'virtual:theme-bootstrap';
+import themeCss from '../styles/theme.css?raw';
 import '../styles/global.css';
 
 interface Props {
@@ -28,6 +29,10 @@ const fullTitle = title ? `${title} - ${siteTitle}` : siteTitle;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const socialImage = new URL(image, Astro.site);
 const ogLocale = language === 'en' ? 'en_US' : 'zh_CN';
+// Browser chrome follows the same palette as the page, including manual overrides.
+const lightThemeColor = themeCss.match(/:root\s*\{[^}]*--color-background-primary:\s*(#[\da-f]{6});/iu)?.[1];
+const darkThemeColor = themeCss.match(/:root\[data-color-mode='dark'\]\s*\{[^}]*--color-background-primary:\s*(#[\da-f]{6});/iu)?.[1];
+if (!lightThemeColor || !darkThemeColor) throw new Error('theme.css must define a primary background for both appearances.');
 ---
 
 <!doctype html>
@@ -38,6 +43,7 @@ const ogLocale = language === 'en' ? 'en_US' : 'zh_CN';
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={resolvedDescription} />
     <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content={lightThemeColor} data-light={lightThemeColor} data-dark={darkThemeColor} />
     <script is:inline data-theme-bootstrap set:html={themeBootstrap}></script>
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={resolvedDescription} />

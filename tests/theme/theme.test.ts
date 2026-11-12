@@ -11,6 +11,11 @@ function openPage(stored: string | null = null, dark = false, blockedStorage = f
   document.body.append(frame);
   const page = frame.contentWindow!;
   const root = frame.contentDocument!.documentElement;
+  const browserTheme = frame.contentDocument!.createElement('meta');
+  browserTheme.name = 'theme-color';
+  browserTheme.content = browserTheme.dataset.light = '#fafaf8';
+  browserTheme.dataset.dark = '#101c32';
+  frame.contentDocument!.head.append(browserTheme);
   page.localStorage.clear();
   if (stored !== null) page.localStorage.setItem(storageKey, stored);
 
@@ -26,7 +31,7 @@ function openPage(stored: string | null = null, dark = false, blockedStorage = f
   const execute = () => new Function('window', 'document', runtime)(page, frame.contentDocument);
   execute();
   return {
-    page, root, execute, reducedMotion,
+    page, root, browserTheme, execute, reducedMotion,
     changeSystem(matches: boolean) {
       Object.assign(system, { matches });
       system.dispatchEvent(new Event('change'));
@@ -38,11 +43,13 @@ afterEach(() => { document.body.replaceChildren(); });
 
 describe('page theme lifecycle', () => {
   it('applies the system appearance before any picker exists', () => {
-    const { root, changeSystem } = openPage(null, true);
+    const { root, browserTheme, changeSystem } = openPage(null, true);
     expect(root.dataset.colorMode).toBe('dark');
     expect(root.dataset.colorModePreference).toBe('system');
+    expect(browserTheme.content).toBe('#101c32');
     changeSystem(false);
     expect(root.dataset.colorMode).toBe('light');
+    expect(browserTheme.content).toBe('#fafaf8');
   });
 
   it.each(['light', 'dark', 'system'])('keeps the old %s preference while retiring the palette id', (mode) => {
@@ -59,14 +66,16 @@ describe('page theme lifecycle', () => {
   });
 
   it('keeps explicit appearance stable across system changes and follows again when requested', () => {
-    const { page, root, changeSystem } = openPage(null, false);
+    const { page, root, browserTheme, changeSystem } = openPage(null, false);
     page.blogTheme.setPreference('dark');
     changeSystem(true);
     changeSystem(false);
     expect(root.dataset.colorMode).toBe('dark');
+    expect(browserTheme.content).toBe('#101c32');
     expect(JSON.parse(page.localStorage.getItem(storageKey)!)).toEqual({ mode: 'dark' });
     page.blogTheme.setPreference('system');
     expect(root.dataset.colorMode).toBe('light');
+    expect(browserTheme.content).toBe('#fafaf8');
     changeSystem(true);
     expect(root.dataset.colorMode).toBe('dark');
   });
@@ -100,7 +109,7 @@ describe('page theme lifecycle', () => {
   });
 
   it('applies the latest preference when view transition callbacks are delayed', () => {
-    const { page, root, reducedMotion } = openPage(null, false);
+    const { page, root, browserTheme, reducedMotion } = openPage(null, false);
     const callbacks: Array<() => void> = [];
     reducedMotion.matches = false;
     Object.defineProperty(page.document, 'startViewTransition', {
@@ -114,11 +123,12 @@ describe('page theme lifecycle', () => {
     for (const update of callbacks.reverse()) update();
     expect(root.dataset.colorMode).toBe('light');
     expect(root.dataset.colorModePreference).toBe('light');
+    expect(browserTheme.content).toBe('#fafaf8');
     expect(JSON.parse(page.localStorage.getItem(storageKey)!)).toEqual({ mode: 'light' });
   });
 
   it('refreshes a cached instance from storage on persisted pageshow, including the applied event', () => {
-    const { page, root, reducedMotion } = openPage('{"mode":"light"}');
+    const { page, root, browserTheme, reducedMotion } = openPage('{"mode":"light"}');
     const theme = page.blogTheme;
     const updates: unknown[] = [];
     page.addEventListener('blog-theme-change', (event) => updates.push(event.detail));
@@ -134,6 +144,7 @@ describe('page theme lifecycle', () => {
     expect(theme.getState()).toEqual({ modePreference: 'dark', colorMode: 'dark' });
     expect(root.dataset.colorMode).toBe('dark');
     expect(root.dataset.colorModePreference).toBe('dark');
+    expect(browserTheme.content).toBe('#101c32');
     expect(updates).toEqual([{ modePreference: 'dark', colorMode: 'dark' }]);
     page.dispatchEvent(new PageTransitionEvent('pageshow', { persisted: true }));
     expect(updates).toHaveLength(1);

@@ -8,6 +8,7 @@ if (!window.blogTheme) {
   const systemScheme = window.matchMedia('(prefers-color-scheme: dark)');
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   const root = document.documentElement;
+  const browserTheme = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
   const theme = createThemeController({
     storage: {
       read: () => window.localStorage.getItem(storageKey),
@@ -34,6 +35,8 @@ if (!window.blogTheme) {
     if (root.dataset.colorMode === state.colorMode && root.dataset.colorModePreference === state.modePreference) return;
     root.dataset.colorMode = state.colorMode;
     root.dataset.colorModePreference = state.modePreference;
+    const browserColor = browserTheme?.dataset[state.colorMode];
+    if (browserTheme && browserColor) browserTheme.content = browserColor;
     window.dispatchEvent(new CustomEvent('blog-theme-change', { detail: state }));
   }
 

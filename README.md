@@ -129,11 +129,12 @@ npm run fonts:update
   系统外观读写／监听。入口持有实例并负责 `dispose()`；单测可直接注入内存实现。
   BFCache 恢复时入口调用 `refreshPreference()`，由 Controller 重新读取、校验存储；
   存储不可读时保留当前会话选择，缺失或无效值回到跟随系统。入口立即同步页面外观。
-- `src/lib/theme/bootstrap.ts` 是浏览器入口，创建实例、注入真实依赖、更新根元素颜色状态，
+- `src/lib/theme/bootstrap.ts` 是浏览器入口，创建实例、注入真实依赖、更新根元素颜色状态与浏览器工具栏配色，
   并处理减少动态效果和页面结束。回退缓存中的页面保留监听。当前 Astro 组件通过
   `window.blogTheme` 取得入口创建的实例，工厂模块本身不创建全局实例。
 - `scripts/build/theme-bootstrap-plugin.mjs` 用构建工具 esbuild 把入口打包为同步内联脚本，
   `BaseLayout` 将其放在 `<head>`，首次渲染前应用偏好。测试使用同一打包入口。
+  `BaseLayout` 从 `theme.css` 提取昼夜背景色写入 `theme-color`，入口按实际外观同步，颜色不另存一份。
 - React 改写时，应用入口把实例传给 Provider，再用 `useSyncExternalStore` 订阅
   `subscribe` / `getState` 即可；SSR 的初始快照由页面宿主明确提供。Provider 不另建主题状态。
   普通组件直接使用 CSS 变量，无须订阅。

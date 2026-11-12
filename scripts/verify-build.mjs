@@ -281,6 +281,12 @@ if (!existsSync(distRoot)) {
       || !footer.textContent.includes('Stay hungry. Stay foolish.')) {
       fail(`shared footer copyright or license is missing in ${htmlPage}`);
     }
+    const browserTheme = document.querySelector('head meta[name="theme-color"]');
+    if (!browserTheme || !/^#[\da-f]{6}$/iu.test(browserTheme.getAttribute('data-light') ?? '')
+      || !/^#[\da-f]{6}$/iu.test(browserTheme.getAttribute('data-dark') ?? '')
+      || browserTheme.getAttribute('content') !== browserTheme.getAttribute('data-light')) {
+      fail(`browser theme metadata is missing or incomplete in ${htmlPage}`);
+    }
     page.window.close();
     const themeScript = html.match(/<script\b[^>]*data-theme-bootstrap[^>]*>[\s\S]*?<\/script>/u);
     if (!themeScript || !html.slice(0, html.indexOf('</head>')).includes(themeScript[0])) {

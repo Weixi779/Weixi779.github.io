@@ -60,7 +60,6 @@ docs/                 网站设计说明；drafts/ 保存不参与构建的文�
 使用 Node.js 24，与 GitHub Actions 的构建环境保持一致。
 
 ```bash
-git submodule update --init --recursive
 npm ci
 npm run dev
 ```
@@ -143,8 +142,7 @@ npm run fonts:update
 - 新页面继承 `BaseLayout` 即可；有昼夜图片的页面可依据根元素的 `data-color-mode`
   选择图片，图片内容与布局由页面自己负责。不要另行监听系统外观或读取主题存储。
 
-主题运行时不依赖 React 或 ThemeFoundry，也不再生成多配色目录。
-`vendor/themefoundry` 暂保留为原始数据快照，不参与开发和构建。
+主题运行时不依赖 React 或外部主题库，也不再生成多配色目录。
 `tests/theme/theme-state.test.ts` 覆盖独立实例、依赖注入和释放；`tests/theme/theme.test.ts`
 覆盖真实打包入口、旧偏好迁移、系统变化、存储失败与快速切换；
 `tests/theme/theme-contrast.test.ts` 检查正文和控件主要文字组合的对比度。

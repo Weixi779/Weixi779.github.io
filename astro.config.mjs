@@ -3,9 +3,9 @@ import { satteri } from '@astrojs/markdown-satteri';
 import react from '@astrojs/react';
 import mdx from '@astrojs/mdx';
 import { unified } from '@astrojs/markdown-remark';
-import { themeBootstrapPlugin } from './scripts/theme-bootstrap-plugin.mjs';
+import { themeBootstrapPlugin } from './scripts/build/theme-bootstrap-plugin.mjs';
 
-import { satteriProseTables, rehypeProseTables } from './scripts/prose-tables.mjs';
+import { satteriProseTables, rehypeProseTables } from './scripts/build/prose-tables.mjs';
 
 export default defineConfig({
   site: 'https://weixi779.github.io',

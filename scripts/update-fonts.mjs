@@ -157,7 +157,7 @@ async function updateLicenses() {
 async function updateFooterFonts() {
   await woff2.init();
   for (const name of ['Allura-Regular', 'SourceSans3-Regular']) {
-    const source = await readFile(path.join(rootDirectory, 'scripts/font-sources', `${name}.ttf`));
+    const source = await readFile(path.join(rootDirectory, 'assets/fonts', `${name}.ttf`));
     // Compress the complete font: preserve shaping tables, glyphs and license metadata.
     const compressed = Buffer.from(woff2.encode(source));
     await writeFile(path.join(outputDirectory, `${name}.woff2`), compressed);

@@ -1,11 +1,11 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import SiteBanner from '../../components/SiteBanner';
-import ArchiveBrowser from '../../components/ArchiveBrowser';
-import { normalizeArchiveSearch, type ArchivePost } from '../../utils/archive';
-import { getPostDate, getPostExcerpt, getPostPath, getPublishedPosts } from '../../utils/posts';
-import { countPostWords } from '../../utils/post-word-count';
-import '../../styles/archive.css';
+import SiteBanner from '../../components/site/SiteBanner';
+import ArchiveBrowser from '../../features/archive/ArchiveBrowser';
+import { normalizeArchiveSearch, type ArchivePost } from '../../features/archive/archive';
+import { getPostDate, getPostExcerpt, getPostPath, getPublishedPosts } from '../../lib/content/posts';
+import { countPostWords } from '../../lib/content/post-word-count';
+import '../../features/archive/archive.css';
 
 const posts = await getPublishedPosts();
 const totalWords = (await Promise.all(posts.map(post => countPostWords(post.body ?? '', post.filePath?.endsWith('.mdx') ? 'mdx' : 'md'))))

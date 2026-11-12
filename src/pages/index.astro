@@ -1,9 +1,9 @@
 ---
-import HomeHero from '../components/HomeHero.astro';
-import HomeNotes from '../components/HomeNotes.astro';
-import HomeRecentPosts from '../components/HomeRecentPosts';
+import HomeHero from '../features/home/HomeHero.astro';
+import HomeNotes from '../features/home/HomeNotes.astro';
+import HomeRecentPosts from '../features/home/HomeRecentPosts';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { getPostDate, getPostExcerpt, getPostPath, getPublishedPosts } from '../utils/posts';
+import { getPostDate, getPostExcerpt, getPostPath, getPublishedPosts } from '../lib/content/posts';
 
 const posts = await getPublishedPosts();
 const articles = posts.filter((post) => post.data.category !== '碎碎念');

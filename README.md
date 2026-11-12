@@ -2,6 +2,50 @@
 
 基于 Astro 的个人博客。
 
+## 目录导航
+
+```text
+src/
+  pages/              Astro 路由入口，读取数据并组装功能与布局
+  layouts/            页面框架与文章布局
+  features/
+    home/             首页
+    archive/          文章归档、搜索与筛选
+    post/             文章阅读：目录、评论及目录分组规则
+    timeline/         人生时间线及其配置、数据、样式
+    article-demos/     正文中的交互示例，按主题分组
+  components/
+    site/             全站共用的页头、页脚、Banner、主题选择器
+    post/             首页和归档共用的文章标题
+  styles/             全站样式：global、theme、fonts、prose
+  lib/
+    content/          内容读取、文章地址、摘要与正文解析
+    theme/            主题状态、存储及浏览器生命周期
+  content/posts/       文章与当前草稿；英文译文放在 en/
+  content/pages/       关于等页面的正文
+public/               按原路径发布的图片、字体和下载资料
+assets/               制作原稿：fonts/ 字体源文件、images/ 图片原稿
+scripts/              新文章、字体更新、站点验证等命令入口
+  build/              Astro / Vite 使用的构建插件
+tests/                按功能分组；browser/ 为浏览器检查，fixtures/ 为测试数据
+docs/                 网站设计说明；drafts/ 保存不参与构建的文章历史稿
+```
+
+日常写作从 `src/content/posts/` 开始，修改功能从对应的 `src/features/` 子目录开始。
+路由文件负责访问入口和页面组装；`layouts/` 安排页面框架和内容位置。
+
+功能自己的组件、状态、规则、数据和样式放在一起，例如归档的筛选规则属于
+`features/archive/`，文章目录的分组和浏览器交互属于 `features/post/`。
+只有跨功能共用的展示组件放进 `components/`，共享的非界面能力放进 `lib/`；
+它们不反向依赖具体功能。全站共享样式放进 `styles/`。
+
+目录按实际职责形成，不要求每个功能都建立 components、state、services 等固定分层。
+`tests/` 按功能或共享能力分组，继续覆盖同一套入口与行为。
+
+`public/` 中的路径就是公开 URL，整理资源时不要随意改名。需要保留的制作原稿
+放在 `assets/`，不会随站点发布。`node_modules/`、`dist/`、`.astro/`、
+`.codegraph/` 是依赖、构建或本地工具生成目录，不存放手写源码。
+
 ## 分支与部署
 
 - `main`：默认分支，保存 Astro 源码。
@@ -28,8 +72,8 @@ npm run validate
 ```
 
 `validate` 会依次执行类型检查、自动化测试、站点构建和构建产物校验。
-测试使用 Vitest；`tests/archive.test.ts` 覆盖纯筛选规则，
-`tests/ArchiveBrowser.test.tsx` 使用 React Testing Library 和 jsdom 验证组件交互。
+测试使用 Vitest；`tests/archive/archive.test.ts` 覆盖纯筛选规则，
+`tests/archive/ArchiveBrowser.test.tsx` 使用 React Testing Library 和 jsdom 验证组件交互。
 jsdom 不执行真实页面布局或 View Transition 动画，视觉效果仍需在浏览器中检查。
 
 ```bash
@@ -51,6 +95,10 @@ npm run new -- post-slug "文章标题" "分类"
 
 新文章默认使用 `draft: true`，不会进入文章列表、归档、RSS 或静态文章路由；发布时
 删除该字段或改为 `false`。站点只维护当前 Astro 路由，不兼容旧 Hexo 年月日地址。
+
+每篇文章在内容目录只保留一份当前稿（`.md` 或 `.mdx`）；需要留存的旧版本移到
+`docs/drafts/<文章 slug>/`。不要将同名的 `.md` 和 `.mdx` 并排存放，二者会生成
+相同的文章 ID。当前草稿仍使用上面的 `draft: true` 流程，历史稿不参与构建。
 
 在文章 Frontmatter 中设置 `toc: true` 启用目录。目录随阅读位置展开当前主章节的
 小标题，其余章节收起。省略 `toc` 或设为 `false` 时，正文居中加宽至最多 960px；
@@ -74,16 +122,16 @@ npm run fonts:update
 - `src/styles/theme.css` 是颜色来源。页面和组件使用语义变量；正文的
   `--markdown-color-*` 继续映射到这些变量。图片上的文字使用独立的 image 颜色，
   强调色填充上的文字使用 `--color-text-on-accent`。
-- `src/theme/state.ts` 的 `createThemeStore` 只管理偏好与实际外观，每次调用创建独立实例。
+- `src/lib/theme/state.ts` 的 `createThemeStore` 只管理偏好与实际外观，每次调用创建独立实例。
   `getState()` 返回稳定的只读快照，`subscribe()` 返回取消订阅函数；不依赖浏览器或 React。
-- `src/theme/controller.ts` 的 `createThemeController` 接收 `ThemeEnvironment`，注入存储和
+- `src/lib/theme/controller.ts` 的 `createThemeController` 接收 `ThemeEnvironment`，注入存储和
   系统外观读写／监听。入口持有实例并负责 `dispose()`；单测可直接注入内存实现。
   BFCache 恢复时入口调用 `refreshPreference()`，由 Controller 重新读取、校验存储；
   存储不可读时保留当前会话选择，缺失或无效值回到跟随系统。入口立即同步页面外观。
-- `src/theme/bootstrap.ts` 是浏览器入口，创建实例、注入真实依赖、更新根元素颜色状态，
+- `src/lib/theme/bootstrap.ts` 是浏览器入口，创建实例、注入真实依赖、更新根元素颜色状态，
   并处理减少动态效果和页面结束。回退缓存中的页面保留监听。当前 Astro 组件通过
   `window.blogTheme` 取得入口创建的实例，工厂模块本身不创建全局实例。
-- `scripts/theme-bootstrap-plugin.mjs` 用构建工具 esbuild 把入口打包为同步内联脚本，
+- `scripts/build/theme-bootstrap-plugin.mjs` 用构建工具 esbuild 把入口打包为同步内联脚本，
   `BaseLayout` 将其放在 `<head>`，首次渲染前应用偏好。测试使用同一打包入口。
 - React 改写时，应用入口把实例传给 Provider，再用 `useSyncExternalStore` 订阅
   `subscribe` / `getState` 即可；SSR 的初始快照由页面宿主明确提供。Provider 不另建主题状态。
@@ -97,9 +145,9 @@ npm run fonts:update
 
 主题运行时不依赖 React 或 ThemeFoundry，也不再生成多配色目录。
 `vendor/themefoundry` 暂保留为原始数据快照，不参与开发和构建。
-`tests/theme-state.test.ts` 覆盖独立实例、依赖注入和释放；`tests/theme.test.ts`
+`tests/theme/theme-state.test.ts` 覆盖独立实例、依赖注入和释放；`tests/theme/theme.test.ts`
 覆盖真实打包入口、旧偏好迁移、系统变化、存储失败与快速切换；
-`tests/theme-contrast.test.ts` 检查正文和控件主要文字组合的对比度。
+`tests/theme/theme-contrast.test.ts` 检查正文和控件主要文字组合的对比度。
 
 ### MDX 验证
 

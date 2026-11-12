@@ -63,7 +63,7 @@ Locally hosted Regular fonts, compressed without subsetting or changing glyphs:
   [SIL Open Font License](licenses/SourceSans3-OFL.txt).
 
 These fonts do not replace the article or header navigation fonts. The original
-TTF sources live in `scripts/font-sources/` in the repository, outside the public
+TTF sources live in `assets/fonts/` in the repository, outside the public
 deployment directory. Rebuild just these two assets offline with
 `npm run fonts:update -- --footer-only`. Compression preserves the original
 names, shaping tables, copyright and license metadata.

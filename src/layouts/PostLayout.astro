@@ -1,12 +1,12 @@
 ---
-import type { PostEntry } from '../utils/posts';
-import GiscusComments from '../components/GiscusComments.astro';
-import TableOfContents from '../components/TableOfContents.astro';
-import SiteBanner from '../components/SiteBanner';
+import type { PostEntry } from '../lib/content/posts';
+import GiscusComments from '../features/post/GiscusComments.astro';
+import TableOfContents from '../features/post/TableOfContents.astro';
+import SiteBanner from '../components/site/SiteBanner';
 import BaseLayout from './BaseLayout.astro';
 import '../styles/prose.css';
-import { getPostPath } from '../utils/posts';
-import { groupTocHeadings } from '../utils/toc';
+import { getPostPath } from '../lib/content/posts';
+import { groupTocHeadings } from '../features/post/toc';
 
 interface Heading {
   depth: number;

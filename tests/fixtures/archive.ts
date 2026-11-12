@@ -1,6 +1,6 @@
 // Created by weixi on 2026/10/14.
 
-import type { ArchivePost } from '../../src/utils/archive';
+import type { ArchivePost } from '../../src/features/archive/archive';
 
 // Hand-written search data keeps expectations independent of the filtering implementation.
 export const posts: ArchivePost[] = [

@@ -1,9 +1,9 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getPublishedPosts, getPostDate, getPostExcerpt } from '../../utils/posts';
-import { validatePublishedTimeline } from '../../components/timeline/timeline-config';
-import { timelineToday } from '../../components/timeline/date';
-import LifeTimeline from '../../components/timeline/LifeTimeline';
+import { getPublishedPosts, getPostDate, getPostExcerpt } from '../../lib/content/posts';
+import { validatePublishedTimeline } from '../../features/timeline/timeline-config';
+import { timelineToday } from '../../features/timeline/date';
+import LifeTimeline from '../../features/timeline/LifeTimeline';
 const articles = (await getPublishedPosts()).map(post => ({ slug: post.data.slug, date: getPostDate(post), title: post.data.title, excerpt: getPostExcerpt(post) })).sort((a, b) => a.date.localeCompare(b.date));
 validatePublishedTimeline(articles);
 const initialDate = timelineToday();

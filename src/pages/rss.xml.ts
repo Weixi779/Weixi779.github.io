@@ -4,7 +4,7 @@ import {
   getPostPath,
   getPostPublishedAt,
   getPublishedPosts,
-} from '../utils/posts';
+} from '../lib/content/posts';
 
 const fallbackSite = new URL('https://weixi779.github.io');
 

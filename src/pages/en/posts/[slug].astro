@@ -1,7 +1,7 @@
 ---
 import { render } from 'astro:content';
 import PostLayout from '../../../layouts/PostLayout.astro';
-import { getPostStaticPaths, type PostRouteProps } from '../../../utils/posts';
+import { getPostStaticPaths, type PostRouteProps } from '../../../lib/content/posts';
 
 export async function getStaticPaths() {
   return getPostStaticPaths('en');

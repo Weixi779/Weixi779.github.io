@@ -3,6 +3,7 @@ import { satteri } from '@astrojs/markdown-satteri';
 import react from '@astrojs/react';
 import mdx from '@astrojs/mdx';
 import { unified } from '@astrojs/markdown-remark';
+import githubDark from '@shikijs/themes/github-dark';
 import { themeBootstrapPlugin } from './scripts/build/theme-bootstrap-plugin.mjs';
 
 import { satteriProseTables, rehypeProseTables } from './scripts/build/prose-tables.mjs';
@@ -26,7 +27,17 @@ export default defineConfig({
     shikiConfig: {
       themes: {
         light: 'github-light',
-        dark: 'github-dark',
+        dark: {
+          ...githubDark,
+          name: 'weixi-github-dark',
+          tokenColors: [
+            ...githubDark.tokenColors,
+            {
+              scope: ['comment', 'punctuation.definition.comment', 'string.comment'],
+              settings: { foreground: '#8D9BAE' },
+            },
+          ],
+        },
       },
       langAlias: {
         objectivec: 'objective-c',

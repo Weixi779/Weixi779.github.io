@@ -4,7 +4,7 @@ slug: unity-sandbox-building-camera-control
 publishedAt: "2024-04-14 19:58:43"
 summary: "实现沙盒建造游戏中的边界移动、拖拽、缩放与相机状态控制。"
 tags: [Unity, 沙盒建造, 相机控制]
-category: 技术志
+category: 备忘录
 hero: /images/StardewValley.jpg
 toc: true
 math: true

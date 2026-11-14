@@ -4,7 +4,7 @@ slug: nier-automata
 publishedAt: "2024-04-21 09:06:18"
 summary: "一篇关于《尼尔：机械纪元》三周目体验、悲剧与选择的通关后记。"
 tags: [游戏]
-category: 后日谈
+category: 画外音
 hero: /images/NierAutomata.jpg
 toc: true
 math: false

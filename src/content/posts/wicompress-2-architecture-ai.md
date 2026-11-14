@@ -5,7 +5,7 @@ slug: wicompress-2-architecture-ai
 publishedAt: "2026-08-02 12:00:00"
 summary: "从 204 行的图片压缩工具到 WICompress 2.0，也重新理解人在 AI 编程中的位置。"
 tags: [iOS, 架构, 图像处理, AI, 技术演进]
-category: 技术志
+category: 备忘录
 hero: /images/wicompress-2-architecture.webp
 toc: true
 math: false

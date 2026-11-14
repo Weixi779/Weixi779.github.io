@@ -4,7 +4,7 @@ import { access, writeFile } from 'node:fs/promises';
 import { constants } from 'node:fs';
 import { join } from 'node:path';
 
-const [slug, title, category = '随笔'] = process.argv.slice(2);
+const [slug, title, category = '后日谈'] = process.argv.slice(2);
 
 if (!slug || !title) {
   console.error('Usage: npm run new -- <slug> "<title>" [category]');

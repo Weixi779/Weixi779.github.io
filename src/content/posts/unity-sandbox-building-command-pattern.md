@@ -4,7 +4,7 @@ slug: unity-sandbox-building-command-pattern
 publishedAt: "2024-04-22 07:16:34"
 summary: "用命令模式组织沙盒建造操作，为撤销、重做与扩展能力打下基础。"
 tags: [Unity, 沙盒建造, 设计模式, 命令模式]
-category: 技术志
+category: 备忘录
 hero: /images/StardewValley.jpg
 toc: true
 math: true

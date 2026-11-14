@@ -5,7 +5,7 @@ slug: markdown-latex-rendering-ios
 publishedAt: "2025-09-06 22:32:48"
 summary: "梳理 iOS Markdown 中的 LaTeX 提取、解析、渲染与双引擎兜底方案。"
 tags: [iOS, Markdown, LaTeX, 渲染]
-category: 技术志
+category: 备忘录
 hero: /images/latex.jpg
 toc: true
 math: true

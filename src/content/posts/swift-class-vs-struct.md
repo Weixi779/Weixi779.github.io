@@ -4,7 +4,7 @@ slug: swift-class-vs-struct
 publishedAt: "2024-08-13 22:01:35"
 summary: "从引用类型和值类型出发，梳理 Swift 中 class 与 struct 的差异和选择。"
 tags: [iOS, Swift, 语言设计, 技术演进]
-category: 技术志
+category: 备忘录
 toc: true
 math: true
 ---

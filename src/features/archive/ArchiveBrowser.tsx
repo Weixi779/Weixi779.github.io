@@ -26,9 +26,10 @@ const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)';
 const PRIMARY_MOUSE_BUTTON = 0;
 // A selected category explains itself; the words are not obvious to a first-time reader.
 const CATEGORY_NOTES: Record<string, string> = {
-  技术志: '解决一个具体问题，记下过程与取舍。',
+  备忘录: '解决一个具体问题，记下过程与取舍。',
   后日谈: '一段经历之后写下来的东西。',
-  碎碎念: '短一点、不用举证的东西。',
+  画外音: '影视、游戏，和体验之后的想法。',
+  碎碎念: '日常里的一些念头。',
 };
 
 interface ArchiveCategory {
@@ -43,7 +44,8 @@ interface ArchiveBrowserProps {
 
 function readUrlFilters(categories: ArchiveCategory[]): ArchiveFilters {
   const params = new URLSearchParams(window.location.search);
-  const category = params.get(ARCHIVE_PARAMS.category) ?? ALL_CATEGORIES;
+  const requestedCategory = params.get(ARCHIVE_PARAMS.category) ?? ALL_CATEGORIES;
+  const category = requestedCategory === '技术志' ? '备忘录' : requestedCategory;
   return {
     query: params.get(ARCHIVE_PARAMS.query) ?? '',
     category: categories.some(({ name }) => name === category) ? category : ALL_CATEGORIES,

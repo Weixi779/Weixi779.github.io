@@ -130,6 +130,54 @@ describe('ArchiveBrowser', () => {
     expect(articleTitles()).toEqual(['归档页接入 React']);
   });
 
+  it('opens legacy technical-category links and keeps the selection through search and history', async () => {
+    const user = userEvent.setup();
+    const renamedPosts = posts.map(post => ({
+      ...post, category: post.category === 'iOS' ? '备忘录' : post.category,
+    }));
+    const renamedCategories = categories.map(category => ({
+      ...category, name: category.name === 'iOS' ? '备忘录' : category.name,
+    }));
+    window.history.replaceState({}, '', '/archive/?category=技术志&q=图片&ref=bookmark#reading');
+    const initialHistoryLength = window.history.length;
+    render(<ArchiveBrowser posts={renamedPosts} categories={renamedCategories} />, { reactStrictMode: true });
+
+    expect(categoryLink('备忘录')).toHaveAttribute('aria-current', 'page');
+    expect(articleTitles()).toEqual(['WICompress 图片压缩', '网络图片调研']);
+    expect(screen.getByText('解决一个具体问题，记下过程与取舍。')).toBeVisible();
+    await user.type(searchInput(), '压缩');
+    expect(articleTitles()).toEqual(['WICompress 图片压缩']);
+    expect(new URLSearchParams(window.location.search).get('category')).toBe('备忘录');
+    expect(new URLSearchParams(window.location.search).get('ref')).toBe('bookmark');
+    expect(window.location.hash).toBe('#reading');
+    expect(window.history.length).toBe(initialHistoryLength);
+
+    await user.click(categoryLink('Web'));
+    act(() => {
+      window.history.replaceState({}, '', '/archive/?category=技术志&q=缓存');
+      window.dispatchEvent(new PopStateEvent('popstate'));
+    });
+    expect(categoryLink('备忘录')).toHaveAttribute('aria-current', 'page');
+    expect(searchInput()).toHaveValue('缓存');
+    expect(articleTitles()).toEqual(['网络图片调研']);
+  });
+
+  it('filters cultural experiences independently from personal reflections', async () => {
+    const user = userEvent.setup();
+    render(<ArchiveBrowser posts={[
+      { ...posts[0], category: '画外音', title: '赛博朋克2077' },
+      { ...posts[1], category: '后日谈', title: '旁观者' },
+    ]} categories={[{ name: '画外音', count: 1 }, { name: '后日谈', count: 1 }]} />);
+
+    await user.click(categoryLink('画外音'));
+    expect(articleTitles()).toEqual(['赛博朋克2077']);
+    expect(screen.getByText('影视、游戏，和体验之后的想法。')).toBeVisible();
+    expect(searchInput()).toHaveAccessibleDescription('1 篇文章');
+    await user.click(categoryLink('后日谈'));
+    expect(articleTitles()).toEqual(['旁观者']);
+    expect(screen.getByText('一段经历之后写下来的东西。')).toBeVisible();
+  });
+
   it('replaces search history, pushes category changes and preserves unrelated URL state', async () => {
     window.history.replaceState({}, '', '/archive/?ref=home&tag=legacy#reading');
     const user = renderArchive();

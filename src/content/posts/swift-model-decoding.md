@@ -4,7 +4,7 @@ slug: swift-model-decoding
 publishedAt: "2024-01-24 15:15:22"
 summary: "回顾 iOS 模型解析从 Objective-C 到 Codable 的演进与实践。"
 tags: [iOS, Swift, 数据解析, 技术演进]
-category: 技术志
+category: 备忘录
 toc: true
 math: true
 ---

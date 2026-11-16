@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="734" viewBox="0 0 560 734" role="img" aria-labelledby="title desc">
+<title id="title">Collection composition and type erasure</title>
+<desc id="desc">CollectionOrchestrator composes concrete Section A and Section B through the SectionController protocol, indexing their identities as AnyHashable. Each section captures content containing AnyCellPresenter wrappers. Each wrapper stores an AnyHashable item identity and retains a concrete presenter. Presenter A configures and binds Cell A; Presenter B configures and binds Cell B. Each section can contain multiple presenter types. This diagram shows composition and type relationships, not the UIKit update pipeline.</desc>
+<style>
+:root { --ink:#343a40; --muted:#686f77; --paper:#fafaf8; --box:#fff; --wrap:#edf3f8; }
+@media (prefers-color-scheme:dark) { :root { --ink:#e7eff8; --muted:#a9bad1; --paper:#101c32; --box:#192b44; --wrap:#223e56; } }
+@font-face { font-family:WiringHand; src:url(data:font/woff2;base64,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) format('woff2'); }
+text { font-family:WiringHand,'Kaiti SC',serif; font-size:22px; fill:var(--ink); }
+.small { font-size:18px; fill:var(--muted); }
+.note { font-size:18px; fill:var(--muted); }
+.sketch,.arrow { stroke:var(--ink); stroke-width:1.5; stroke-linecap:round; stroke-linejoin:round; }
+.arrow { fill:none; }
+</style>
+<path class="sketch" fill="var(--box)"  d="M 130 14 Q 286.4 12.5 430 15 Q 441 14 440 26 L 439 60 Q 440 71 429 70 Q 273.6 69 130 71 Q 119 70 120 59 L 121 24 Q 120 13 130 14 Z"/>
+<text x="280" y="49" text-anchor="middle" class="">CollectionOrchestrator</text>
+<path class="arrow" d="M 280 72 Q 281.5 97 280 122 M 275 115 L 280 122 L 285 115"/>
+<text x="337" y="103" text-anchor="middle" class="small">compose</text>
+<path class="sketch" fill="var(--paper)" stroke-dasharray="5 5" d="M 20 137 Q 290.8 135.5 540 138 Q 551 137 550 149 L 549 284 Q 550 295 539 294 Q 269.2 293 20 295 Q 9 294 10 283 L 11 147 Q 10 136 20 137 Z"/>
+<path d="M 108 137 H 452" stroke="var(--paper)" stroke-width="7"/>
+<text x="280" y="143" text-anchor="middle" class="">SectionController protocol</text>
+<text x="145" y="183" text-anchor="middle" class="small">section ID: AnyHashable</text>
+<text x="415" y="183" text-anchor="middle" class="small">section ID: AnyHashable</text>
+<path class="sketch" fill="var(--box)"  d="M 48 202 Q 149.28 200.5 242 203 Q 253 202 252 214 L 251 255 Q 252 266 241 265 Q 140.72 264 48 266 Q 37 265 38 254 L 39 212 Q 38 201 48 202 Z"/>
+<path class="sketch" fill="var(--box)"  d="M 318 202 Q 419.28 200.5 512 203 Q 523 202 522 214 L 521 255 Q 522 266 511 265 Q 410.72 264 318 266 Q 307 265 308 254 L 309 212 Q 308 201 318 202 Z"/>
+<text x="145" y="241" text-anchor="middle" class="">Section A</text>
+<text x="415" y="241" text-anchor="middle" class="">Section B</text>
+<path class="arrow" d="M 145 267 Q 146.5 317 145 367 M 140 360 L 145 367 L 150 360"/>
+<path class="arrow" d="M 415 267 Q 416.5 317 415 367 M 410 360 L 415 367 L 420 360"/>
+<rect x="67" y="315" width="156" height="28" rx="8" fill="var(--paper)"/>
+<rect x="337" y="315" width="156" height="28" rx="8" fill="var(--paper)"/>
+<text x="145" y="335" text-anchor="middle" class="small">capture content</text>
+<text x="415" y="335" text-anchor="middle" class="small">capture content</text>
+<path class="sketch" fill="var(--wrap)"  d="M 32 376 Q 149.92000000000002 374.5 258 377 Q 269 376 268 388 L 267 523 Q 268 534 257 533 Q 140.07999999999998 532 32 534 Q 21 533 22 522 L 23 386 Q 22 375 32 376 Z"/>
+<path class="sketch" fill="var(--wrap)"  d="M 302 376 Q 419.92 374.5 528 377 Q 539 376 538 388 L 537 523 Q 538 534 527 533 Q 410.08 532 302 534 Q 291 533 292 522 L 293 386 Q 292 375 302 376 Z"/>
+<text x="145" y="409" text-anchor="middle" class="">AnyCellPresenter</text>
+<text x="415" y="409" text-anchor="middle" class="">AnyCellPresenter</text>
+<text x="145" y="440" text-anchor="middle" class="small">item ID: AnyHashable</text>
+<text x="415" y="440" text-anchor="middle" class="small">item ID: AnyHashable</text>
+<path class="sketch" fill="var(--box)"  d="M 58 458 Q 148.88 456.5 232 459 Q 243 458 242 470 L 241 505 Q 242 516 231 515 Q 141.12 514 58 516 Q 47 515 48 504 L 49 468 Q 48 457 58 458 Z"/>
+<path class="sketch" fill="var(--box)"  d="M 328 458 Q 418.88 456.5 502 459 Q 513 458 512 470 L 511 505 Q 512 516 501 515 Q 411.12 514 328 516 Q 317 515 318 504 L 319 468 Q 318 457 328 458 Z"/>
+<text x="145" y="495" text-anchor="middle" class="">Presenter A</text>
+<text x="415" y="495" text-anchor="middle" class="">Presenter B</text>
+<path class="arrow" d="M 145 517 Q 146.5 561.5 145 606 M 140 599 L 145 606 L 150 599"/>
+<path class="arrow" d="M 415 517 Q 416.5 561.5 415 606 M 410 599 L 415 606 L 420 599"/>
+<rect x="58" y="556" width="174" height="28" rx="8" fill="var(--paper)"/>
+<rect x="328" y="556" width="174" height="28" rx="8" fill="var(--paper)"/>
+<text x="145" y="576" text-anchor="middle" class="small">configure / bind</text>
+<text x="415" y="576" text-anchor="middle" class="small">configure / bind</text>
+<path class="sketch" fill="var(--box)"  d="M 74 612 Q 148.24 610.5 216 613 Q 227 612 226 624 L 225 661 Q 226 672 215 671 Q 141.76 670 74 672 Q 63 671 64 660 L 65 622 Q 64 611 74 612 Z"/>
+<path class="sketch" fill="var(--box)"  d="M 344 612 Q 418.24 610.5 486 613 Q 497 612 496 624 L 495 661 Q 496 672 485 671 Q 411.76 670 344 672 Q 333 671 334 660 L 335 622 Q 334 611 344 612 Z"/>
+<text x="145" y="649" text-anchor="middle" class="">Cell A</text>
+<text x="415" y="649" text-anchor="middle" class="">Cell B</text>
+<text x="280" y="717" text-anchor="middle" class="note">Each section can contain multiple presenter types</text>
+</svg>

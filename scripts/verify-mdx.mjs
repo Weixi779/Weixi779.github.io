@@ -11,6 +11,7 @@ try {
   for (const { slug, draft } of [
     { slug: 'ios-performance-unnecessary-work', draft: false },
     { slug: 'mdx-playground', draft: true },
+    { slug: 'parade-third-answer', draft: false },
   ]) {
     if (existsSync('dist')) {
       assert.equal(existsSync(`dist/posts/${slug}/index.html`), !draft, `${slug}: incorrect publication state`);
@@ -35,7 +36,8 @@ try {
       assert.ok(!pre.textContent.includes('<span class="line">'), 'escaped highlighting markup');
     }
     const components = slug === 'ios-performance-unnecessary-work'
-      ? ['ReuseTimeline', 'HitchExplorer'] : ['ReuseTimeline'];
+      ? ['ReuseTimeline', 'HitchExplorer']
+      : slug === 'parade-third-answer' ? ['ParadeBenchmark'] : ['ReuseTimeline'];
     for (const name of components) {
       const island = [...article.querySelectorAll('astro-island[client="load"]')]
         .find(node => node.getAttribute('component-url')?.includes(`${name}.tsx`));

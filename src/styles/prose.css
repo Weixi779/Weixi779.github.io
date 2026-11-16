@@ -185,6 +185,27 @@
   text-align: center;
 }
 
+.prose .parade-chat-comparison {
+  display: grid;
+  margin-inline: 0;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.prose .parade-chat-comparison img {
+  width: 100%;
+  max-width: 340px;
+  margin: 0 auto;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+@media (max-width: 600px) {
+  .prose .parade-chat-comparison {
+    grid-template-columns: 1fr;
+  }
+}
+
 .prose-table {
   --table-surface: color-mix(
     in srgb,

@@ -1,0 +1,106 @@
+diff --git a/Tests/ParadeTests/CollectionOrchestratorTests.swift b/Tests/ParadeTests/CollectionOrchestratorTests.swift
+index 01f5154..0ca7c56 100644
+--- a/Tests/ParadeTests/CollectionOrchestratorTests.swift
++++ b/Tests/ParadeTests/CollectionOrchestratorTests.swift
+@@ -54,8 +54,8 @@ struct CollectionOrchestratorTests {
+         #expect(events.actions == ["new", "selected:new"])
+         #expect(cell.configurations == configurations)
+         if backend == .manual {
+-            // The captured layout is invalidated, but equal cells are not reconfigured.
+-            #expect(fixture.collectionView.batches == 1)
++            // Temporary fast path invalidates layout directly without opening a batch.
++            #expect(fixture.collectionView.batches == 0)
+             #expect(fixture.collectionView.reloads == 0)
+         }
+         #expect(fixture.orchestrator.appliedRevision == 2)
+@@ -162,7 +162,8 @@ struct CollectionOrchestratorTests {
+         #expect(events.actions == ["new"])
+         if backend == .manual {
+             #expect(fixture.collectionView.sectionReloads.isEmpty)
+-            #expect(fixture.collectionView.batches == 1)
++            // Compatible supplementary updates also use the no-structure path.
++            #expect(fixture.collectionView.batches == 0)
+         }
+     }
+ 
+diff --git a/Tests/ParadeTests/SpikeOptimizationTests.swift b/Tests/ParadeTests/SpikeOptimizationTests.swift
+new file mode 100644
+index 0000000..1b2c48b
+--- /dev/null
++++ b/Tests/ParadeTests/SpikeOptimizationTests.swift
+@@ -0,0 +1,75 @@
++// Created by weixi on 2026/11/09.
++import UIKit
++import Testing
++@testable import Parade
++
++@MainActor
++struct SpikeOptimizationTests {
++    private struct Item: CellPresenter {
++        let id: Int
++        var revision: Int = 0
++        func configure(_ cell: UICollectionViewCell) {}
++    }
++    private func snapshot(_ sections: [(Int, [Item])]) throws -> CollectionSnapshot<Int> {
++        try CollectionSnapshot(sections.map {
++            SectionSnapshot(id: $0.0, cells: $0.1.map(AnyCellPresenter.init), layout: 0)
++        })
++    }
++    private func validate(_ old: CollectionSnapshot<Int>, _ new: CollectionSnapshot<Int>) throws -> SectionedChanges {
++        let oldIndex = try CollectionPositions(old.sections, input: .source)
++        let newIndex = try CollectionPositions(new.sections, input: .target)
++        let input = PackedDiffInput(from: old.sections, to: new.sections, sourcePositions: oldIndex)
++        let changes = try input.calculate()
++        // Replay every optimized result through the existing full validator,
++        // even when the production experiment would bypass an empty structure.
++        _ = try CollectionUpdatePlan(from: old, to: new, prepared: PreparedSectionedDiff(
++            changes: changes, sourcePositions: oldIndex, targetPositions: newIndex))
++        let plan = try PackedStructuralPlan.calculate(input).materialize(from: old, to: new, input: input)
++        try CollectionUpdatePlan.validate(plan.batches, from: old.sections, to: new.sections)
++        var expected: [ItemLocation] = []
++        for (s, section) in new.sections.enumerated() {
++            for (i, item) in section.cells.enumerated() {
++                if let prior = old.cellsById[item.id], prior != item { expected.append(ItemLocation(section: s,item: i)) }
++            }
++        }
++        #expect(Set(changes.updatedItems) == Set(expected))
++        return changes
++    }
++    @Test func allSmallPermutations() throws {
++        func permutations(_ values: [Int], _ visit: ([Int]) throws -> Void) rethrows {
++            if values.isEmpty { try visit([]); return }
++            for i in values.indices {
++                var rest = values; let first = rest.remove(at: i)
++                try permutations(rest) { try visit([first] + $0) }
++            }
++        }
++        for n in 0...7 {
++            let source = try snapshot([(0, (0..<n).map { Item(id: $0) })])
++            try permutations(Array(0..<n)) { order in
++                let target = try snapshot([(0, order.map { Item(id: $0, revision: $0 % 2) })])
++                let changes = try validate(source, target)
++                // CHECK_MINIMUM
++                _ = changes
++            }
++        }
++    }
++    @Test func crossSectionInsertionDeletionAndContent() throws {
++        var state: UInt64 = 0x504152414445
++        func next(_ limit: Int) -> Int {
++            state = state &* 6364136223846793005 &+ 1
++            return Int(state >> 32) % limit
++        }
++        let source = try snapshot((0..<4).map { s in (s, (s*10..<s*10+10).map { Item(id: $0) }) })
++        for _ in 0..<200 {
++            var ids = Array(0..<4)
++            ids.remove(at: next(ids.count)); ids.append(4)
++            for i in ids.indices.reversed() { ids.swapAt(i, next(i+1)) }
++            var items = (0..<45).filter { $0 >= 40 || next(5) != 0 }
++            for i in items.indices.reversed() { items.swapAt(i, next(i+1)) }
++            var groups = [[Item]](repeating: [], count: ids.count)
++            for id in items { groups[next(groups.count)].append(Item(id: id, revision: next(2))) }
++            let target = try snapshot(Array(zip(ids,groups)))
++            _ = try validate(source, target)
++        }
++    }
++}

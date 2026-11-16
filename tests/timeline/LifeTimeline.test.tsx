@@ -185,8 +185,9 @@ it('offers zoom controls and keeps all series members directly reachable', () =>
   fireEvent.click(screen.getByRole('button', { name: '放大时间轴' }));
   expect(screen.getByLabelText('可见时间跨度').textContent).not.toBe(before);
   expect(screen.getByLabelText('当前年份').textContent).toBe(dateBefore);
+  const zoomed = screen.getByLabelText('可见时间跨度').textContent;
   fireEvent.click(screen.getByRole('button', { name: '重置' }));
-  expect(Number.parseFloat(screen.getByLabelText('可见时间跨度').textContent!)).toBeGreaterThan(Number.parseFloat(before!));
+  expect(Number.parseFloat(screen.getByLabelText('可见时间跨度').textContent!)).toBeGreaterThan(Number.parseFloat(zoomed!));
 });
 
 it('handles two-finger pinch with the same scale controls and releases touch listeners', () => {

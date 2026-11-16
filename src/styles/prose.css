@@ -28,15 +28,16 @@
   padding: 64px 0;
 }
 
-/* Keep normal document flow and collapsing margins while sharing one reading column. */
-.prose.prose--article > * {
+/* The article owns one reading column for text, media and interactive content. */
+.prose--article {
   max-width: 760px;
   margin-inline: auto;
 }
 
-/* These existing content containers may use the full article width. */
-.prose.prose--article > :where(pre, figure, img, .prose-table, astro-island, p:has(> img:only-child)) {
+/* Keep normal document flow and collapsing margins, including figure defaults. */
+.prose.prose--article > * {
   max-width: 100%;
+  margin-inline: auto;
 }
 
 .prose :where(h1, h2, h3, h4, h5, h6) {

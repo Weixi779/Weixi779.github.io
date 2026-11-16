@@ -67,7 +67,7 @@ input {
   align-items: start;
 }
 
-/* Wide content uses the article area; prose.css limits the reading column. */
+/* prose.css owns the reading width, with or without the table of contents. */
 .post-shell--without-toc {
   display: block;
   max-width: 960px;

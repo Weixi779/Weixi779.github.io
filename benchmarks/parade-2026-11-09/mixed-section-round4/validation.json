@@ -1,0 +1,8 @@
+{
+  "tests": "\u2714 Test run with 164 tests in 14 suites passed after 18.328 seconds.",
+  "formalGroups": 252,
+  "formalSamples": 6840,
+  "probeGroups": 20,
+  "reproductionSHA256": "81e4e7e4a557f7c8637a4c6c53b2d1563b40c0c4e2f396ae23f5b5c45a15cc52",
+  "paradeStatus": ""
+}

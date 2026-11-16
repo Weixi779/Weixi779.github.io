@@ -1,0 +1,298 @@
+diff --git a/Sources/Parade/DataSource/Staged/CollectionUpdatePlan+Validation.swift b/Sources/Parade/DataSource/Staged/CollectionUpdatePlan+Validation.swift
+index d79996a..1fdbde7 100644
+--- a/Sources/Parade/DataSource/Staged/CollectionUpdatePlan+Validation.swift
++++ b/Sources/Parade/DataSource/Staged/CollectionUpdatePlan+Validation.swift
+@@ -84,10 +84,13 @@ extension CollectionUpdatePlan {
+     static func validate(
+         _ batches: [CollectionBatch<Layout>],
+         from source: [SectionSnapshot<Layout>],
+-        to target: [SectionSnapshot<Layout>]
++        to target: [SectionSnapshot<Layout>],
++        inputsAlreadyValidated: Bool = false
+     ) throws {
+-        _ = try CollectionPositions(source, input: .source)
+-        _ = try CollectionPositions(target, input: .target)
++        if !inputsAlreadyValidated {
++            _ = try CollectionPositions(source, input: .source)
++            _ = try CollectionPositions(target, input: .target)
++        }
+         var current = source
+         for (index, batch) in batches.enumerated() {
+             do {
+diff --git a/Sources/Parade/DataSource/Staged/CollectionUpdatePlan.swift b/Sources/Parade/DataSource/Staged/CollectionUpdatePlan.swift
+index 4da395d..944afd5 100644
+--- a/Sources/Parade/DataSource/Staged/CollectionUpdatePlan.swift
++++ b/Sources/Parade/DataSource/Staged/CollectionUpdatePlan.swift
+@@ -9,11 +9,26 @@ struct CollectionUpdatePlan<Layout> {
+     init(
+         from source: CollectionSnapshot<Layout>,
+         to target: CollectionSnapshot<Layout>,
+-        using algorithm: any SectionedDiffAlgorithm = SectionedDiff()
++        using algorithm: any SectionedDiffAlgorithm = SectionedDiff(),
++        prepared: PreparedSectionedDiff? = nil
+     ) throws {
+-        let changes = try algorithm.diff(from: source.sections, to: target.sections)
+-        let sourcePositions = try CollectionPositions(source.sections, input: .source)
+-        let targetPositions = try CollectionPositions(target.sections, input: .target)
++        let sourcePositions: CollectionPositions<AnyHashable, AnyHashable>
++        let targetPositions: CollectionPositions<AnyHashable, AnyHashable>
++        let changes: SectionedChanges
++        if let prepared {
++            sourcePositions = prepared.sourcePositions
++            targetPositions = prepared.targetPositions
++            changes = prepared.changes
++        } else {
++            sourcePositions = try CollectionPositions(source.sections, input: .source)
++            targetPositions = try CollectionPositions(target.sections, input: .target)
++            if algorithm is SectionedDiff {
++                changes = try PackedDiffInput(from: source.sections, to: target.sections, sourcePositions: sourcePositions).calculate()
++            } else {
++                // Custom algorithms keep the original generic input and validation contract.
++                changes = try algorithm.diff(from: source.sections, to: target.sections)
++            }
++        }
+         try Self.validate(
+             changes, from: source.sections, to: target.sections,
+             sourcePositions: sourcePositions, targetPositions: targetPositions
+@@ -115,7 +130,7 @@ struct CollectionUpdatePlan<Layout> {
+             if !sectionBatch.isEmpty { batches.append(sectionBatch) }
+         }
+ 
+-        try Self.validate(batches, from: source.sections, to: target.sections)
++        try Self.validate(batches, from: source.sections, to: target.sections, inputsAlreadyValidated: true)
+         self.batches = batches
+         content = CollectionContentUpdates<Layout>(
+             from: source, to: target,
+@@ -123,6 +138,11 @@ struct CollectionUpdatePlan<Layout> {
+         )
+     }
+ 
++    init(batches: [CollectionBatch<Layout>], content: CollectionContentUpdates<Layout>) {
++        self.batches = batches
++        self.content = content
++    }
++
+     typealias ValidationError = CollectionPlanValidationError
+ }
+ 
+diff --git a/Sources/Parade/DataSource/Staged/StagedCollectionDataSource.swift b/Sources/Parade/DataSource/Staged/StagedCollectionDataSource.swift
+index 2c9b34b..0ec0f01 100644
+--- a/Sources/Parade/DataSource/Staged/StagedCollectionDataSource.swift
++++ b/Sources/Parade/DataSource/Staged/StagedCollectionDataSource.swift
+@@ -69,9 +69,24 @@ public final class StagedCollectionDataSource<Layout>: NSObject, CollectionDataS
+         }
+         // UIKit must consume the previous counts before the first batch.
+         collectionView.layoutIfNeeded()
++        let planningStart = SpikeTimings.now()
+         let plan: CollectionUpdatePlan<Layout>
+         do {
+-            plan = try CollectionUpdatePlan<Layout>(from: source, to: target, using: diffAlgorithm)
++            if diffAlgorithm is SectionedDiff {
++                let sourcePositions = try CollectionPositions(source.sections, input: .source)
++                // Target snapshot validation already established target identity uniqueness.
++                let input = PackedDiffInput(from: source.sections, to: target.sections,
++                                            sourcePositions: sourcePositions)
++                let workerStart = SpikeTimings.now()
++                let result = try await Task.detached(priority: .userInitiated) {
++                    precondition(!Thread.isMainThread)
++                    return try PackedStructuralPlan.calculate(input)
++                }.value
++                SpikeTimings.workerWaitMs = SpikeTimings.elapsed(workerStart)
++                plan = result.materialize(from: source, to: target, input: input)
++            } else {
++                plan = try CollectionUpdatePlan<Layout>(from: source, to: target, using: diffAlgorithm)
++            }
+         } catch {
+             // Planning completes before mutating UIKit, so recovery installs target directly.
+             reload(target)
+@@ -81,6 +96,7 @@ public final class StagedCollectionDataSource<Layout>: NSObject, CollectionDataS
+             )]
+         }
+ 
++        SpikeTimings.planningMs = SpikeTimings.elapsed(planningStart)
+         for batch in plan.batches {
+             await performBatch(animated: animated) {
+                 self.sections = batch.sections
+diff --git a/Sources/Parade/Diff/PackedDiffInput.swift b/Sources/Parade/Diff/PackedDiffInput.swift
+new file mode 100644
+index 0000000..3e2a321
+--- /dev/null
++++ b/Sources/Parade/Diff/PackedDiffInput.swift
+@@ -0,0 +1,48 @@
++// Created by weixi on 2026/11/09.
++// Throwaway experiment: only immutable integers and flags cross the worker boundary.
++struct PackedDiffInput: Sendable {
++    struct Item: DiffableElement, Sendable {
++        let id: Int
++        let changed: Bool
++    }
++    struct Section: DiffableSection, Sendable {
++        let id: Int
++        let changed: Bool
++        let items: [Item]
++        func isContentEqual(to other: Self) -> Bool { changed == other.changed }
++    }
++    let source: [Section]
++    let target: [Section]
++
++    init<L>(from old: [SectionSnapshot<L>], to new: [SectionSnapshot<L>],
++            sourcePositions: CollectionPositions<AnyHashable, AnyHashable>) {
++        var offsets: [Int] = []
++        var next = 0
++        source = old.enumerated().map { section, value in
++            offsets.append(next)
++            let items = value.cells.map { _ in
++                defer { next += 1 }
++                return Item(id: next, changed: false)
++            }
++            return Section(id: section, changed: false, items: items)
++        }
++        target = new.enumerated().map { section, value in
++            let origin = sourcePositions.sectionIndices[value.id]
++            let items = value.cells.map { presenter in
++                if let location = sourcePositions.itemLocations[presenter.id] {
++                    return Item(id: offsets[location.section] + location.item,
++                                changed: old[location.section].cells[location.item] != presenter)
++                }
++                defer { next += 1 }
++                return Item(id: next, changed: false)
++            }
++            return Section(id: origin ?? old.count + section,
++                changed: origin.map { !old[$0].isContentEqual(to: value) } ?? false,
++                items: items)
++        }
++    }
++
++    func calculate() throws -> SectionedChanges {
++        try SectionedDiff().diff(from: source, to: target)
++    }
++}
+diff --git a/Sources/Parade/Diff/PackedStructuralPlan.swift b/Sources/Parade/Diff/PackedStructuralPlan.swift
+new file mode 100644
+index 0000000..4b88422
+--- /dev/null
++++ b/Sources/Parade/Diff/PackedStructuralPlan.swift
+@@ -0,0 +1,76 @@
++// Created by weixi on 2026/11/09.
++import UIKit
++
++// Internal experiment. All values crossing the worker boundary are Sendable.
++struct PackedStructuralPlan: Sendable {
++    struct Contents: Sendable { let section: Int; let items: [Int] }
++    struct Batch: Sendable {
++        let contents: [Contents]
++        let deletedSections: IndexSet
++        let insertedSections: IndexSet
++        let movedSections: [(from: Int, to: Int)]
++        let deletedItems: [ItemLocation]
++        let insertedItems: [ItemLocation]
++        let movedItems: [(from: ItemLocation, to: ItemLocation)]
++    }
++    let changes: SectionedChanges
++    let batches: [Batch]
++
++    static func calculate(_ input: PackedDiffInput) throws -> Self {
++        func capture(_ sections: [PackedDiffInput.Section]) throws -> CollectionSnapshot<Int> {
++            try CollectionSnapshot(sections.map { section in
++                SectionSnapshot(id: section.id,
++                    cells: section.items.map { AnyCellPresenter(WorkerPresenter(id: $0.id, changed: $0.changed)) },
++                    layout: 0)
++            })
++        }
++        // Presenter erasers below are created and consumed entirely inside this worker.
++        let source = try capture(input.source)
++        let target = try capture(input.target)
++        let changes = try input.calculate()
++        let prepared = PreparedSectionedDiff(changes: changes,
++            sourcePositions: try CollectionPositions(source.sections, input: .source),
++            targetPositions: try CollectionPositions(target.sections, input: .target))
++        let plan = try CollectionUpdatePlan(from: source, to: target, prepared: prepared)
++        return Self(changes: changes, batches: plan.batches.map { batch in
++            Batch(contents: batch.sections.map { section in
++                Contents(section: section.id.base as! Int, items: section.cells.map { $0.id.base as! Int })
++            }, deletedSections: batch.deletedSections, insertedSections: batch.insertedSections,
++               movedSections: batch.movedSections, deletedItems: batch.deletedItems,
++               insertedItems: batch.insertedItems, movedItems: batch.movedItems)
++        })
++    }
++
++    func materialize<L>(from source: CollectionSnapshot<L>, to target: CollectionSnapshot<L>,
++                        input: PackedDiffInput) -> CollectionUpdatePlan<L> {
++        let oldItems = source.sections.flatMap(\.cells)
++        var added: [AnyCellPresenter] = []
++        for (encoded, section) in zip(input.target, target.sections) {
++            for (item, presenter) in zip(encoded.items, section.cells) where item.id >= oldItems.count {
++                precondition(item.id == oldItems.count + added.count)
++                added.append(presenter)
++            }
++        }
++        let batches = batches.map { batch in
++            CollectionBatch<L>(sections: batch.contents.map { content in
++                let original = content.section < source.sections.count
++                    ? source.sections[content.section]
++                    : target.sections[content.section - source.sections.count]
++                return original.replacingCells(content.items.map {
++                    $0 < oldItems.count ? oldItems[$0] : added[$0 - oldItems.count]
++                })
++            }, deletedSections: batch.deletedSections, insertedSections: batch.insertedSections,
++               movedSections: batch.movedSections, deletedItems: batch.deletedItems,
++               insertedItems: batch.insertedItems, movedItems: batch.movedItems)
++        }
++        return CollectionUpdatePlan(batches: batches,
++            content: CollectionContentUpdates(from: source, to: target,
++                updatedSections: changes.updatedSections, updatedItems: Set(changes.updatedItems)))
++    }
++}
++
++private struct WorkerPresenter: CellPresenter {
++    let id: Int
++    let changed: Bool
++    @MainActor func configure(_ cell: UICollectionViewCell) {}
++}
+diff --git a/Sources/Parade/Diff/PreparedSectionedDiff.swift b/Sources/Parade/Diff/PreparedSectionedDiff.swift
+new file mode 100644
+index 0000000..142912a
+--- /dev/null
++++ b/Sources/Parade/Diff/PreparedSectionedDiff.swift
+@@ -0,0 +1,6 @@
++// Created by weixi on 2026/11/09.
++struct PreparedSectionedDiff {
++    let changes: SectionedChanges
++    let sourcePositions: CollectionPositions<AnyHashable, AnyHashable>
++    let targetPositions: CollectionPositions<AnyHashable, AnyHashable>
++}
+diff --git a/Sources/Parade/Diff/SectionedDiff.swift b/Sources/Parade/Diff/SectionedDiff.swift
+index 904831d..2f16efe 100644
+--- a/Sources/Parade/Diff/SectionedDiff.swift
++++ b/Sources/Parade/Diff/SectionedDiff.swift
+@@ -12,6 +12,15 @@ public struct SectionedDiff: SectionedDiffAlgorithm {
+     ) throws -> SectionedChanges {
+         let sourceIndex = try CollectionPositions(source, input: .source)
+         let targetIndex = try CollectionPositions(target, input: .target)
++        return diff(from: source, to: target, sourceIndex: sourceIndex, targetIndex: targetIndex)
++    }
++
++    // Internal fast path: these inputs were already checked by the plan.
++    func diff<Section: DiffableSection>(
++        from source: [Section], to target: [Section],
++        sourceIndex: CollectionPositions<Section.Id, Section.Item.Id>,
++        targetIndex: CollectionPositions<Section.Id, Section.Item.Id>
++    ) -> SectionedChanges {
+         var changes = SectionedChanges()
+         var sectionOrder = SourceOrder(count: source.count)
+         for (section, value) in source.enumerated() {
+diff --git a/Sources/Parade/Diff/SpikeTimings.swift b/Sources/Parade/Diff/SpikeTimings.swift
+new file mode 100644
+index 0000000..edaf9de
+--- /dev/null
++++ b/Sources/Parade/Diff/SpikeTimings.swift
+@@ -0,0 +1,9 @@
++// Created by weixi on 2026/11/09.
++import Foundation
++@MainActor enum SpikeTimings {
++    static var planningMs: Double = 0
++    static var workerWaitMs: Double = 0
++    static func now() -> UInt64 { DispatchTime.now().uptimeNanoseconds }
++    static func elapsed(_ start: UInt64) -> Double { Double(now()-start)/1e6 }
++    static func reset() { planningMs=0;workerWaitMs=0 }
++}

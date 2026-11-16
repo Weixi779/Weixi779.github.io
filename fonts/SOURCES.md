@@ -13,12 +13,22 @@ The footer fonts below are compressed to WOFF2 by the same command, with their c
   and CJK text inside code blocks.
   [SIL Open Font License 1.1](licenses/LXGW-WenKai-GB-OFL-1.1.txt).
 - JetBrains Mono v2.304: official webfonts for Latin text and code, including the homepage banner eyebrow and quote.
+- [Source Han Sans 2.005R](https://github.com/adobe-fonts/source-han-sans/releases/tag/2.005R):
+  Simplified Chinese Medium for prose emphasis and Bold for prose headings, subset and
+  renamed to **Weixi Prose** under [SIL Open Font License 1.1](licenses/Source-Han-Sans-OFL-1.1.txt).
+  The original CFF outlines and layout tables are preserved. English emphasis and headings
+  continue to use JetBrains Mono Bold.
 
 The Chinese subsets contain the unique characters currently used by text-bearing
 files under `src`. Run the update command after adding new site or Markdown content.
 
-New XiHei has one regular weight. Bold headings and emphasis use browser-synthesized
-bold; the regular file is not declared as a variable or multi-weight font.
+New XiHei supplies the regular Chinese prose. Prose emphasis and headings explicitly
+select the two Weixi Prose faces, rather than synthesizing bold from New XiHei.
+The CSS role alias `Weixi Prose Emphasis` maps semantic weight 700 to Source Han Sans
+Medium (the file's actual weight remains 500), while `Weixi Prose Heading` maps 700
+to Bold. This retains JetBrains Mono's real 700 face for Latin text in both roles.
+Neither static file is declared as a variable font. Navigation and banner typography
+continue to use WenKai.
 
 ## Sources and rebuilding
 
@@ -29,9 +39,20 @@ bold; the regular file is not declared as a variable or multi-weight font.
 - [Site sources and character input](https://github.com/Weixi779/Weixi779.github.io/tree/main/src).
 - [Generated Weixi Sans subset](weixi-sans-subset.woff2), also under IPA Font License 1.0.
 
-In a checkout of the site repository, run `npm ci` and `npm run fonts:update`.
+In a checkout of the site repository, run `npm ci`, install FontTools with
+`python3 -m pip install fonttools`, then run `npm run fonts:update`.
 The generator checks the source font hash, changes the subset's family name,
 preserves copyright and license metadata, and writes WOFF2 assets.
+The CFF renaming helper uses FontTools to retain the Source Han Sans outlines,
+OpenType layout tables, and copyright/license records. The existing Chinese
+character collection and WOFF2 subset pipeline are shared by all four faces.
+
+Pinned Source Han Sans inputs:
+
+- [Medium](https://raw.githubusercontent.com/adobe-fonts/source-han-sans/2.005R/SubsetOTF/CN/SourceHanSansCN-Medium.otf),
+  SHA-256 `a94e558a2fe972bee4f46bce0843abff37063fd68c33f1e7d9058f6f09432b01`.
+- [Bold](https://raw.githubusercontent.com/adobe-fonts/source-han-sans/2.005R/SubsetOTF/CN/SourceHanSansCN-Bold.otf),
+  SHA-256 `62383707c086a32f3afd5e293f34c7eff64c7fea31f579fdc6cbe34d920519a6`.
 
 ## Restoring the original IPA font
 
@@ -63,7 +84,7 @@ Locally hosted Regular fonts, compressed without subsetting or changing glyphs:
   [SIL Open Font License](licenses/SourceSans3-OFL.txt).
 
 These fonts do not replace the article or header navigation fonts. The original
-TTF sources live in `scripts/font-sources/` in the repository, outside the public
+TTF sources live in `assets/fonts/` in the repository, outside the public
 deployment directory. Rebuild just these two assets offline with
 `npm run fonts:update -- --footer-only`. Compression preserves the original
 names, shaping tables, copyright and license metadata.

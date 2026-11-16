@@ -1,0 +1,294 @@
+diff --git a/Tests/ParadeTests/CollectionBatchTests.swift b/Tests/ParadeTests/CollectionBatchTests.swift
+--- a/Tests/ParadeTests/CollectionBatchTests.swift
++++ b/Tests/ParadeTests/CollectionBatchTests.swift
+@@ -149,11 +149,25 @@
+         }
+     }
+ 
+-    @Test("Item and section rotations retain the greedy move policy", arguments: [
+-        ([1, 2, 3, 0], 3),
++    @Test("Built-in LIS policy minimizes item and section rotations", arguments: [
++        ([1, 2, 3, 0], 1),
+         ([3, 0, 1, 2], 1)
+     ])
+     func directionalRotations(target: [Int], expectedMoves: Int) throws {
++        func verify(from source: [Section], to target: [Section]) throws -> [Batch] {
++            let old = try CollectionSnapshot<CompositionalSectionLayout>(source)
++            let new = try CollectionSnapshot<CompositionalSectionLayout>(target)
++            let input = PackedDiffInput(from: source, to: target, sourcePositions: old.positions)
++            let packed = try PackedStructuralPlan.calculate(input)
++            let batches = packed.materialize(from: old, to: new, input: input).batches
++            // These rotations contain only section OR item operations, so the
++            // existing independent staged replayer can verify the real built-in plan.
++            try CollectionUpdatePlan<CompositionalSectionLayout>.validate(batches, from: source, to: target)
++            var current = source
++            for batch in batches { current = try replay(batch, from: current) }
++            #expect(identities(current) == identities(target))
++            return batches
++        }
+         let items = try verify(
+             from: [Section(id: 0, items: [0, 1, 2, 3])],
+             to: [Section(id: 0, items: target)]
+diff --git a/Tests/ParadeTests/CollectionOrchestratorTests.swift b/Tests/ParadeTests/CollectionOrchestratorTests.swift
+--- a/Tests/ParadeTests/CollectionOrchestratorTests.swift
++++ b/Tests/ParadeTests/CollectionOrchestratorTests.swift
+@@ -9,6 +9,90 @@
+ @MainActor
+ @Suite("Collection orchestration")
+ struct CollectionOrchestratorTests {
++    @Test("Merged structure preserves selection and installs content after structure", arguments: [false, true])
++    func mergedSelectionAndContentTiming(animated: Bool) async throws {
++        let fixture = CollectionFixture()
++        defer { fixture.close() }
++        try await fixture.orchestrator.compose([textSection("removed", [1,2]), textSection("retained", [3])]).apply(animated: false)
++        let view = fixture.collectionView
++        let path = IndexPath(item: 0, section: 0)
++        let oldCell = try #require(view.cellForItem(at: path) as? TextCell)
++        view.selectItem(at: path, animated: false, scrollPosition: [])
++        view.resetCounts()
++        var structuralText: String?
++        var structuralSelection = false
++        view.afterBatch = {
++            if view.batches == 1 {
++                structuralText = (view.cellForItem(at: path) as? TextCell)?.label.text
++                structuralSelection = view.indexPathsForSelectedItems?.contains(path) == true
++            }
++        }
++        let content = String(repeating: "A changed message. ", count: 8)
++        try await fixture.orchestrator.compose([
++            TestSection(id: "inserted", cells: [AnyCellPresenter(TextPresenter(id: 1, text: content)), AnyCellPresenter(TextPresenter(id: 4, text: "New"))]),
++            textSection("retained", [2,3])
++        ]).apply(animated: animated)
++        view.afterBatch = nil
++        #expect(structuralText == "Item 1")
++        #expect(structuralSelection)
++        let newCell = try #require(view.cellForItem(at: path) as? TextCell)
++        #expect(newCell === oldCell)
++        #expect(newCell.label.text == content)
++        #expect(view.indexPathsForSelectedItems == [path])
++        #expect(view.batches == (animated ? 2 : 1))
++        #expect(view.reloads == 0)
++        #expect(view.movedItems.count == 2)
++        #expect(view.reconfigured.contains(path))
++    }
++
++    @Test("Mixed section operations preserve selected survivors across 300 transitions")
++    func randomizedMixedUIKitSelection() async throws {
++        let fixture = CollectionFixture()
++        defer { fixture.close() }
++        let view = fixture.collectionView
++        view.allowsMultipleSelection = true
++        var state: UInt64 = 0x53454354494f4e
++        func next(_ limit: Int) -> Int {
++            state = state &* 6364136223846793005 &+ 1
++            return Int(state >> 32) % limit
++        }
++        try await fixture.orchestrator.compose([textSection("seed", [0])]).apply(animated: false)
++        view.selectItem(at: IndexPath(item:0,section:0), animated:false, scrollPosition:[])
++        view.resetCounts()
++        var previous: Set<Int> = [0]
++        for generation in 0..<300 {
++            var sectionIDs = Array(0..<5)
++            for i in sectionIDs.indices.reversed() { sectionIDs.swapAt(i, next(i+1)) }
++            sectionIDs = Array(sectionIDs.prefix(next(6)))
++            var groups = [[Int]](repeating: [], count: sectionIDs.count)
++            if !groups.isEmpty {
++                var ids = (0..<12).filter { _ in next(4) != 0 }
++                for i in ids.indices.reversed() { ids.swapAt(i, next(i+1)) }
++                for id in ids { groups[next(groups.count)].append(id) }
++            }
++            let current = Set(groups.flatMap { $0 })
++            let sections = zip(sectionIDs,groups).map { s, ids in
++                TestSection(id: "s\(s)", cells: ids.map { AnyCellPresenter(TextPresenter(id: $0, text: "\(generation):\($0)")) })
++            }
++            try await fixture.orchestrator.compose(sections).apply(animated: false)
++            let selected = Set((view.indexPathsForSelectedItems ?? []).map { groups[$0.section][$0.item] })
++            #expect(selected == previous.intersection(current))
++            for (s, ids) in groups.enumerated() {
++                for (i,id) in ids.enumerated() {
++                    let path = IndexPath(item: i, section: s)
++                    #expect(fixture.orchestrator.indexPath(for: id) == path)
++                    view.selectItem(at: path, animated: false, scrollPosition: [])
++                }
++            }
++            for path in view.indexPathsForVisibleItems {
++                let cell = try #require(view.cellForItem(at: path) as? TextCell)
++                #expect(cell.label.text == "\(generation):\(groups[path.section][path.item])")
++            }
++            previous = current
++        }
++        #expect(view.reloads == 0)
++    }
++
+     @Test("The first batch inserts populated and empty sections", arguments: [false, true])
+     func initialSectionsWithEmptySection(animated: Bool) async throws {
+         let fixture = CollectionFixture()
+@@ -54,8 +138,8 @@
+         #expect(events.actions == ["new", "selected:new"])
+         #expect(cell.configurations == configurations)
+         if backend == .manual {
+-            // The captured layout is invalidated, but equal cells are not reconfigured.
+-            #expect(fixture.collectionView.batches == 1)
++            // Temporary fast path invalidates layout directly without opening a batch.
++            #expect(fixture.collectionView.batches == 0)
+             #expect(fixture.collectionView.reloads == 0)
+         }
+         #expect(fixture.orchestrator.appliedRevision == 2)
+@@ -162,7 +246,8 @@
+         #expect(events.actions == ["new"])
+         if backend == .manual {
+             #expect(fixture.collectionView.sectionReloads.isEmpty)
+-            #expect(fixture.collectionView.batches == 1)
++            // Compatible supplementary updates also use the no-structure path.
++            #expect(fixture.collectionView.batches == 0)
+         }
+     }
+ 
+@@ -747,6 +832,7 @@
+     var movedItems: [(from: IndexPath, to: IndexPath)] = []
+     var activeBatches = 0
+     var maximumActiveBatches = 0
++    var afterBatch: (() -> Void)?
+ 
+     func resetCounts() {
+         batches = 0
+@@ -791,6 +877,7 @@
+         maximumActiveBatches = max(maximumActiveBatches, activeBatches)
+         super.performBatchUpdates(updates) { [self] finished in
+             activeBatches -= 1
++            afterBatch?()
+             completion?(finished)
+         }
+     }
+diff --git a/Tests/ParadeTests/PackedPlanningTests.swift b/Tests/ParadeTests/PackedPlanningTests.swift
+new file mode 100644
+--- /dev/null
++++ b/Tests/ParadeTests/PackedPlanningTests.swift
+@@ -0,0 +1,127 @@
++// Created by weixi on 2026/11/09.
++import UIKit
++import Testing
++@testable import Parade
++
++@MainActor
++struct PackedPlanningTests {
++    private struct Item: CellPresenter {
++        let id: Int
++        var revision: Int = 0
++        func configure(_ cell: UICollectionViewCell) {}
++    }
++    private func snapshot(_ sections: [(Int, [Item])]) throws -> CollectionSnapshot<Int> {
++        try CollectionSnapshot(sections.map {
++            SectionSnapshot(id: $0.0, cells: $0.1.map(AnyCellPresenter.init), layout: 0)
++        })
++    }
++    private func validate(_ old: CollectionSnapshot<Int>, _ new: CollectionSnapshot<Int>) throws -> SectionedChanges {
++        let oldIndex = try CollectionPositions(old.sections, input: .source)
++        let input = PackedDiffInput(from: old.sections, to: new.sections, sourcePositions: oldIndex)
++        let changes = try input.calculate()
++        // Replay every optimized result through the existing full validator,
++        // even when the built-in planner would bypass an empty structure.
++        _ = try CollectionUpdatePlan(from: old, to: new, changes: changes)
++        let packed = try PackedStructuralPlan.calculate(input)
++        for batch in packed.batches { try PackedStructuralPlan.validateMixedBatch(batch, input: input) }
++        // The old independent staged planner above still verifies the same diff.
++        // Its replay explicitly forbids mixed batches, so it cannot replay this executor format.
++        var expected: [ItemLocation] = []
++        for (s, section) in new.sections.enumerated() {
++            for (i, item) in section.cells.enumerated() {
++                if let prior = old.cellsById[item.id], prior != item { expected.append(ItemLocation(section: s,item: i)) }
++            }
++        }
++        #expect(Set(changes.updatedItems) == Set(expected))
++        return changes
++    }
++    @Test func allSmallPermutations() throws {
++        func permutations(_ values: [Int], _ visit: ([Int]) throws -> Void) rethrows {
++            if values.isEmpty { try visit([]); return }
++            for i in values.indices {
++                var rest = values; let first = rest.remove(at: i)
++                try permutations(rest) { try visit([first] + $0) }
++            }
++        }
++        for n in 0...7 {
++            let source = try snapshot([(0, (0..<n).map { Item(id: $0) })])
++            try permutations(Array(0..<n)) { order in
++                let target = try snapshot([(0, order.map { Item(id: $0, revision: $0 % 2) })])
++                let changes = try validate(source, target)
++                var lengths = [Int](repeating: 1, count: order.count)
++                for i in order.indices {
++                    for j in 0..<i where order[j] < order[i] { lengths[i] = max(lengths[i], lengths[j] + 1) }
++                }
++                #expect(changes.movedItems.count == n - (lengths.max() ?? 0))
++                _ = changes
++            }
++        }
++    }
++    @Test func crossSectionInsertionDeletionAndContent() throws {
++        var state: UInt64 = 0x504152414445
++        func next(_ limit: Int) -> Int {
++            state = state &* 6364136223846793005 &+ 1
++            return Int(state >> 32) % limit
++        }
++        let source = try snapshot((0..<4).map { s in (s, (s*10..<s*10+10).map { Item(id: $0) }) })
++        for _ in 0..<200 {
++            var ids = Array(0..<4)
++            ids.remove(at: next(ids.count)); ids.append(4)
++            for i in ids.indices.reversed() { ids.swapAt(i, next(i+1)) }
++            var items = (0..<45).filter { $0 >= 40 || next(5) != 0 }
++            for i in items.indices.reversed() { items.swapAt(i, next(i+1)) }
++            var groups = [[Item]](repeating: [], count: ids.count)
++            for id in items { groups[next(groups.count)].append(Item(id: id, revision: next(2))) }
++            let target = try snapshot(Array(zip(ids,groups)))
++            _ = try validate(source, target)
++        }
++    }
++    @Test func stableSectionsMixedChanges() throws {
++        var state: UInt64 = 1731
++        func next(_ limit: Int) -> Int {
++            state = state &* 6364136223846793005 &+ 1
++            return Int(state >> 32) % limit
++        }
++        let source = try snapshot((0..<4).map { s in (s, (s*10..<s*10+10).map { Item(id: $0) }) })
++        for _ in 0..<500 {
++            var ids = (0..<45).filter { $0 >= 40 || next(5) != 0 }
++            for i in ids.indices.reversed() { ids.swapAt(i, next(i+1)) }
++            var groups = [[Item]](repeating: [], count: 4)
++            for id in ids { groups[next(4)].append(Item(id: id, revision: next(2))) }
++            _ = try validate(source, snapshot(Array(zip(0..<4,groups))))
++        }
++    }
++
++    @Test func compactReplayRejectsMissingAndConflictingMoves() throws {
++        let old = try snapshot([(0, [Item(id: 0), Item(id: 1), Item(id: 2)])])
++        let new = try snapshot([(0, [Item(id: 1), Item(id: 2), Item(id: 0)])])
++        let input = PackedDiffInput(from: old.sections, to: new.sections,
++            sourcePositions: try CollectionPositions(old.sections, input: .source))
++        let good = try PackedStructuralPlan.calculate(input).batches[0]
++        try PackedStructuralPlan.validateItemBatch(good, input: input)
++        for moves in [[], good.movedItems + good.movedItems,
++                      [(from: ItemLocation(section: 9, item: 0), to: ItemLocation(section: 0, item: 2))]] {
++            let bad = PackedStructuralPlan.Batch(contents: good.contents, deletedSections: [],
++                insertedSections: [], movedSections: [], deletedItems: [], insertedItems: [], movedItems: moves)
++            #expect(throws: CollectionPlanValidationError.self) {
++                try PackedStructuralPlan.validateItemBatch(bad, input: input)
++            }
++        }
++    }
++
++    @Test func sectionReorderUsesCompactReplay() throws {
++        let source = try snapshot((0..<5).map { s in (s, (s*4..<s*4+4).map { Item(id: $0) }) })
++        func permutations(_ ids: [Int], prefix: [Int] = []) throws {
++            if ids.isEmpty {
++                _ = try validate(source, snapshot(prefix.map { s in (s, (s*4..<s*4+4).map { Item(id: $0, revision: 1) }) }))
++                return
++            }
++            for i in ids.indices {
++                var rest = ids; let first = rest.remove(at: i)
++                try permutations(rest, prefix: prefix + [first])
++            }
++        }
++        try permutations(Array(0..<5))
++    }
++
++}

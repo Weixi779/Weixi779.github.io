@@ -1,0 +1,1093 @@
+diff --git a/Sources/Parade/DataSource/Staged/CollectionUpdatePlan.swift b/Sources/Parade/DataSource/Staged/CollectionUpdatePlan.swift
+--- a/Sources/Parade/DataSource/Staged/CollectionUpdatePlan.swift
++++ b/Sources/Parade/DataSource/Staged/CollectionUpdatePlan.swift
+@@ -9,35 +9,26 @@
+     init(
+         from source: CollectionSnapshot<Layout>,
+         to target: CollectionSnapshot<Layout>,
+-        using algorithm: any SectionedDiffAlgorithm = SectionedDiff(),
+-        prepared: PreparedSectionedDiff? = nil,
+-        profile: StructureProfile = StructureProfile()
++        using algorithm: any SectionedDiffAlgorithm = SectionedDiff()
+     ) throws {
+-        let sourcePositions: CollectionPositions<AnyHashable, AnyHashable>
+-        let targetPositions: CollectionPositions<AnyHashable, AnyHashable>
+-        let changes: SectionedChanges
+-        if let prepared {
+-            sourcePositions = prepared.sourcePositions
+-            targetPositions = prepared.targetPositions
+-            changes = prepared.changes
+-        } else {
+-            sourcePositions = try CollectionPositions(source.sections, input: .source)
+-            targetPositions = try CollectionPositions(target.sections, input: .target)
+-            if algorithm is SectionedDiff {
+-                changes = try PackedDiffInput(from: source.sections, to: target.sections, sourcePositions: sourcePositions).calculate()
+-            } else {
+-                // Custom algorithms keep the original generic input and validation contract.
+-                changes = try algorithm.diff(from: source.sections, to: target.sections)
+-            }
+-        }
+-        try profile.measure("changesValidationMs") { try Self.validate(
++        try self.init(from: source, to: target,
++                      changes: algorithm.diff(from: source.sections, to: target.sections))
++    }
++
++    init(
++        from source: CollectionSnapshot<Layout>,
++        to target: CollectionSnapshot<Layout>,
++        changes: SectionedChanges
++    ) throws {
++        let sourcePositions = source.positions
++        let targetPositions = target.positions
++        try Self.validate(
+             changes, from: source.sections, to: target.sections,
+             sourcePositions: sourcePositions, targetPositions: targetPositions
+-        ) }
++        )
+ 
+         // Retained identities keep their source presenters even when moved into a
+         // new section. Construct this once; every batch then carries real contents.
+-        let buildStart = StructureProfile.now()
+         let destinations = target.sections.map { section in
+             let metadata = source.sectionsById[section.id] ?? section
+             return metadata.replacingCells(section.cells.map { source.cellsById[$0.id] ?? $0 })
+@@ -132,13 +123,12 @@
+             if !sectionBatch.isEmpty { batches.append(sectionBatch) }
+         }
+ 
+-        profile.values["buildBatchesMs"] = Double(StructureProfile.now() - buildStart) / 1e6
+-        try profile.measure("batchReplayMs") { try Self.validate(batches, from: source.sections, to: target.sections, inputsAlreadyValidated: true) }
++        try Self.validate(batches, from: source.sections, to: target.sections, inputsAlreadyValidated: true)
+         self.batches = batches
+-        content = profile.measure("discardedContentMs") { CollectionContentUpdates<Layout>(
++        content = CollectionContentUpdates<Layout>(
+             from: source, to: target,
+             updatedSections: changes.updatedSections, updatedItems: Set(changes.updatedItems)
+-        ) }
++        )
+     }
+ 
+     init(batches: [CollectionBatch<Layout>], content: CollectionContentUpdates<Layout>) {
+diff --git a/Sources/Parade/DataSource/Staged/StagedCollectionDataSource.swift b/Sources/Parade/DataSource/Staged/StagedCollectionDataSource.swift
+--- a/Sources/Parade/DataSource/Staged/StagedCollectionDataSource.swift
++++ b/Sources/Parade/DataSource/Staged/StagedCollectionDataSource.swift
+@@ -11,24 +11,30 @@
+     private var sectionLocations: [AnyHashable: Int] = [:]
+     private var cellLocations: [AnyHashable: ItemLocation] = [:]
+ 
+-    private var preservingPositions = false
+-    private func installContent(_ next: [SectionSnapshot<Layout>]) {
+-        preservingPositions = true
+-        sections = next
+-        preservingPositions = false
+-    }
+-    var sections: [SectionSnapshot<Layout>] = [] {
+-        didSet {
+-            let indexStart = SpikeTimings.now()
+-            defer { SpikeTimings.detail["indexInstallMs", default: 0] += SpikeTimings.elapsed(indexStart) }
+-            if preservingPositions { return }
+-            sectionLocations.removeAll(keepingCapacity: true)
+-            cellLocations.removeAll(keepingCapacity: true)
+-            for (index, section) in sections.enumerated() {
+-                sectionLocations[section.id] = index
+-                for (item, presenter) in section.cells.enumerated() {
+-                    cellLocations[presenter.id] = ItemLocation(section: index, item: item)
+-                }
++    private var installedSections: [SectionSnapshot<Layout>] = []
++    var sections: [SectionSnapshot<Layout>] {
++        get { installedSections }
++        set { install(newValue) }
++    }
++
++    // Intermediate custom-algorithm batches establish their own positions.
++    // A validated built-in batch can reuse the target snapshot's position table.
++    private func install(
++        _ sections: [SectionSnapshot<Layout>],
++        positions: CollectionPositions<AnyHashable, AnyHashable>? = nil
++    ) {
++        installedSections = sections
++        if let positions {
++            sectionLocations = positions.sectionIndices
++            cellLocations = positions.itemLocations
++            return
++        }
++        sectionLocations.removeAll(keepingCapacity: true)
++        cellLocations.removeAll(keepingCapacity: true)
++        for (index, section) in sections.enumerated() {
++            sectionLocations[section.id] = index
++            for (item, presenter) in section.cells.enumerated() {
++                cellLocations[presenter.id] = ItemLocation(section: index, item: item)
+             }
+         }
+     }
+@@ -78,34 +84,9 @@
+         }
+         // UIKit must consume the previous counts before the first batch.
+         collectionView.layoutIfNeeded()
+-        let planningStart = SpikeTimings.now()
+         let plan: CollectionUpdatePlan<Layout>
+         do {
+-            if diffAlgorithm is SectionedDiff {
+-                let inputStart = SpikeTimings.now()
+-                let sourcePositions = source.positions
+-                // Target snapshot validation already established target identity uniqueness.
+-                let input = PackedDiffInput(from: source.sections, to: target.sections,
+-                                            sourcePositions: sourcePositions)
+-                SpikeTimings.detail["packInputMs"] = SpikeTimings.elapsed(inputStart)
+-                let result: PackedStructuralPlan
+-                if max(source.cellsById.count, target.cellsById.count) >= 1_000 {
+-                    let workerStart = SpikeTimings.now()
+-                    result = try await Task.detached(priority: .userInitiated) {
+-                        precondition(!Thread.isMainThread)
+-                        return try PackedStructuralPlan.calculate(input)
+-                    }.value
+-                    SpikeTimings.workerWaitMs = SpikeTimings.elapsed(workerStart)
+-                } else {
+-                    result = try PackedStructuralPlan.calculate(input)
+-                }
+-                SpikeTimings.detail.merge(result.metrics) { _, new in new }
+-                let materializeStart = SpikeTimings.now()
+-                plan = result.materialize(from: source, to: target, input: input)
+-                SpikeTimings.detail["materializeMs"] = SpikeTimings.elapsed(materializeStart)
+-            } else {
+-                plan = try CollectionUpdatePlan<Layout>(from: source, to: target, using: diffAlgorithm)
+-            }
++            plan = try await makePlan(from: source, to: target)
+         } catch {
+             // Planning completes before mutating UIKit, so recovery installs target directly.
+             reload(target)
+@@ -115,80 +96,72 @@
+             )]
+         }
+ 
+-        SpikeTimings.planningMs = SpikeTimings.elapsed(planningStart)
+-        let structureStart = SpikeTimings.now()
+         for batch in plan.batches {
+             await performBatch(animated: animated) {
+-                if self.diffAlgorithm is SectionedDiff {
+-                    // Built-in merged planner has at most one structural batch,
+-                    // with exactly the target identities and positions.
+-                    let indexStart = SpikeTimings.now()
+-                    self.sectionLocations = target.positions.sectionIndices
+-                    self.cellLocations = target.positions.itemLocations
+-                    self.installContent(batch.sections)
+-                    SpikeTimings.detail["indexInstallMs", default: 0] += SpikeTimings.elapsed(indexStart)
+-                } else {
+-                    self.sections = batch.sections
+-                }
+-                // Structural edits invalidate the layout through UIKit. Explicit invalidation here
+-                // makes iOS 17 re-read the new snapshot as the pre-update item counts.
+-                if !batch.deletedSections.isEmpty {
+-                    self.collectionView.deleteSections(batch.deletedSections)
+-                }
+-                if !batch.insertedSections.isEmpty {
+-                    self.collectionView.insertSections(batch.insertedSections)
+-                }
+-                for move in batch.movedSections {
+-                    self.collectionView.moveSection(move.from, toSection: move.to)
+-                }
+-                if !batch.deletedItems.isEmpty {
+-                    self.collectionView.deleteItems(at: batch.deletedItems.map(\.indexPath))
+-                }
+-                if !batch.insertedItems.isEmpty {
+-                    self.collectionView.insertItems(at: batch.insertedItems.map(\.indexPath))
+-                }
+-                for move in batch.movedItems {
+-                    self.collectionView.moveItem(at: move.from.indexPath, to: move.to.indexPath)
+-                }
+-            }
+-        }
+-
+-        SpikeTimings.detail["structureApplyMs"] = SpikeTimings.elapsed(structureStart)
+-        let contentStart = SpikeTimings.now()
++                let positions = self.diffAlgorithm is SectionedDiff ? target.positions : nil
++                self.install(batch.sections, positions: positions)
++                self.applyStructure(batch)
++            }
++        }
++
+         let content = plan.content
+         if !animated {
+-            // Temporary no-animation fast path. UIKit is synchronously laid out by
+-            // the shared caller; animated updates retain the original completion.
+-            installContent(target.sections)
+-            UIView.performWithoutAnimation {
+-                if content.hasLayoutUpdates { collectionView.collectionViewLayout.invalidateLayout() }
+-                if !content.reloadedSections.isEmpty { collectionView.reloadSections(content.reloadedSections) }
+-                if !content.replacedCells.isEmpty { collectionView.reloadItems(at: content.replacedCells) }
+-                if !content.reconfiguredCells.isEmpty { collectionView.reconfigureItems(at: content.reconfiguredCells) }
+-            }
++            UIView.performWithoutAnimation { self.applyContent(content, target: target) }
++            collectionView.layoutIfNeeded()
+         } else if !content.isEmpty {
+-            await performBatch(animated: animated) {
+-                self.installContent(target.sections)
+-                if content.hasLayoutUpdates {
+-                    self.collectionView.collectionViewLayout.invalidateLayout()
+-                }
+-                if !content.reloadedSections.isEmpty {
+-                    self.collectionView.reloadSections(content.reloadedSections)
+-                }
+-                if !content.replacedCells.isEmpty {
+-                    self.collectionView.reloadItems(at: content.replacedCells)
+-                }
+-                if !content.reconfiguredCells.isEmpty {
+-                    self.collectionView.reconfigureItems(at: content.reconfiguredCells)
+-                }
+-            }
++            await performBatch(animated: true) { self.applyContent(content, target: target) }
+         } else {
+-            installContent(target.sections)
+-        }
+-        if !animated { collectionView.layoutIfNeeded() }
+-        SpikeTimings.detail["contentApplyMs"] = SpikeTimings.elapsed(contentStart)
++            installedSections = target.sections
++        }
+         views.reconfigureSupplementaries(content.supplementaryUpdates)
+         return []
++    }
++
++    private func makePlan(
++        from source: CollectionSnapshot<Layout>,
++        to target: CollectionSnapshot<Layout>
++    ) async throws -> CollectionUpdatePlan<Layout> {
++        guard diffAlgorithm is SectionedDiff else {
++            return try CollectionUpdatePlan(from: source, to: target, using: diffAlgorithm)
++        }
++        let input = PackedDiffInput(from: source.sections, to: target.sections,
++                                    sourcePositions: source.positions)
++        let result: PackedStructuralPlan
++        // Retain the measured prototype's scheduling policy for this comparison.
++        // This threshold has not been tuned for the application's workload.
++        if max(source.cellsById.count, target.cellsById.count) >= 1_000 {
++            result = try await Task.detached(priority: .userInitiated) {
++                precondition(!Thread.isMainThread)
++                return try PackedStructuralPlan.calculate(input)
++            }.value
++        } else {
++            result = try PackedStructuralPlan.calculate(input)
++        }
++        return result.materialize(from: source, to: target, input: input)
++    }
++
++    private func applyStructure(_ batch: CollectionBatch<Layout>) {
++        // UIKit invalidates structural edits itself. Explicit invalidation here
++        // can make it read target counts as the pre-update counts.
++        if !batch.deletedSections.isEmpty { collectionView.deleteSections(batch.deletedSections) }
++        if !batch.insertedSections.isEmpty { collectionView.insertSections(batch.insertedSections) }
++        for move in batch.movedSections {
++            collectionView.moveSection(move.from, toSection: move.to)
++        }
++        if !batch.deletedItems.isEmpty { collectionView.deleteItems(at: batch.deletedItems.map(\.indexPath)) }
++        if !batch.insertedItems.isEmpty { collectionView.insertItems(at: batch.insertedItems.map(\.indexPath)) }
++        for move in batch.movedItems {
++            collectionView.moveItem(at: move.from.indexPath, to: move.to.indexPath)
++        }
++    }
++
++    private func applyContent(_ content: CollectionContentUpdates<Layout>, target: CollectionSnapshot<Layout>) {
++        // Structure has already established final positions. Only presenters change.
++        installedSections = target.sections
++        if content.hasLayoutUpdates { collectionView.collectionViewLayout.invalidateLayout() }
++        if !content.reloadedSections.isEmpty { collectionView.reloadSections(content.reloadedSections) }
++        if !content.replacedCells.isEmpty { collectionView.reloadItems(at: content.replacedCells) }
++        if !content.reconfiguredCells.isEmpty { collectionView.reconfigureItems(at: content.reconfiguredCells) }
+     }
+ 
+     public func numberOfSections(in collectionView: UICollectionView) -> Int { sections.count }
+@@ -221,7 +194,7 @@
+     }
+ 
+     private func reload(_ target: CollectionSnapshot<Layout>) {
+-        sections = target.sections
++        install(target.sections, positions: target.positions)
+         collectionView.collectionViewLayout.invalidateLayout()
+         collectionView.reloadData()
+         collectionView.layoutIfNeeded()
+diff --git a/Sources/Parade/Diff/PackedDiffInput.swift b/Sources/Parade/Diff/PackedDiffInput.swift
+--- a/Sources/Parade/Diff/PackedDiffInput.swift
++++ b/Sources/Parade/Diff/PackedDiffInput.swift
+@@ -1,5 +1,5 @@
+ // Created by weixi on 2026/11/09.
+-// Throwaway experiment: only immutable integers and flags cross the worker boundary.
++// Only immutable integer identities and content flags cross the worker boundary.
+ struct PackedDiffInput: Sendable {
+     struct Item: DiffableElement, Sendable {
+         let id: Int
+diff --git a/Sources/Parade/Diff/PackedLIS.swift b/Sources/Parade/Diff/PackedLIS.swift
+--- a/Sources/Parade/Diff/PackedLIS.swift
++++ b/Sources/Parade/Diff/PackedLIS.swift
+@@ -1,5 +1,5 @@
+ // Created by weixi on 2026/11/09.
+-// Temporary unique-identity matcher. LIS chooses stationary survivors; all other
++// Internal unique-identity matcher. LIS chooses stationary survivors; all other
+ // changes and content comparisons keep the existing sectioned diff semantics.
+ import Foundation
+ 
+diff --git a/Sources/Parade/Diff/PackedStructuralPlan+Validation.swift b/Sources/Parade/Diff/PackedStructuralPlan+Validation.swift
+new file mode 100644
+--- /dev/null
++++ b/Sources/Parade/Diff/PackedStructuralPlan+Validation.swift
+@@ -0,0 +1,158 @@
++// Created by weixi on 2026/11/09.
++import Foundation
++
++extension PackedStructuralPlan {
++    // Same replay guarantee, on dense IDs; source/target uniqueness was checked
++    // at capture. This path only accepts unchanged section identities and order.
++    static func validateItemBatch(_ batch: Batch, input: PackedDiffInput) throws {
++        func check(_ value: Bool) throws {
++            if !value { throw CollectionPlanValidationError("Invalid compact item replay") }
++        }
++        func valid(_ p: ItemLocation, _ sections: [PackedDiffInput.Section]) -> Bool {
++            sections.indices.contains(p.section) && sections[p.section].items.indices.contains(p.item)
++        }
++        var removed = input.source.map { [Bool](repeating: false, count: $0.items.count) }
++        var slots = input.target.map { [Int](repeating: -1, count: $0.items.count) }
++        for p in batch.deletedItems {
++            try check(valid(p, input.source))
++            try check(!removed[p.section][p.item]); removed[p.section][p.item] = true
++        }
++        for p in batch.insertedItems {
++            try check(valid(p, input.target))
++            try check(slots[p.section][p.item] == -1)
++            slots[p.section][p.item] = input.target[p.section].items[p.item].id
++        }
++        for m in batch.movedItems {
++            try check(valid(m.from, input.source) && valid(m.to, input.target))
++            try check(!removed[m.from.section][m.from.item] && slots[m.to.section][m.to.item] == -1)
++            removed[m.from.section][m.from.item] = true
++            slots[m.to.section][m.to.item] = input.source[m.from.section].items[m.from.item].id
++        }
++        for s in input.source.indices {
++            var origin = 0
++            for d in slots[s].indices {
++                if slots[s][d] == -1 {
++                    while origin < removed[s].count && removed[s][origin] { origin += 1 }
++                    try check(origin < removed[s].count)
++                    slots[s][d] = input.source[s].items[origin].id
++                    origin += 1
++                }
++                try check(slots[s][d] == input.target[s].items[d].id)
++            }
++            while origin < removed[s].count && removed[s][origin] { origin += 1 }
++            try check(origin == removed[s].count)
++        }
++    }
++
++    static func validateSectionReorder(_ batch: Batch, input: PackedDiffInput) throws {
++        func check(_ condition: Bool) throws {
++            if !condition { throw CollectionPlanValidationError("Invalid compact section replay") }
++        }
++        try check(input.source.count == input.target.count)
++        var removed = [Bool](repeating: false, count: input.source.count)
++        var slots = [Int](repeating: -1, count: input.target.count)
++        for move in batch.movedSections {
++            try check(input.source.indices.contains(move.from) && slots.indices.contains(move.to))
++            try check(!removed[move.from] && slots[move.to] == -1)
++            removed[move.from] = true; slots[move.to] = move.from
++        }
++        var origin = 0
++        for destination in slots.indices {
++            if slots[destination] == -1 {
++                while origin < removed.count && removed[origin] { origin += 1 }
++                try check(origin < removed.count)
++                slots[destination] = origin; origin += 1
++            }
++            let old = input.source[slots[destination]], new = input.target[destination]
++            try check(old.id == new.id && old.items.map(\.id) == new.items.map(\.id))
++        }
++        while origin < removed.count && removed[origin] { origin += 1 }
++        try check(origin == removed.count)
++    }
++
++    // Replay mixed operations using old coordinates for origins and target
++    // coordinates for destinations. Whole-section edits account for their own
++    // new/deleted items; globally retained identities must still move explicitly.
++    static func validateMixedBatch(_ batch: Batch, input: PackedDiffInput) throws {
++        func check(_ condition: Bool) throws {
++            if !condition { throw CollectionPlanValidationError("Invalid mixed replay") }
++        }
++        func valid(_ p: ItemLocation, _ sections: [PackedDiffInput.Section]) -> Bool {
++            sections.indices.contains(p.section) && sections[p.section].items.indices.contains(p.item)
++        }
++        let oldCount = input.source.reduce(0) { $0 + $1.items.count }
++        var removedSections = [Bool](repeating: false, count: input.source.count)
++        var sectionSlots = [Int](repeating: -1, count: input.target.count)
++        for s in batch.deletedSections {
++            try check(input.source.indices.contains(s)); removedSections[s] = true
++        }
++        for s in batch.insertedSections {
++            try check(input.target.indices.contains(s))
++            try check(input.target[s].id >= input.source.count)
++            sectionSlots[s] = -2
++        }
++        for move in batch.movedSections {
++            try check(input.source.indices.contains(move.from) && sectionSlots.indices.contains(move.to))
++            try check(!removedSections[move.from] && sectionSlots[move.to] == -1)
++            removedSections[move.from] = true; sectionSlots[move.to] = move.from
++        }
++        var originSection = 0
++        for s in sectionSlots.indices {
++            if sectionSlots[s] == -1 {
++                while originSection < removedSections.count && removedSections[originSection] { originSection += 1 }
++                try check(originSection < removedSections.count)
++                sectionSlots[s] = originSection; originSection += 1
++            }
++            if sectionSlots[s] >= 0 { try check(input.source[sectionSlots[s]].id == input.target[s].id) }
++        }
++        while originSection < removedSections.count && removedSections[originSection] { originSection += 1 }
++        try check(originSection == removedSections.count)
++
++        var removed = input.source.map { [Bool](repeating: false, count: $0.items.count) }
++        var slots = input.target.map { [Int](repeating: -1, count: $0.items.count) }
++        for p in batch.deletedItems {
++            try check(valid(p, input.source) && !batch.deletedSections.contains(p.section))
++            try check(!removed[p.section][p.item]); removed[p.section][p.item] = true
++        }
++        for p in batch.insertedItems {
++            try check(valid(p, input.target) && !batch.insertedSections.contains(p.section))
++            try check(slots[p.section][p.item] == -1 && input.target[p.section].items[p.item].id >= oldCount)
++            slots[p.section][p.item] = input.target[p.section].items[p.item].id
++        }
++        for move in batch.movedItems {
++            try check(valid(move.from, input.source) && valid(move.to, input.target))
++            try check(!removed[move.from.section][move.from.item] && slots[move.to.section][move.to.item] == -1)
++            removed[move.from.section][move.from.item] = true
++            slots[move.to.section][move.to.item] = input.source[move.from.section].items[move.from.item].id
++        }
++        for targetSection in input.target.indices {
++            let sourceSection = sectionSlots[targetSection]
++            var origin = 0
++            for item in slots[targetSection].indices {
++                if slots[targetSection][item] == -1 {
++                    if sourceSection == -2 {
++                        let id = input.target[targetSection].items[item].id
++                        try check(id >= oldCount)
++                        slots[targetSection][item] = id
++                    } else {
++                        while origin < removed[sourceSection].count && removed[sourceSection][origin] { origin += 1 }
++                        try check(origin < removed[sourceSection].count)
++                        slots[targetSection][item] = input.source[sourceSection].items[origin].id
++                        origin += 1
++                    }
++                }
++                try check(slots[targetSection][item] == input.target[targetSection].items[item].id)
++            }
++            if sourceSection >= 0 {
++                while origin < removed[sourceSection].count && removed[sourceSection][origin] { origin += 1 }
++                try check(origin == removed[sourceSection].count)
++            }
++        }
++        // Contents are what the data source will expose to UIKit.
++        try check(batch.contents.count == input.target.count)
++        for (content, section) in zip(batch.contents, input.target) {
++            try check(content.section == section.id && content.items == section.items.map(\.id))
++        }
++    }
++
++}
+diff --git a/Sources/Parade/Diff/PackedStructuralPlan.swift b/Sources/Parade/Diff/PackedStructuralPlan.swift
+--- a/Sources/Parade/Diff/PackedStructuralPlan.swift
++++ b/Sources/Parade/Diff/PackedStructuralPlan.swift
+@@ -1,7 +1,7 @@
+ // Created by weixi on 2026/11/09.
+-import UIKit
++import Foundation
+ 
+-// Internal experiment. All values crossing the worker boundary are Sendable.
++// A validated structural plan containing only Sendable values.
+ struct PackedStructuralPlan: Sendable {
+     struct Contents: Sendable { let section: Int; let items: [Int] }
+     struct Batch: Sendable {
+@@ -15,206 +15,34 @@
+     }
+     let changes: SectionedChanges
+     let batches: [Batch]
+-    let metrics: [String: Double]
+ 
+     static func calculate(_ input: PackedDiffInput) throws -> Self {
+-        let profile = StructureProfile()
+-        func capture(_ sections: [PackedDiffInput.Section]) throws -> CollectionSnapshot<Int> {
+-            let snapshots = profile.measure("workerPresentersMs") { sections.map { section in
+-                SectionSnapshot(id: section.id,
+-                    cells: section.items.map { AnyCellPresenter(WorkerPresenter(id: $0.id, changed: $0.changed)) },
+-                    layout: 0)
+-            } }
+-            return try profile.measure("workerSnapshotsMs") { try CollectionSnapshot(snapshots) }
+-        }
+-        let changes = try profile.measure("diffMs") { try input.calculate() }
++        let changes = try input.calculate()
+         if changes.deletedSections.isEmpty && changes.insertedSections.isEmpty && changes.movedSections.isEmpty &&
+            changes.deletedItems.isEmpty && changes.insertedItems.isEmpty && changes.movedItems.isEmpty {
+             // Inputs are already validated snapshots. No structural operation exists
+-            // to replay, so avoid constructing worker-local intermediate snapshots.
+-            return Self(changes: changes, batches: [], metrics: profile.values)
++            // to replay, so skip structural planning and replay.
++            return Self(changes: changes, batches: [])
+         }
+ 
+-        if input.source.map(\.id) == input.target.map(\.id) {
+-            let batch = Batch(contents: input.target.map { Contents(section: $0.id, items: $0.items.map(\.id)) },
+-                deletedSections: [], insertedSections: [], movedSections: [],
+-                deletedItems: changes.deletedItems, insertedItems: changes.insertedItems,
+-                movedItems: changes.movedItems)
+-            try profile.measure("typedReplayMs") { try validateItemBatch(batch, input: input) }
+-            return Self(changes: changes, batches: [batch], metrics: profile.values)
+-        }
+-
+-        // Section-only reorder: item identities remain in their own sections.
+-        // A small section replay is sufficient; there is no item phase to stage.
+-        if changes.deletedSections.isEmpty && changes.insertedSections.isEmpty &&
+-           changes.deletedItems.isEmpty && changes.insertedItems.isEmpty && changes.movedItems.isEmpty {
+-            let batch = Batch(contents: input.target.map { Contents(section: $0.id, items: $0.items.map(\.id)) },
+-                deletedSections: [], insertedSections: [], movedSections: changes.movedSections,
+-                deletedItems: [], insertedItems: [], movedItems: [])
+-            try profile.measure("typedSectionReplayMs") { try validateSectionReorder(batch, input: input) }
+-            return Self(changes: changes, batches: [batch], metrics: profile.values)
+-        }
+-        let batch = Batch(contents: input.target.map { Contents(section: $0.id, items: $0.items.map(\.id)) },
+-            deletedSections: changes.deletedSections, insertedSections: changes.insertedSections,
++        let batch = Batch(
++            contents: input.target.map { Contents(section: $0.id, items: $0.items.map(\.id)) },
++            deletedSections: changes.deletedSections,
++            insertedSections: changes.insertedSections,
+             movedSections: changes.movedSections,
+             deletedItems: changes.deletedItems.filter { !changes.deletedSections.contains($0.section) },
+             insertedItems: changes.insertedItems.filter { !changes.insertedSections.contains($0.section) },
+-            movedItems: changes.movedItems)
+-        try profile.measure("mixedReplayMs") { try validateMixedBatch(batch, input: input) }
+-        return Self(changes: changes, batches: [batch], metrics: profile.values)
+-    }
+-
+-    // Same replay guarantee, on dense IDs; source/target uniqueness was checked
+-    // at capture. This path only accepts unchanged section identities and order.
+-    static func validateItemBatch(_ batch: Batch, input: PackedDiffInput) throws {
+-        func check(_ value: Bool) throws {
+-            if !value { throw CollectionPlanValidationError("Invalid compact item replay") }
++            movedItems: changes.movedItems
++        )
++        if input.source.map(\.id) == input.target.map(\.id) {
++            try validateItemBatch(batch, input: input)
++        } else if changes.deletedSections.isEmpty && changes.insertedSections.isEmpty &&
++                  changes.deletedItems.isEmpty && changes.insertedItems.isEmpty && changes.movedItems.isEmpty {
++            try validateSectionReorder(batch, input: input)
++        } else {
++            try validateMixedBatch(batch, input: input)
+         }
+-        func valid(_ p: ItemLocation, _ sections: [PackedDiffInput.Section]) -> Bool {
+-            sections.indices.contains(p.section) && sections[p.section].items.indices.contains(p.item)
+-        }
+-        var removed = input.source.map { [Bool](repeating: false, count: $0.items.count) }
+-        var slots = input.target.map { [Int](repeating: -1, count: $0.items.count) }
+-        for p in batch.deletedItems {
+-            try check(valid(p, input.source))
+-            try check(!removed[p.section][p.item]); removed[p.section][p.item] = true
+-        }
+-        for p in batch.insertedItems {
+-            try check(valid(p, input.target))
+-            try check(slots[p.section][p.item] == -1)
+-            slots[p.section][p.item] = input.target[p.section].items[p.item].id
+-        }
+-        for m in batch.movedItems {
+-            try check(valid(m.from, input.source) && valid(m.to, input.target))
+-            try check(!removed[m.from.section][m.from.item] && slots[m.to.section][m.to.item] == -1)
+-            removed[m.from.section][m.from.item] = true
+-            slots[m.to.section][m.to.item] = input.source[m.from.section].items[m.from.item].id
+-        }
+-        for s in input.source.indices {
+-            var origin = 0
+-            for d in slots[s].indices {
+-                if slots[s][d] == -1 {
+-                    while origin < removed[s].count && removed[s][origin] { origin += 1 }
+-                    try check(origin < removed[s].count)
+-                    slots[s][d] = input.source[s].items[origin].id
+-                    origin += 1
+-                }
+-                try check(slots[s][d] == input.target[s].items[d].id)
+-            }
+-            while origin < removed[s].count && removed[s][origin] { origin += 1 }
+-            try check(origin == removed[s].count)
+-        }
+-    }
+-
+-    static func validateSectionReorder(_ batch: Batch, input: PackedDiffInput) throws {
+-        func check(_ condition: Bool) throws {
+-            if !condition { throw CollectionPlanValidationError("Invalid compact section replay") }
+-        }
+-        try check(input.source.count == input.target.count)
+-        var removed = [Bool](repeating: false, count: input.source.count)
+-        var slots = [Int](repeating: -1, count: input.target.count)
+-        for move in batch.movedSections {
+-            try check(input.source.indices.contains(move.from) && slots.indices.contains(move.to))
+-            try check(!removed[move.from] && slots[move.to] == -1)
+-            removed[move.from] = true; slots[move.to] = move.from
+-        }
+-        var origin = 0
+-        for destination in slots.indices {
+-            if slots[destination] == -1 {
+-                while origin < removed.count && removed[origin] { origin += 1 }
+-                try check(origin < removed.count)
+-                slots[destination] = origin; origin += 1
+-            }
+-            let old = input.source[slots[destination]], new = input.target[destination]
+-            try check(old.id == new.id && old.items.map(\.id) == new.items.map(\.id))
+-        }
+-        while origin < removed.count && removed[origin] { origin += 1 }
+-        try check(origin == removed.count)
+-    }
+-
+-    // Replay mixed operations using old coordinates for origins and target
+-    // coordinates for destinations. Whole-section edits account for their own
+-    // new/deleted items; globally retained identities must still move explicitly.
+-    static func validateMixedBatch(_ batch: Batch, input: PackedDiffInput) throws {
+-        func check(_ condition: Bool) throws {
+-            if !condition { throw CollectionPlanValidationError("Invalid mixed replay") }
+-        }
+-        func valid(_ p: ItemLocation, _ sections: [PackedDiffInput.Section]) -> Bool {
+-            sections.indices.contains(p.section) && sections[p.section].items.indices.contains(p.item)
+-        }
+-        let oldCount = input.source.reduce(0) { $0 + $1.items.count }
+-        var removedSections = [Bool](repeating: false, count: input.source.count)
+-        var sectionSlots = [Int](repeating: -1, count: input.target.count)
+-        for s in batch.deletedSections {
+-            try check(input.source.indices.contains(s)); removedSections[s] = true
+-        }
+-        for s in batch.insertedSections {
+-            try check(input.target.indices.contains(s))
+-            try check(input.target[s].id >= input.source.count)
+-            sectionSlots[s] = -2
+-        }
+-        for move in batch.movedSections {
+-            try check(input.source.indices.contains(move.from) && sectionSlots.indices.contains(move.to))
+-            try check(!removedSections[move.from] && sectionSlots[move.to] == -1)
+-            removedSections[move.from] = true; sectionSlots[move.to] = move.from
+-        }
+-        var originSection = 0
+-        for s in sectionSlots.indices {
+-            if sectionSlots[s] == -1 {
+-                while originSection < removedSections.count && removedSections[originSection] { originSection += 1 }
+-                try check(originSection < removedSections.count)
+-                sectionSlots[s] = originSection; originSection += 1
+-            }
+-            if sectionSlots[s] >= 0 { try check(input.source[sectionSlots[s]].id == input.target[s].id) }
+-        }
+-        while originSection < removedSections.count && removedSections[originSection] { originSection += 1 }
+-        try check(originSection == removedSections.count)
+-
+-        var removed = input.source.map { [Bool](repeating: false, count: $0.items.count) }
+-        var slots = input.target.map { [Int](repeating: -1, count: $0.items.count) }
+-        for p in batch.deletedItems {
+-            try check(valid(p, input.source) && !batch.deletedSections.contains(p.section))
+-            try check(!removed[p.section][p.item]); removed[p.section][p.item] = true
+-        }
+-        for p in batch.insertedItems {
+-            try check(valid(p, input.target) && !batch.insertedSections.contains(p.section))
+-            try check(slots[p.section][p.item] == -1 && input.target[p.section].items[p.item].id >= oldCount)
+-            slots[p.section][p.item] = input.target[p.section].items[p.item].id
+-        }
+-        for move in batch.movedItems {
+-            try check(valid(move.from, input.source) && valid(move.to, input.target))
+-            try check(!removed[move.from.section][move.from.item] && slots[move.to.section][move.to.item] == -1)
+-            removed[move.from.section][move.from.item] = true
+-            slots[move.to.section][move.to.item] = input.source[move.from.section].items[move.from.item].id
+-        }
+-        for targetSection in input.target.indices {
+-            let sourceSection = sectionSlots[targetSection]
+-            var origin = 0
+-            for item in slots[targetSection].indices {
+-                if slots[targetSection][item] == -1 {
+-                    if sourceSection == -2 {
+-                        let id = input.target[targetSection].items[item].id
+-                        try check(id >= oldCount)
+-                        slots[targetSection][item] = id
+-                    } else {
+-                        while origin < removed[sourceSection].count && removed[sourceSection][origin] { origin += 1 }
+-                        try check(origin < removed[sourceSection].count)
+-                        slots[targetSection][item] = input.source[sourceSection].items[origin].id
+-                        origin += 1
+-                    }
+-                }
+-                try check(slots[targetSection][item] == input.target[targetSection].items[item].id)
+-            }
+-            if sourceSection >= 0 {
+-                while origin < removed[sourceSection].count && removed[sourceSection][origin] { origin += 1 }
+-                try check(origin == removed[sourceSection].count)
+-            }
+-        }
+-        // Contents are what the data source will expose to UIKit.
+-        try check(batch.contents.count == input.target.count)
+-        for (content, section) in zip(batch.contents, input.target) {
+-            try check(content.section == section.id && content.items == section.items.map(\.id))
+-        }
++        return Self(changes: changes, batches: [batch])
+     }
+ 
+     func materialize<L>(from source: CollectionSnapshot<L>, to target: CollectionSnapshot<L>,
+@@ -249,9 +77,3 @@
+                 updatedSections: changes.updatedSections, updatedItems: Set(changes.updatedItems)))
+     }
+ }
+-
+-private struct WorkerPresenter: CellPresenter {
+-    let id: Int
+-    let changed: Bool
+-    @MainActor func configure(_ cell: UICollectionViewCell) {}
+-}
+diff --git a/Sources/Parade/Diff/PreparedSectionedDiff.swift b/Sources/Parade/Diff/PreparedSectionedDiff.swift
+deleted file mode 100644
+--- a/Sources/Parade/Diff/PreparedSectionedDiff.swift
++++ /dev/null
+@@ -1,6 +0,0 @@
+-// Created by weixi on 2026/11/09.
+-struct PreparedSectionedDiff {
+-    let changes: SectionedChanges
+-    let sourcePositions: CollectionPositions<AnyHashable, AnyHashable>
+-    let targetPositions: CollectionPositions<AnyHashable, AnyHashable>
+-}
+diff --git a/Sources/Parade/Diff/SectionedDiff.swift b/Sources/Parade/Diff/SectionedDiff.swift
+--- a/Sources/Parade/Diff/SectionedDiff.swift
++++ b/Sources/Parade/Diff/SectionedDiff.swift
+@@ -12,15 +12,6 @@
+     ) throws -> SectionedChanges {
+         let sourceIndex = try CollectionPositions(source, input: .source)
+         let targetIndex = try CollectionPositions(target, input: .target)
+-        return diff(from: source, to: target, sourceIndex: sourceIndex, targetIndex: targetIndex)
+-    }
+-
+-    // Internal fast path: these inputs were already checked by the plan.
+-    func diff<Section: DiffableSection>(
+-        from source: [Section], to target: [Section],
+-        sourceIndex: CollectionPositions<Section.Id, Section.Item.Id>,
+-        targetIndex: CollectionPositions<Section.Id, Section.Item.Id>
+-    ) -> SectionedChanges {
+         var changes = SectionedChanges()
+         var sectionOrder = SourceOrder(count: source.count)
+         for (section, value) in source.enumerated() {
+diff --git a/Sources/Parade/Diff/SpikeTimings.swift b/Sources/Parade/Diff/SpikeTimings.swift
+deleted file mode 100644
+--- a/Sources/Parade/Diff/SpikeTimings.swift
++++ /dev/null
+@@ -1,10 +0,0 @@
+-// Created by weixi on 2026/11/09.
+-import Foundation
+-@MainActor enum SpikeTimings {
+-    static var detail: [String: Double] = [:]
+-    static var planningMs: Double = 0
+-    static var workerWaitMs: Double = 0
+-    static func now() -> UInt64 { DispatchTime.now().uptimeNanoseconds }
+-    static func elapsed(_ start: UInt64) -> Double { Double(now()-start)/1e6 }
+-    static func reset() { planningMs=0;workerWaitMs=0;detail=[:] }
+-}
+diff --git a/Sources/Parade/Diff/StructureProfile.swift b/Sources/Parade/Diff/StructureProfile.swift
+deleted file mode 100644
+--- a/Sources/Parade/Diff/StructureProfile.swift
++++ /dev/null
+@@ -1,11 +0,0 @@
+-// Created by weixi on 2026/11/09.
+-import Foundation
+-final class StructureProfile {
+-    var values: [String: Double] = [:]
+-    static func now() -> UInt64 { DispatchTime.now().uptimeNanoseconds }
+-    func measure<T>(_ key: String, _ body: () throws -> T) rethrows -> T {
+-        let start = Self.now()
+-        defer { values[key, default: 0] += Double(Self.now() - start) / 1e6 }
+-        return try body()
+-    }
+-}
+diff --git a/Tests/ParadeTests/CollectionBatchTests.swift b/Tests/ParadeTests/CollectionBatchTests.swift
+--- a/Tests/ParadeTests/CollectionBatchTests.swift
++++ b/Tests/ParadeTests/CollectionBatchTests.swift
+@@ -149,11 +149,25 @@
+         }
+     }
+ 
+-    @Test("Temporary LIS policy minimizes item and section rotations", arguments: [
++    @Test("Built-in LIS policy minimizes item and section rotations", arguments: [
+         ([1, 2, 3, 0], 1),
+         ([3, 0, 1, 2], 1)
+     ])
+     func directionalRotations(target: [Int], expectedMoves: Int) throws {
++        func verify(from source: [Section], to target: [Section]) throws -> [Batch] {
++            let old = try CollectionSnapshot<CompositionalSectionLayout>(source)
++            let new = try CollectionSnapshot<CompositionalSectionLayout>(target)
++            let input = PackedDiffInput(from: source, to: target, sourcePositions: old.positions)
++            let packed = try PackedStructuralPlan.calculate(input)
++            let batches = packed.materialize(from: old, to: new, input: input).batches
++            // These rotations contain only section OR item operations, so the
++            // existing independent staged replayer can verify the real built-in plan.
++            try CollectionUpdatePlan<CompositionalSectionLayout>.validate(batches, from: source, to: target)
++            var current = source
++            for batch in batches { current = try replay(batch, from: current) }
++            #expect(identities(current) == identities(target))
++            return batches
++        }
+         let items = try verify(
+             from: [Section(id: 0, items: [0, 1, 2, 3])],
+             to: [Section(id: 0, items: target)]
+diff --git a/Tests/ParadeTests/PackedPlanningTests.swift b/Tests/ParadeTests/PackedPlanningTests.swift
+new file mode 100644
+--- /dev/null
++++ b/Tests/ParadeTests/PackedPlanningTests.swift
+@@ -0,0 +1,127 @@
++// Created by weixi on 2026/11/09.
++import UIKit
++import Testing
++@testable import Parade
++
++@MainActor
++struct PackedPlanningTests {
++    private struct Item: CellPresenter {
++        let id: Int
++        var revision: Int = 0
++        func configure(_ cell: UICollectionViewCell) {}
++    }
++    private func snapshot(_ sections: [(Int, [Item])]) throws -> CollectionSnapshot<Int> {
++        try CollectionSnapshot(sections.map {
++            SectionSnapshot(id: $0.0, cells: $0.1.map(AnyCellPresenter.init), layout: 0)
++        })
++    }
++    private func validate(_ old: CollectionSnapshot<Int>, _ new: CollectionSnapshot<Int>) throws -> SectionedChanges {
++        let oldIndex = try CollectionPositions(old.sections, input: .source)
++        let input = PackedDiffInput(from: old.sections, to: new.sections, sourcePositions: oldIndex)
++        let changes = try input.calculate()
++        // Replay every optimized result through the existing full validator,
++        // even when the built-in planner would bypass an empty structure.
++        _ = try CollectionUpdatePlan(from: old, to: new, changes: changes)
++        let packed = try PackedStructuralPlan.calculate(input)
++        for batch in packed.batches { try PackedStructuralPlan.validateMixedBatch(batch, input: input) }
++        // The old independent staged planner above still verifies the same diff.
++        // Its replay explicitly forbids mixed batches, so it cannot replay this executor format.
++        var expected: [ItemLocation] = []
++        for (s, section) in new.sections.enumerated() {
++            for (i, item) in section.cells.enumerated() {
++                if let prior = old.cellsById[item.id], prior != item { expected.append(ItemLocation(section: s,item: i)) }
++            }
++        }
++        #expect(Set(changes.updatedItems) == Set(expected))
++        return changes
++    }
++    @Test func allSmallPermutations() throws {
++        func permutations(_ values: [Int], _ visit: ([Int]) throws -> Void) rethrows {
++            if values.isEmpty { try visit([]); return }
++            for i in values.indices {
++                var rest = values; let first = rest.remove(at: i)
++                try permutations(rest) { try visit([first] + $0) }
++            }
++        }
++        for n in 0...7 {
++            let source = try snapshot([(0, (0..<n).map { Item(id: $0) })])
++            try permutations(Array(0..<n)) { order in
++                let target = try snapshot([(0, order.map { Item(id: $0, revision: $0 % 2) })])
++                let changes = try validate(source, target)
++                var lengths = [Int](repeating: 1, count: order.count)
++                for i in order.indices {
++                    for j in 0..<i where order[j] < order[i] { lengths[i] = max(lengths[i], lengths[j] + 1) }
++                }
++                #expect(changes.movedItems.count == n - (lengths.max() ?? 0))
++                _ = changes
++            }
++        }
++    }
++    @Test func crossSectionInsertionDeletionAndContent() throws {
++        var state: UInt64 = 0x504152414445
++        func next(_ limit: Int) -> Int {
++            state = state &* 6364136223846793005 &+ 1
++            return Int(state >> 32) % limit
++        }
++        let source = try snapshot((0..<4).map { s in (s, (s*10..<s*10+10).map { Item(id: $0) }) })
++        for _ in 0..<200 {
++            var ids = Array(0..<4)
++            ids.remove(at: next(ids.count)); ids.append(4)
++            for i in ids.indices.reversed() { ids.swapAt(i, next(i+1)) }
++            var items = (0..<45).filter { $0 >= 40 || next(5) != 0 }
++            for i in items.indices.reversed() { items.swapAt(i, next(i+1)) }
++            var groups = [[Item]](repeating: [], count: ids.count)
++            for id in items { groups[next(groups.count)].append(Item(id: id, revision: next(2))) }
++            let target = try snapshot(Array(zip(ids,groups)))
++            _ = try validate(source, target)
++        }
++    }
++    @Test func stableSectionsMixedChanges() throws {
++        var state: UInt64 = 1731
++        func next(_ limit: Int) -> Int {
++            state = state &* 6364136223846793005 &+ 1
++            return Int(state >> 32) % limit
++        }
++        let source = try snapshot((0..<4).map { s in (s, (s*10..<s*10+10).map { Item(id: $0) }) })
++        for _ in 0..<500 {
++            var ids = (0..<45).filter { $0 >= 40 || next(5) != 0 }
++            for i in ids.indices.reversed() { ids.swapAt(i, next(i+1)) }
++            var groups = [[Item]](repeating: [], count: 4)
++            for id in ids { groups[next(4)].append(Item(id: id, revision: next(2))) }
++            _ = try validate(source, snapshot(Array(zip(0..<4,groups))))
++        }
++    }
++
++    @Test func compactReplayRejectsMissingAndConflictingMoves() throws {
++        let old = try snapshot([(0, [Item(id: 0), Item(id: 1), Item(id: 2)])])
++        let new = try snapshot([(0, [Item(id: 1), Item(id: 2), Item(id: 0)])])
++        let input = PackedDiffInput(from: old.sections, to: new.sections,
++            sourcePositions: try CollectionPositions(old.sections, input: .source))
++        let good = try PackedStructuralPlan.calculate(input).batches[0]
++        try PackedStructuralPlan.validateItemBatch(good, input: input)
++        for moves in [[], good.movedItems + good.movedItems,
++                      [(from: ItemLocation(section: 9, item: 0), to: ItemLocation(section: 0, item: 2))]] {
++            let bad = PackedStructuralPlan.Batch(contents: good.contents, deletedSections: [],
++                insertedSections: [], movedSections: [], deletedItems: [], insertedItems: [], movedItems: moves)
++            #expect(throws: CollectionPlanValidationError.self) {
++                try PackedStructuralPlan.validateItemBatch(bad, input: input)
++            }
++        }
++    }
++
++    @Test func sectionReorderUsesCompactReplay() throws {
++        let source = try snapshot((0..<5).map { s in (s, (s*4..<s*4+4).map { Item(id: $0) }) })
++        func permutations(_ ids: [Int], prefix: [Int] = []) throws {
++            if ids.isEmpty {
++                _ = try validate(source, snapshot(prefix.map { s in (s, (s*4..<s*4+4).map { Item(id: $0, revision: 1) }) }))
++                return
++            }
++            for i in ids.indices {
++                var rest = ids; let first = rest.remove(at: i)
++                try permutations(rest, prefix: prefix + [first])
++            }
++        }
++        try permutations(Array(0..<5))
++    }
++
++}
+diff --git a/Tests/ParadeTests/SpikeOptimizationTests.swift b/Tests/ParadeTests/SpikeOptimizationTests.swift
+deleted file mode 100644
+--- a/Tests/ParadeTests/SpikeOptimizationTests.swift
++++ /dev/null
+@@ -1,129 +0,0 @@
+-// Created by weixi on 2026/11/09.
+-import UIKit
+-import Testing
+-@testable import Parade
+-
+-@MainActor
+-struct SpikeOptimizationTests {
+-    private struct Item: CellPresenter {
+-        let id: Int
+-        var revision: Int = 0
+-        func configure(_ cell: UICollectionViewCell) {}
+-    }
+-    private func snapshot(_ sections: [(Int, [Item])]) throws -> CollectionSnapshot<Int> {
+-        try CollectionSnapshot(sections.map {
+-            SectionSnapshot(id: $0.0, cells: $0.1.map(AnyCellPresenter.init), layout: 0)
+-        })
+-    }
+-    private func validate(_ old: CollectionSnapshot<Int>, _ new: CollectionSnapshot<Int>) throws -> SectionedChanges {
+-        let oldIndex = try CollectionPositions(old.sections, input: .source)
+-        let newIndex = try CollectionPositions(new.sections, input: .target)
+-        let input = PackedDiffInput(from: old.sections, to: new.sections, sourcePositions: oldIndex)
+-        let changes = try input.calculate()
+-        // Replay every optimized result through the existing full validator,
+-        // even when the production experiment would bypass an empty structure.
+-        _ = try CollectionUpdatePlan(from: old, to: new, prepared: PreparedSectionedDiff(
+-            changes: changes, sourcePositions: oldIndex, targetPositions: newIndex))
+-        let packed = try PackedStructuralPlan.calculate(input)
+-        for batch in packed.batches { try PackedStructuralPlan.validateMixedBatch(batch, input: input) }
+-        // The old independent staged planner above still verifies the same diff.
+-        // Its replay explicitly forbids mixed batches, so it cannot replay this executor format.
+-        var expected: [ItemLocation] = []
+-        for (s, section) in new.sections.enumerated() {
+-            for (i, item) in section.cells.enumerated() {
+-                if let prior = old.cellsById[item.id], prior != item { expected.append(ItemLocation(section: s,item: i)) }
+-            }
+-        }
+-        #expect(Set(changes.updatedItems) == Set(expected))
+-        return changes
+-    }
+-    @Test func allSmallPermutations() throws {
+-        func permutations(_ values: [Int], _ visit: ([Int]) throws -> Void) rethrows {
+-            if values.isEmpty { try visit([]); return }
+-            for i in values.indices {
+-                var rest = values; let first = rest.remove(at: i)
+-                try permutations(rest) { try visit([first] + $0) }
+-            }
+-        }
+-        for n in 0...7 {
+-            let source = try snapshot([(0, (0..<n).map { Item(id: $0) })])
+-            try permutations(Array(0..<n)) { order in
+-                let target = try snapshot([(0, order.map { Item(id: $0, revision: $0 % 2) })])
+-                let changes = try validate(source, target)
+-                var lengths = [Int](repeating: 1, count: order.count)
+-                for i in order.indices {
+-                    for j in 0..<i where order[j] < order[i] { lengths[i] = max(lengths[i], lengths[j] + 1) }
+-                }
+-                #expect(changes.movedItems.count == n - (lengths.max() ?? 0))
+-                _ = changes
+-            }
+-        }
+-    }
+-    @Test func crossSectionInsertionDeletionAndContent() throws {
+-        var state: UInt64 = 0x504152414445
+-        func next(_ limit: Int) -> Int {
+-            state = state &* 6364136223846793005 &+ 1
+-            return Int(state >> 32) % limit
+-        }
+-        let source = try snapshot((0..<4).map { s in (s, (s*10..<s*10+10).map { Item(id: $0) }) })
+-        for _ in 0..<200 {
+-            var ids = Array(0..<4)
+-            ids.remove(at: next(ids.count)); ids.append(4)
+-            for i in ids.indices.reversed() { ids.swapAt(i, next(i+1)) }
+-            var items = (0..<45).filter { $0 >= 40 || next(5) != 0 }
+-            for i in items.indices.reversed() { items.swapAt(i, next(i+1)) }
+-            var groups = [[Item]](repeating: [], count: ids.count)
+-            for id in items { groups[next(groups.count)].append(Item(id: id, revision: next(2))) }
+-            let target = try snapshot(Array(zip(ids,groups)))
+-            _ = try validate(source, target)
+-        }
+-    }
+-    @Test func stableSectionsMixedChanges() throws {
+-        var state: UInt64 = 1731
+-        func next(_ limit: Int) -> Int {
+-            state = state &* 6364136223846793005 &+ 1
+-            return Int(state >> 32) % limit
+-        }
+-        let source = try snapshot((0..<4).map { s in (s, (s*10..<s*10+10).map { Item(id: $0) }) })
+-        for _ in 0..<500 {
+-            var ids = (0..<45).filter { $0 >= 40 || next(5) != 0 }
+-            for i in ids.indices.reversed() { ids.swapAt(i, next(i+1)) }
+-            var groups = [[Item]](repeating: [], count: 4)
+-            for id in ids { groups[next(4)].append(Item(id: id, revision: next(2))) }
+-            _ = try validate(source, snapshot(Array(zip(0..<4,groups))))
+-        }
+-    }
+-
+-    @Test func compactReplayRejectsMissingAndConflictingMoves() throws {
+-        let old = try snapshot([(0, [Item(id: 0), Item(id: 1), Item(id: 2)])])
+-        let new = try snapshot([(0, [Item(id: 1), Item(id: 2), Item(id: 0)])])
+-        let input = PackedDiffInput(from: old.sections, to: new.sections,
+-            sourcePositions: try CollectionPositions(old.sections, input: .source))
+-        let good = try PackedStructuralPlan.calculate(input).batches[0]
+-        try PackedStructuralPlan.validateItemBatch(good, input: input)
+-        for moves in [[], good.movedItems + good.movedItems,
+-                      [(from: ItemLocation(section: 9, item: 0), to: ItemLocation(section: 0, item: 2))]] {
+-            let bad = PackedStructuralPlan.Batch(contents: good.contents, deletedSections: [],
+-                insertedSections: [], movedSections: [], deletedItems: [], insertedItems: [], movedItems: moves)
+-            #expect(throws: CollectionPlanValidationError.self) {
+-                try PackedStructuralPlan.validateItemBatch(bad, input: input)
+-            }
+-        }
+-    }
+-
+-    @Test func sectionReorderUsesCompactReplay() throws {
+-        let source = try snapshot((0..<5).map { s in (s, (s*4..<s*4+4).map { Item(id: $0) }) })
+-        func permutations(_ ids: [Int], prefix: [Int] = []) throws {
+-            if ids.isEmpty {
+-                _ = try validate(source, snapshot(prefix.map { s in (s, (s*4..<s*4+4).map { Item(id: $0, revision: 1) }) }))
+-                return
+-            }
+-            for i in ids.indices {
+-                var rest = ids; let first = rest.remove(at: i)
+-                try permutations(rest, prefix: prefix + [first])
+-            }
+-        }
+-        try permutations(Array(0..<5))
+-    }
+-
+-}

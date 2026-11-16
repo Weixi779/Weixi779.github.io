@@ -5,8 +5,34 @@
     <link>https://weixi779.github.io/</link>
     <description>个人博客记录成长</description>
     <language>zh-CN</language>
-    <lastBuildDate>Sun, 25 Oct 2026 15:45:00 GMT</lastBuildDate>
+    <lastBuildDate>Thu, 05 Nov 2026 07:50:47 GMT</lastBuildDate>
     <atom:link href="https://weixi779.github.io/rss.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>只是想暂存一段 JSON</title>
+      <link>https://weixi779.github.io/posts/storing-json-with-codable/</link>
+      <guid isPermaLink="true">https://weixi779.github.io/posts/storing-json-with-codable/</guid>
+      <pubDate>Thu, 05 Nov 2026 07:50:47 GMT</pubDate>
+      <description>从一个分页游标出发，重新检查 JSON 的相等与数字边界，留下了自己的思考</description>
+      <category>备忘录</category>
+      <category>iOS</category>
+      <category>Swift</category>
+      <category>Codable</category>
+      <category>JSON</category>
+      <category>技术演进</category>
+    </item>
+    <item>
+      <title>更加 Swifty 的 UICollectionView</title>
+      <link>https://weixi779.github.io/posts/parade-third-answer/</link>
+      <guid isPermaLink="true">https://weixi779.github.io/posts/parade-third-answer/</guid>
+      <pubDate>Wed, 28 Oct 2026 04:00:00 GMT</pubDate>
+      <description>又一次站在 UICollectionView 面前，这次我的选择是？</description>
+      <category>备忘录</category>
+      <category>iOS</category>
+      <category>Swift</category>
+      <category>UIKit</category>
+      <category>架构</category>
+      <category>技术演进</category>
+    </item>
     <item>
       <title>回响</title>
       <link>https://weixi779.github.io/posts/the-echo-that-never-came/</link>
@@ -24,7 +50,7 @@
       <guid isPermaLink="true">https://weixi779.github.io/posts/ios-performance-unnecessary-work/</guid>
       <pubDate>Mon, 19 Oct 2026 06:00:00 GMT</pubDate>
       <description>从 Instruments 的调用栈回到代码，找出真正值得优化的东西</description>
-      <category>技术志</category>
+      <category>备忘录</category>
       <category>iOS</category>
       <category>UIKit</category>
       <category>性能优化</category>
@@ -58,7 +84,7 @@
       <guid isPermaLink="true">https://weixi779.github.io/posts/ios-network-image-survey/</guid>
       <pubDate>Mon, 10 Aug 2026 07:03:40 GMT</pubDate>
       <description>本想在三家里选出下一个网络图片库，后来从缓存、合并走到展示，每一层都只得到一半答案。</description>
-      <category>技术志</category>
+      <category>备忘录</category>
       <category>iOS</category>
       <category>架构</category>
       <category>图片</category>
@@ -71,7 +97,7 @@
       <guid isPermaLink="true">https://weixi779.github.io/posts/wicompress-2-architecture-ai/</guid>
       <pubDate>Sun, 02 Aug 2026 04:00:00 GMT</pubDate>
       <description>从 204 行的图片压缩工具到 WICompress 2.0，也重新理解人在 AI 编程中的位置。</description>
-      <category>技术志</category>
+      <category>备忘录</category>
       <category>iOS</category>
       <category>架构</category>
       <category>图像处理</category>
@@ -84,7 +110,7 @@
       <guid isPermaLink="true">https://weixi779.github.io/posts/caffeine-moka-cache-notes/</guid>
       <pubDate>Fri, 24 Jul 2026 06:00:00 GMT</pubDate>
       <description>顺着咖啡系缓存谱系走一遭: 从惊喜到碰壁, 再到自己动手写 Swift 库时的收敛.</description>
-      <category>技术志</category>
+      <category>备忘录</category>
       <category>iOS</category>
       <category>缓存</category>
       <category>架构</category>
@@ -128,7 +154,7 @@
       <guid isPermaLink="true">https://weixi779.github.io/posts/ios-logging-system-design/</guid>
       <pubDate>Fri, 09 Jan 2026 07:59:03 GMT</pubDate>
       <description>面向真实生产环境，设计一套覆盖本地、远端与上下文传播的 iOS 日志系统。</description>
-      <category>技术志</category>
+      <category>备忘录</category>
       <category>iOS</category>
       <category>架构</category>
       <category>日志</category>
@@ -139,7 +165,7 @@
       <guid isPermaLink="true">https://weixi779.github.io/posts/ios-network-layer-evolution/</guid>
       <pubDate>Mon, 05 Jan 2026 06:27:32 GMT</pubDate>
       <description>回顾从 Objective-C 到 Swift 的网络层演进，并重新思考抽象与控制权。</description>
-      <category>技术志</category>
+      <category>备忘录</category>
       <category>iOS</category>
       <category>架构</category>
       <category>网络</category>
@@ -151,7 +177,7 @@
       <guid isPermaLink="true">https://weixi779.github.io/posts/markdown-latex-rendering-ios/</guid>
       <pubDate>Sat, 06 Sep 2025 14:32:48 GMT</pubDate>
       <description>梳理 iOS Markdown 中的 LaTeX 提取、解析、渲染与双引擎兜底方案。</description>
-      <category>技术志</category>
+      <category>备忘录</category>
       <category>iOS</category>
       <category>Markdown</category>
       <category>LaTeX</category>
@@ -174,7 +200,7 @@
       <guid isPermaLink="true">https://weixi779.github.io/posts/ios-image-compression/</guid>
       <pubDate>Tue, 04 Mar 2025 13:56:34 GMT</pubDate>
       <description>从图片格式、压缩策略到实践细节，系统梳理 iOS 图片压缩。</description>
-      <category>技术志</category>
+      <category>备忘录</category>
       <category>iOS</category>
       <category>图片压缩</category>
       <category>图像处理</category>
@@ -186,7 +212,7 @@
       <guid isPermaLink="true">https://weixi779.github.io/posts/cyberpunk-2077/</guid>
       <pubDate>Sun, 12 Jan 2025 15:21:19 GMT</pubDate>
       <description>一段关于《赛博朋克 2077》、选择、遗憾与夜之城的通关后记。</description>
-      <category>后日谈</category>
+      <category>画外音</category>
       <category>游戏</category>
     </item>
     <item>
@@ -195,7 +221,7 @@
       <guid isPermaLink="true">https://weixi779.github.io/posts/swiftui-custom-textfield/</guid>
       <pubDate>Sun, 18 Aug 2024 06:59:38 GMT</pubDate>
       <description>通过 UIKit 桥接，为 SwiftUI TextField 补齐更完整的输入与控制能力。</description>
-      <category>技术志</category>
+      <category>备忘录</category>
       <category>iOS</category>
       <category>SwiftUI</category>
       <category>自定义组件</category>
@@ -206,7 +232,7 @@
       <guid isPermaLink="true">https://weixi779.github.io/posts/swift-class-vs-struct/</guid>
       <pubDate>Tue, 13 Aug 2024 14:01:35 GMT</pubDate>
       <description>从引用类型和值类型出发，梳理 Swift 中 class 与 struct 的差异和选择。</description>
-      <category>技术志</category>
+      <category>备忘录</category>
       <category>iOS</category>
       <category>Swift</category>
       <category>语言设计</category>
@@ -218,7 +244,7 @@
       <guid isPermaLink="true">https://weixi779.github.io/posts/swiftui-custom-tabview/</guid>
       <pubDate>Mon, 29 Jul 2024 05:15:07 GMT</pubDate>
       <description>从状态建模、页面路由到事件流，设计一个可扩展的 SwiftUI TabView。</description>
-      <category>技术志</category>
+      <category>备忘录</category>
       <category>iOS</category>
       <category>SwiftUI</category>
       <category>自定义组件</category>
@@ -238,7 +264,7 @@
       <guid isPermaLink="true">https://weixi779.github.io/posts/unity-sandbox-building-search-algorithms/</guid>
       <pubDate>Sat, 04 May 2024 05:50:47 GMT</pubDate>
       <description>从占地面积、启发式到贪心策略，整理沙盒建造中的搜索算法。</description>
-      <category>技术志</category>
+      <category>备忘录</category>
       <category>Unity</category>
       <category>沙盒建造</category>
       <category>算法</category>
@@ -250,7 +276,7 @@
       <guid isPermaLink="true">https://weixi779.github.io/posts/unity-sandbox-building-state-pattern/</guid>
       <pubDate>Sat, 27 Apr 2024 11:20:13 GMT</pubDate>
       <description>用状态模式组织沙盒建造交互，并处理 UI 切换与监听周期中的问题。</description>
-      <category>技术志</category>
+      <category>备忘录</category>
       <category>Unity</category>
       <category>沙盒建造</category>
       <category>设计模式</category>
@@ -262,7 +288,7 @@
       <guid isPermaLink="true">https://weixi779.github.io/posts/unity-sandbox-building-command-pattern/</guid>
       <pubDate>Sun, 21 Apr 2024 23:16:34 GMT</pubDate>
       <description>用命令模式组织沙盒建造操作，为撤销、重做与扩展能力打下基础。</description>
-      <category>技术志</category>
+      <category>备忘录</category>
       <category>Unity</category>
       <category>沙盒建造</category>
       <category>设计模式</category>
@@ -274,7 +300,7 @@
       <guid isPermaLink="true">https://weixi779.github.io/posts/nier-automata/</guid>
       <pubDate>Sun, 21 Apr 2024 01:06:18 GMT</pubDate>
       <description>一篇关于《尼尔：机械纪元》三周目体验、悲剧与选择的通关后记。</description>
-      <category>后日谈</category>
+      <category>画外音</category>
       <category>游戏</category>
     </item>
     <item>
@@ -283,7 +309,7 @@
       <guid isPermaLink="true">https://weixi779.github.io/posts/unity-sandbox-building-camera-control/</guid>
       <pubDate>Sun, 14 Apr 2024 11:58:43 GMT</pubDate>
       <description>实现沙盒建造游戏中的边界移动、拖拽、缩放与相机状态控制。</description>
-      <category>技术志</category>
+      <category>备忘录</category>
       <category>Unity</category>
       <category>沙盒建造</category>
       <category>相机控制</category>
@@ -294,7 +320,7 @@
       <guid isPermaLink="true">https://weixi779.github.io/posts/quest-3-bypass-router/</guid>
       <pubDate>Sat, 06 Apr 2024 04:53:55 GMT</pubDate>
       <description>记录用 Mac mini 搭建旁路由，为 Quest 3 提供稳定网络的完整过程。</description>
-      <category>技术志</category>
+      <category>备忘录</category>
       <category>折腾</category>
       <category>VR</category>
       <category>网络</category>
@@ -306,7 +332,7 @@
       <guid isPermaLink="true">https://weixi779.github.io/posts/image-compression-fundamentals/</guid>
       <pubDate>Thu, 07 Mar 2024 11:28:08 GMT</pubDate>
       <description>从图像大小与编码原理出发，梳理二分法、Luban 与融合压缩算法。</description>
-      <category>技术志</category>
+      <category>备忘录</category>
       <category>iOS</category>
       <category>图片压缩</category>
       <category>图像处理</category>
@@ -318,7 +344,7 @@
       <guid isPermaLink="true">https://weixi779.github.io/posts/ios-haptics-system-sounds/</guid>
       <pubDate>Mon, 04 Mar 2024 12:37:31 GMT</pubDate>
       <description>记录 Unity 接入 iOS 震动与系统声音时的方案、排查过程和踩坑。</description>
-      <category>技术志</category>
+      <category>备忘录</category>
       <category>iOS</category>
       <category>触觉反馈</category>
       <category>系统声音</category>
@@ -329,7 +355,7 @@
       <guid isPermaLink="true">https://weixi779.github.io/posts/swift-model-decoding/</guid>
       <pubDate>Wed, 24 Jan 2024 07:15:22 GMT</pubDate>
       <description>回顾 iOS 模型解析从 Objective-C 到 Codable 的演进与实践。</description>
-      <category>技术志</category>
+      <category>备忘录</category>
       <category>iOS</category>
       <category>Swift</category>
       <category>数据解析</category>
@@ -341,7 +367,7 @@
       <guid isPermaLink="true">https://weixi779.github.io/posts/ios-ctmediator-notes/</guid>
       <pubDate>Sun, 18 Jun 2023 08:39:29 GMT</pubDate>
       <description>从 iOS 组件化的历史与现实出发，重新理解 CTMediator 的设计取舍。</description>
-      <category>技术志</category>
+      <category>备忘录</category>
       <category>iOS</category>
       <category>技术演进</category>
       <category>组件化</category>

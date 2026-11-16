@@ -1,0 +1,35 @@
+diff --git a/Sources/Parade/DataSource/Staged/StagedCollectionDataSource.swift b/Sources/Parade/DataSource/Staged/StagedCollectionDataSource.swift
+index 2c9b34b..d7707fb 100644
+--- a/Sources/Parade/DataSource/Staged/StagedCollectionDataSource.swift
++++ b/Sources/Parade/DataSource/Staged/StagedCollectionDataSource.swift
+@@ -69,6 +69,7 @@ public final class StagedCollectionDataSource<Layout>: NSObject, CollectionDataS
+         }
+         // UIKit must consume the previous counts before the first batch.
+         collectionView.layoutIfNeeded()
++        let planningStart = SpikeTimings.now()
+         let plan: CollectionUpdatePlan<Layout>
+         do {
+             plan = try CollectionUpdatePlan<Layout>(from: source, to: target, using: diffAlgorithm)
+@@ -81,6 +82,7 @@ public final class StagedCollectionDataSource<Layout>: NSObject, CollectionDataS
+             )]
+         }
+ 
++        SpikeTimings.planningMs = SpikeTimings.elapsed(planningStart)
+         for batch in plan.batches {
+             await performBatch(animated: animated) {
+                 self.sections = batch.sections
+diff --git a/Sources/Parade/Diff/SpikeTimings.swift b/Sources/Parade/Diff/SpikeTimings.swift
+new file mode 100644
+index 0000000..edaf9de
+--- /dev/null
++++ b/Sources/Parade/Diff/SpikeTimings.swift
+@@ -0,0 +1,9 @@
++// Created by weixi on 2026/11/09.
++import Foundation
++@MainActor enum SpikeTimings {
++    static var planningMs: Double = 0
++    static var workerWaitMs: Double = 0
++    static func now() -> UInt64 { DispatchTime.now().uptimeNanoseconds }
++    static func elapsed(_ start: UInt64) -> Double { Double(now()-start)/1e6 }
++    static func reset() { planningMs=0;workerWaitMs=0 }
++}

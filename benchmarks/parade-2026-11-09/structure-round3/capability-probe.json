@@ -1,0 +1,909 @@
+{
+  "checksum" : 0,
+  "complete" : true,
+  "cpuRuns" : 20,
+  "cpuWarmups" : 3,
+  "date" : "2026-11-09T05:44:24Z",
+  "n" : 7,
+  "os" : "27.0",
+  "records" : [
+    {
+      "changeCount" : 1,
+      "changeMode" : "capability",
+      "engine" : "Current-Apple-adapter",
+      "lane" : "ui",
+      "n" : 7,
+      "samples" : [
+        {
+          "applyMs" : 0.69650000000000001,
+          "batches" : 2,
+          "configuredCells" : 1,
+          "detail" : {
+
+          },
+          "itemMoves" : 1,
+          "layoutMs" : 0.00033300000000000002,
+          "mainPreparePlanMs" : 0.015667,
+          "operations" : [
+            "batch 1: moveItem: [0, 0] -> [0, 0]",
+            "batch 1: insertSections: [0]"
+          ],
+          "planningMs" : 0,
+          "prepareMs" : 0.015667,
+          "reconfiguredItems" : 1,
+          "reloadCalls" : 0,
+          "reloadedItems" : 0,
+          "retainedCells" : {
+            "A" : true,
+            "B" : true
+          },
+          "sectionMoves" : 0,
+          "selectedIDs" : [
+            "A"
+          ],
+          "totalMs" : 0.71250000000000002,
+          "workerWaitMs" : 0
+        }
+      ],
+      "scenario" : "to-new-section",
+      "sections" : 1
+    },
+    {
+      "changeCount" : 1,
+      "changeMode" : "capability",
+      "engine" : "Current-staged",
+      "lane" : "ui",
+      "n" : 7,
+      "samples" : [
+        {
+          "applyMs" : 1.4285000000000001,
+          "batches" : 2,
+          "configuredCells" : 1,
+          "detail" : {
+            "batchReplayMs" : 0.017416999999999998,
+            "buildBatchesMs" : 0.032166,
+            "changesValidationMs" : 0.44658300000000001,
+            "contentApplyMs" : 0.13966600000000001,
+            "diffMs" : 0.023417,
+            "discardedContentMs" : 0.002833,
+            "encodeBatchesMs" : 0.003209,
+            "indexInstallMs" : 0.011167,
+            "materializeMs" : 0.036624999999999998,
+            "packInputMs" : 0.067500000000000004,
+            "structureApplyMs" : 0.58766600000000002,
+            "workerPositionsMs" : 0.0021670000000000001,
+            "workerPresentersMs" : 0.0044999999999999997,
+            "workerSnapshotsMs" : 0.002875
+          },
+          "itemMoves" : 1,
+          "layoutMs" : 0.065292000000000003,
+          "mainPreparePlanMs" : 0.69316599999999995,
+          "operations" : [
+            "batch 1: insertSections: [0]",
+            "batch 2: moveItem: [1, 0] -> [0, 0]"
+          ],
+          "planningMs" : 0.67608299999999999,
+          "prepareMs" : 0.017083000000000001,
+          "reconfiguredItems" : 1,
+          "reloadCalls" : 0,
+          "reloadedItems" : 0,
+          "retainedCells" : {
+            "A" : true,
+            "B" : true
+          },
+          "sectionMoves" : 0,
+          "selectedIDs" : [
+            "A"
+          ],
+          "totalMs" : 1.510875,
+          "workerWaitMs" : 0
+        }
+      ],
+      "scenario" : "to-new-section",
+      "sections" : 1
+    },
+    {
+      "changeCount" : 1,
+      "changeMode" : "capability",
+      "engine" : "Current-ListKit",
+      "lane" : "ui",
+      "n" : 7,
+      "samples" : [
+        {
+          "applyMs" : 0.75058400000000003,
+          "batches" : 1,
+          "configuredCells" : 1,
+          "detail" : {
+
+          },
+          "itemMoves" : 0,
+          "layoutMs" : 0.00025000000000000001,
+          "mainPreparePlanMs" : 0.017916000000000001,
+          "operations" : [
+            "batch 1: deleteItems: [[0, 0]]",
+            "batch 1: insertSections: [0]"
+          ],
+          "planningMs" : 0,
+          "prepareMs" : 0.017916000000000001,
+          "reconfiguredItems" : 1,
+          "reloadCalls" : 0,
+          "reloadedItems" : 0,
+          "retainedCells" : {
+            "A" : true,
+            "B" : true
+          },
+          "sectionMoves" : 0,
+          "selectedIDs" : [
+
+          ],
+          "totalMs" : 0.76875000000000004,
+          "workerWaitMs" : 0
+        }
+      ],
+      "scenario" : "to-new-section",
+      "sections" : 1
+    },
+    {
+      "changeCount" : 1,
+      "changeMode" : "capability",
+      "engine" : "Current-Apple-background",
+      "lane" : "ui",
+      "n" : 7,
+      "samples" : [
+        {
+          "applyMs" : 0.69370799999999999,
+          "batches" : 2,
+          "configuredCells" : 1,
+          "detail" : {
+
+          },
+          "itemMoves" : 1,
+          "layoutMs" : 0.00025000000000000001,
+          "mainPreparePlanMs" : 0.023334000000000001,
+          "operations" : [
+            "batch 1: moveItem: [0, 0] -> [0, 0]",
+            "batch 1: insertSections: [0]"
+          ],
+          "planningMs" : 0,
+          "prepareMs" : 0.023334000000000001,
+          "reconfiguredItems" : 1,
+          "reloadCalls" : 0,
+          "reloadedItems" : 0,
+          "retainedCells" : {
+            "A" : true,
+            "B" : true
+          },
+          "sectionMoves" : 0,
+          "selectedIDs" : [
+            "A"
+          ],
+          "totalMs" : 0.71729200000000004,
+          "workerWaitMs" : 0
+        }
+      ],
+      "scenario" : "to-new-section",
+      "sections" : 1
+    },
+    {
+      "changeCount" : 1,
+      "changeMode" : "capability",
+      "engine" : "Current-Apple-background",
+      "lane" : "ui",
+      "n" : 7,
+      "samples" : [
+        {
+          "applyMs" : 0.60608300000000004,
+          "batches" : 2,
+          "configuredCells" : 1,
+          "detail" : {
+
+          },
+          "itemMoves" : 1,
+          "layoutMs" : 0.000417,
+          "mainPreparePlanMs" : 0.019375,
+          "operations" : [
+            "batch 1: moveItem: [0, 0] -> [0, 1]",
+            "batch 1: deleteSections: [0]"
+          ],
+          "planningMs" : 0,
+          "prepareMs" : 0.019375,
+          "reconfiguredItems" : 1,
+          "reloadCalls" : 0,
+          "reloadedItems" : 0,
+          "retainedCells" : {
+            "A" : true,
+            "B" : true
+          },
+          "sectionMoves" : 0,
+          "selectedIDs" : [
+            "A"
+          ],
+          "totalMs" : 0.62587499999999996,
+          "workerWaitMs" : 0
+        }
+      ],
+      "scenario" : "from-deleted-section",
+      "sections" : 2
+    },
+    {
+      "changeCount" : 1,
+      "changeMode" : "capability",
+      "engine" : "Current-staged",
+      "lane" : "ui",
+      "n" : 7,
+      "samples" : [
+        {
+          "applyMs" : 0.64866599999999996,
+          "batches" : 2,
+          "configuredCells" : 1,
+          "detail" : {
+            "batchReplayMs" : 0.0061250000000000002,
+            "buildBatchesMs" : 0.0044999999999999997,
+            "changesValidationMs" : 0.0044169999999999999,
+            "contentApplyMs" : 0.084667000000000006,
+            "diffMs" : 0.0066670000000000002,
+            "discardedContentMs" : 0.0018749999999999999,
+            "encodeBatchesMs" : 0.00050000000000000001,
+            "indexInstallMs" : 0.0050000000000000001,
+            "materializeMs" : 0.018749999999999999,
+            "packInputMs" : 0.016542000000000001,
+            "structureApplyMs" : 0.45887499999999998,
+            "workerPositionsMs" : 0.0017080000000000001,
+            "workerPresentersMs" : 0.001124,
+            "workerSnapshotsMs" : 0.0083750000000000005
+          },
+          "itemMoves" : 1,
+          "layoutMs" : 0.040542000000000002,
+          "mainPreparePlanMs" : 0.10245800000000001,
+          "operations" : [
+            "batch 1: moveItem: [0, 0] -> [1, 1]",
+            "batch 2: deleteSections: [0]"
+          ],
+          "planningMs" : 0.081583000000000003,
+          "prepareMs" : 0.020875000000000001,
+          "reconfiguredItems" : 1,
+          "reloadCalls" : 0,
+          "reloadedItems" : 0,
+          "retainedCells" : {
+            "A" : true,
+            "B" : true
+          },
+          "sectionMoves" : 0,
+          "selectedIDs" : [
+            "A"
+          ],
+          "totalMs" : 0.71008300000000002,
+          "workerWaitMs" : 0
+        }
+      ],
+      "scenario" : "from-deleted-section",
+      "sections" : 2
+    },
+    {
+      "changeCount" : 1,
+      "changeMode" : "capability",
+      "engine" : "Current-Apple-adapter",
+      "lane" : "ui",
+      "n" : 7,
+      "samples" : [
+        {
+          "applyMs" : 0.77887499999999998,
+          "batches" : 2,
+          "configuredCells" : 1,
+          "detail" : {
+
+          },
+          "itemMoves" : 1,
+          "layoutMs" : 0.00016699999999999999,
+          "mainPreparePlanMs" : 0.025666000000000001,
+          "operations" : [
+            "batch 1: moveItem: [0, 0] -> [0, 1]",
+            "batch 1: deleteSections: [0]"
+          ],
+          "planningMs" : 0,
+          "prepareMs" : 0.025666000000000001,
+          "reconfiguredItems" : 1,
+          "reloadCalls" : 0,
+          "reloadedItems" : 0,
+          "retainedCells" : {
+            "A" : true,
+            "B" : true
+          },
+          "sectionMoves" : 0,
+          "selectedIDs" : [
+            "A"
+          ],
+          "totalMs" : 0.80470799999999998,
+          "workerWaitMs" : 0
+        }
+      ],
+      "scenario" : "from-deleted-section",
+      "sections" : 2
+    },
+    {
+      "changeCount" : 1,
+      "changeMode" : "capability",
+      "engine" : "Current-ListKit",
+      "lane" : "ui",
+      "n" : 7,
+      "samples" : [
+        {
+          "applyMs" : 0.69816599999999995,
+          "batches" : 1,
+          "configuredCells" : 1,
+          "detail" : {
+
+          },
+          "itemMoves" : 0,
+          "layoutMs" : 0.000292,
+          "mainPreparePlanMs" : 0.025958999999999999,
+          "operations" : [
+            "batch 1: deleteSections: [0]",
+            "batch 1: insertItems: [[0, 1]]"
+          ],
+          "planningMs" : 0,
+          "prepareMs" : 0.025958999999999999,
+          "reconfiguredItems" : 1,
+          "reloadCalls" : 0,
+          "reloadedItems" : 0,
+          "retainedCells" : {
+            "A" : true,
+            "B" : true
+          },
+          "sectionMoves" : 0,
+          "selectedIDs" : [
+
+          ],
+          "totalMs" : 0.72441699999999998,
+          "workerWaitMs" : 0
+        }
+      ],
+      "scenario" : "from-deleted-section",
+      "sections" : 2
+    },
+    {
+      "changeCount" : 1,
+      "changeMode" : "capability",
+      "engine" : "Current-Apple-adapter",
+      "lane" : "ui",
+      "n" : 7,
+      "samples" : [
+        {
+          "applyMs" : 0.75979200000000002,
+          "batches" : 2,
+          "configuredCells" : 1,
+          "detail" : {
+
+          },
+          "itemMoves" : 1,
+          "layoutMs" : 0.00016699999999999999,
+          "mainPreparePlanMs" : 0.019207999999999999,
+          "operations" : [
+            "batch 1: moveItem: [0, 0] -> [1, 1]"
+          ],
+          "planningMs" : 0,
+          "prepareMs" : 0.019207999999999999,
+          "reconfiguredItems" : 1,
+          "reloadCalls" : 0,
+          "reloadedItems" : 0,
+          "retainedCells" : {
+            "A" : true,
+            "B" : true
+          },
+          "sectionMoves" : 0,
+          "selectedIDs" : [
+            "A"
+          ],
+          "totalMs" : 0.77916700000000005,
+          "workerWaitMs" : 0
+        }
+      ],
+      "scenario" : "between-existing",
+      "sections" : 2
+    },
+    {
+      "changeCount" : 1,
+      "changeMode" : "capability",
+      "engine" : "Current-staged",
+      "lane" : "ui",
+      "n" : 7,
+      "samples" : [
+        {
+          "applyMs" : 0.58912500000000001,
+          "batches" : 1,
+          "configuredCells" : 1,
+          "detail" : {
+            "contentApplyMs" : 0.093417,
+            "diffMs" : 0.0056249999999999998,
+            "indexInstallMs" : 0.0019169999999999999,
+            "materializeMs" : 0.015125,
+            "packInputMs" : 0.017708999999999999,
+            "structureApplyMs" : 0.41675000000000001,
+            "typedReplayMs" : 0.015917000000000001
+          },
+          "itemMoves" : 1,
+          "layoutMs" : 0.046165999999999999,
+          "mainPreparePlanMs" : 0.074500000000000011,
+          "operations" : [
+            "batch 1: moveItem: [0, 0] -> [1, 1]"
+          ],
+          "planningMs" : 0.058458000000000003,
+          "prepareMs" : 0.016042000000000001,
+          "reconfiguredItems" : 1,
+          "reloadCalls" : 0,
+          "reloadedItems" : 0,
+          "retainedCells" : {
+            "A" : true,
+            "B" : true
+          },
+          "sectionMoves" : 0,
+          "selectedIDs" : [
+            "A"
+          ],
+          "totalMs" : 0.65133300000000005,
+          "workerWaitMs" : 0
+        }
+      ],
+      "scenario" : "between-existing",
+      "sections" : 2
+    },
+    {
+      "changeCount" : 1,
+      "changeMode" : "capability",
+      "engine" : "Current-Apple-background",
+      "lane" : "ui",
+      "n" : 7,
+      "samples" : [
+        {
+          "applyMs" : 0.66545799999999999,
+          "batches" : 2,
+          "configuredCells" : 1,
+          "detail" : {
+
+          },
+          "itemMoves" : 1,
+          "layoutMs" : 0.00016699999999999999,
+          "mainPreparePlanMs" : 0.024458000000000001,
+          "operations" : [
+            "batch 1: moveItem: [0, 0] -> [1, 1]"
+          ],
+          "planningMs" : 0,
+          "prepareMs" : 0.024458000000000001,
+          "reconfiguredItems" : 1,
+          "reloadCalls" : 0,
+          "reloadedItems" : 0,
+          "retainedCells" : {
+            "A" : true,
+            "B" : true
+          },
+          "sectionMoves" : 0,
+          "selectedIDs" : [
+            "A"
+          ],
+          "totalMs" : 0.690083,
+          "workerWaitMs" : 0
+        }
+      ],
+      "scenario" : "between-existing",
+      "sections" : 2
+    },
+    {
+      "changeCount" : 1,
+      "changeMode" : "capability",
+      "engine" : "Current-ListKit",
+      "lane" : "ui",
+      "n" : 7,
+      "samples" : [
+        {
+          "applyMs" : 0.465667,
+          "batches" : 1,
+          "configuredCells" : 1,
+          "detail" : {
+
+          },
+          "itemMoves" : 1,
+          "layoutMs" : 0.00025000000000000001,
+          "mainPreparePlanMs" : 0.027583,
+          "operations" : [
+            "batch 1: moveItem: [0, 0] -> [1, 1]"
+          ],
+          "planningMs" : 0,
+          "prepareMs" : 0.027583,
+          "reconfiguredItems" : 1,
+          "reloadCalls" : 0,
+          "reloadedItems" : 0,
+          "retainedCells" : {
+            "A" : true,
+            "B" : true
+          },
+          "sectionMoves" : 0,
+          "selectedIDs" : [
+            "A"
+          ],
+          "totalMs" : 0.49349999999999999,
+          "workerWaitMs" : 0
+        }
+      ],
+      "scenario" : "between-existing",
+      "sections" : 2
+    },
+    {
+      "changeCount" : 1,
+      "changeMode" : "capability",
+      "engine" : "Current-Apple-adapter",
+      "lane" : "ui",
+      "n" : 7,
+      "samples" : [
+        {
+          "applyMs" : 0.79766700000000001,
+          "batches" : 2,
+          "configuredCells" : 1,
+          "detail" : {
+
+          },
+          "itemMoves" : 2,
+          "layoutMs" : 0.000166,
+          "mainPreparePlanMs" : 0.020792000000000001,
+          "operations" : [
+            "batch 1: moveItem: [0, 0] -> [0, 1]",
+            "batch 1: moveItem: [1, 0] -> [0, 0]"
+          ],
+          "planningMs" : 0,
+          "prepareMs" : 0.020792000000000001,
+          "reconfiguredItems" : 1,
+          "reloadCalls" : 0,
+          "reloadedItems" : 0,
+          "retainedCells" : {
+            "A" : true,
+            "B" : true,
+            "C" : true
+          },
+          "sectionMoves" : 1,
+          "selectedIDs" : [
+            "A"
+          ],
+          "totalMs" : 0.81862500000000005,
+          "workerWaitMs" : 0
+        }
+      ],
+      "scenario" : "section-reorder-and-transfer",
+      "sections" : 2
+    },
+    {
+      "changeCount" : 1,
+      "changeMode" : "capability",
+      "engine" : "Current-staged",
+      "lane" : "ui",
+      "n" : 7,
+      "samples" : [
+        {
+          "applyMs" : 1.8734999999999999,
+          "batches" : 2,
+          "configuredCells" : 1,
+          "detail" : {
+            "batchReplayMs" : 0.022457999999999999,
+            "buildBatchesMs" : 0.012375000000000001,
+            "changesValidationMs" : 0.01375,
+            "contentApplyMs" : 0.36449999999999999,
+            "diffMs" : 0.045041999999999999,
+            "discardedContentMs" : 0.0057080000000000004,
+            "encodeBatchesMs" : 0.0024580000000000001,
+            "indexInstallMs" : 0.024374,
+            "materializeMs" : 0.051458999999999998,
+            "packInputMs" : 0.045999999999999999,
+            "structureApplyMs" : 1.201667,
+            "workerPositionsMs" : 0.0051659999999999996,
+            "workerPresentersMs" : 0.0046670000000000001,
+            "workerSnapshotsMs" : 0.018498999999999998
+          },
+          "itemMoves" : 1,
+          "layoutMs" : 0.13825000000000001,
+          "mainPreparePlanMs" : 0.30291700000000005,
+          "operations" : [
+            "batch 1: moveItem: [0, 0] -> [1, 1]"
+          ],
+          "planningMs" : 0.26145800000000002,
+          "prepareMs" : 0.041459000000000003,
+          "reconfiguredItems" : 1,
+          "reloadCalls" : 0,
+          "reloadedItems" : 0,
+          "retainedCells" : {
+            "A" : true,
+            "B" : true,
+            "C" : true
+          },
+          "sectionMoves" : 1,
+          "selectedIDs" : [
+            "A"
+          ],
+          "totalMs" : 2.0532089999999998,
+          "workerWaitMs" : 0
+        }
+      ],
+      "scenario" : "section-reorder-and-transfer",
+      "sections" : 2
+    },
+    {
+      "changeCount" : 1,
+      "changeMode" : "capability",
+      "engine" : "Current-ListKit",
+      "lane" : "ui",
+      "n" : 7,
+      "samples" : [
+        {
+          "applyMs" : 2.165667,
+          "batches" : 1,
+          "configuredCells" : 1,
+          "detail" : {
+
+          },
+          "itemMoves" : 1,
+          "layoutMs" : 0.00095799999999999998,
+          "mainPreparePlanMs" : 0.066125000000000003,
+          "operations" : [
+            "batch 1: moveItem: [0, 0] -> [0, 1]"
+          ],
+          "planningMs" : 0,
+          "prepareMs" : 0.066125000000000003,
+          "reconfiguredItems" : 1,
+          "reloadCalls" : 0,
+          "reloadedItems" : 0,
+          "retainedCells" : {
+            "A" : true,
+            "B" : true,
+            "C" : true
+          },
+          "sectionMoves" : 1,
+          "selectedIDs" : [
+            "A"
+          ],
+          "totalMs" : 2.2327499999999998,
+          "workerWaitMs" : 0
+        }
+      ],
+      "scenario" : "section-reorder-and-transfer",
+      "sections" : 2
+    },
+    {
+      "changeCount" : 1,
+      "changeMode" : "capability",
+      "engine" : "Current-Apple-background",
+      "lane" : "ui",
+      "n" : 7,
+      "samples" : [
+        {
+          "applyMs" : 1.7495419999999999,
+          "batches" : 2,
+          "configuredCells" : 1,
+          "detail" : {
+
+          },
+          "itemMoves" : 2,
+          "layoutMs" : 0.00083299999999999997,
+          "mainPreparePlanMs" : 0.042625000000000003,
+          "operations" : [
+            "batch 1: moveItem: [0, 0] -> [0, 1]",
+            "batch 1: moveItem: [1, 0] -> [0, 0]"
+          ],
+          "planningMs" : 0,
+          "prepareMs" : 0.042625000000000003,
+          "reconfiguredItems" : 1,
+          "reloadCalls" : 0,
+          "reloadedItems" : 0,
+          "retainedCells" : {
+            "A" : true,
+            "B" : true,
+            "C" : true
+          },
+          "sectionMoves" : 1,
+          "selectedIDs" : [
+            "A"
+          ],
+          "totalMs" : 1.7929999999999999,
+          "workerWaitMs" : 0
+        }
+      ],
+      "scenario" : "section-reorder-and-transfer",
+      "sections" : 2
+    },
+    {
+      "changeCount" : 1,
+      "changeMode" : "capability",
+      "engine" : "Current-ListKit",
+      "lane" : "ui",
+      "n" : 7,
+      "samples" : [
+        {
+          "applyMs" : 2.4250419999999999,
+          "batches" : 1,
+          "configuredCells" : 4,
+          "detail" : {
+
+          },
+          "itemMoves" : 0,
+          "layoutMs" : 0.00091600000000000004,
+          "mainPreparePlanMs" : 0.030124999999999999,
+          "operations" : [
+            "batch 1: deleteSections: [0]",
+            "batch 1: deleteItems: [[1, 1]]",
+            "batch 1: insertSections: [0]",
+            "batch 1: insertItems: [[1, 0]]"
+          ],
+          "planningMs" : 0,
+          "prepareMs" : 0.030124999999999999,
+          "reconfiguredItems" : 1,
+          "reloadCalls" : 0,
+          "reloadedItems" : 0,
+          "retainedCells" : {
+            "A" : false,
+            "B" : false,
+            "C" : true,
+            "D" : true
+          },
+          "sectionMoves" : 0,
+          "selectedIDs" : [
+
+          ],
+          "totalMs" : 2.456083,
+          "workerWaitMs" : 0
+        }
+      ],
+      "scenario" : "replace-section-endpoints",
+      "sections" : 2
+    },
+    {
+      "changeCount" : 1,
+      "changeMode" : "capability",
+      "engine" : "Current-staged",
+      "lane" : "ui",
+      "n" : 7,
+      "samples" : [
+        {
+          "applyMs" : 1.3937090000000001,
+          "batches" : 3,
+          "configuredCells" : 2,
+          "detail" : {
+            "batchReplayMs" : 0.018332999999999999,
+            "buildBatchesMs" : 0.010333999999999999,
+            "changesValidationMs" : 0.0074999999999999997,
+            "contentApplyMs" : 0.13708400000000001,
+            "diffMs" : 0.0095420000000000001,
+            "discardedContentMs" : 0.0031670000000000001,
+            "encodeBatchesMs" : 0.001333,
+            "indexInstallMs" : 0.013416000000000001,
+            "materializeMs" : 0.02725,
+            "packInputMs" : 0.021541999999999999,
+            "structureApplyMs" : 1.1134999999999999,
+            "workerPositionsMs" : 0.0026250000000000002,
+            "workerPresentersMs" : 0.0017910000000000001,
+            "workerSnapshotsMs" : 0.0052919999999999998
+          },
+          "itemMoves" : 3,
+          "layoutMs" : 0.060332999999999998,
+          "mainPreparePlanMs" : 0.139291,
+          "operations" : [
+            "batch 1: insertSections: [1]",
+            "batch 2: moveItem: [2, 1] -> [1, 0]",
+            "batch 2: moveItem: [0, 0] -> [1, 1]",
+            "batch 2: moveItem: [0, 1] -> [2, 0]",
+            "batch 3: deleteSections: [0]"
+          ],
+          "planningMs" : 0.11899999999999999,
+          "prepareMs" : 0.020291,
+          "reconfiguredItems" : 1,
+          "reloadCalls" : 0,
+          "reloadedItems" : 0,
+          "retainedCells" : {
+            "A" : true,
+            "B" : true,
+            "C" : true,
+            "D" : true
+          },
+          "sectionMoves" : 1,
+          "selectedIDs" : [
+            "A"
+          ],
+          "totalMs" : 1.4743329999999999,
+          "workerWaitMs" : 0
+        }
+      ],
+      "scenario" : "replace-section-endpoints",
+      "sections" : 2
+    },
+    {
+      "changeCount" : 1,
+      "changeMode" : "capability",
+      "engine" : "Current-Apple-adapter",
+      "lane" : "ui",
+      "n" : 7,
+      "samples" : [
+        {
+          "applyMs" : 1.0803750000000001,
+          "batches" : 2,
+          "configuredCells" : 2,
+          "detail" : {
+
+          },
+          "itemMoves" : 3,
+          "layoutMs" : 0.00016699999999999999,
+          "mainPreparePlanMs" : 0.031167,
+          "operations" : [
+            "batch 1: moveItem: [1, 1] -> [0, 0]",
+            "batch 1: moveItem: [0, 0] -> [0, 1]",
+            "batch 1: moveItem: [0, 1] -> [1, 0]",
+            "batch 1: deleteSections: [0]",
+            "batch 1: insertSections: [0]"
+          ],
+          "planningMs" : 0,
+          "prepareMs" : 0.031167,
+          "reconfiguredItems" : 1,
+          "reloadCalls" : 0,
+          "reloadedItems" : 0,
+          "retainedCells" : {
+            "A" : true,
+            "B" : true,
+            "C" : true,
+            "D" : true
+          },
+          "sectionMoves" : 0,
+          "selectedIDs" : [
+            "A"
+          ],
+          "totalMs" : 1.1117090000000001,
+          "workerWaitMs" : 0
+        }
+      ],
+      "scenario" : "replace-section-endpoints",
+      "sections" : 2
+    },
+    {
+      "changeCount" : 1,
+      "changeMode" : "capability",
+      "engine" : "Current-Apple-background",
+      "lane" : "ui",
+      "n" : 7,
+      "samples" : [
+        {
+          "applyMs" : 0.876417,
+          "batches" : 2,
+          "configuredCells" : 2,
+          "detail" : {
+
+          },
+          "itemMoves" : 3,
+          "layoutMs" : 0.000292,
+          "mainPreparePlanMs" : 0.020333,
+          "operations" : [
+            "batch 1: moveItem: [1, 1] -> [0, 0]",
+            "batch 1: moveItem: [0, 0] -> [0, 1]",
+            "batch 1: moveItem: [0, 1] -> [1, 0]",
+            "batch 1: deleteSections: [0]",
+            "batch 1: insertSections: [0]"
+          ],
+          "planningMs" : 0,
+          "prepareMs" : 0.020333,
+          "reconfiguredItems" : 1,
+          "reloadCalls" : 0,
+          "reloadedItems" : 0,
+          "retainedCells" : {
+            "A" : true,
+            "B" : true,
+            "C" : true,
+            "D" : true
+          },
+          "sectionMoves" : 0,
+          "selectedIDs" : [
+            "A"
+          ],
+          "totalMs" : 0.89704200000000001,
+          "workerWaitMs" : 0
+        }
+      ],
+      "scenario" : "replace-section-endpoints",
+      "sections" : 2
+    }
+  ],
+  "repetition" : 0,
+  "uiRuns" : 10,
+  "uiWarmups" : 3
+}

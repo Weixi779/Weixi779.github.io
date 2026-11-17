@@ -81,7 +81,7 @@ iPhone 拍摄的图片通常已经是压缩效率很高的 HEIC。如果业务�
 
 当这两种意图重新画回已有代码时，第一张架构图终于出现了。
 
-![WICompress 1.4：Process 与 Target 被挤进同一套 Policy Pipeline](/images/wicompress-v1-pipeline.svg)
+<img src="/images/wicompress-v1-pipeline.svg" alt="WICompress 1.4：Process 与 Target 被挤进同一套 Policy Pipeline" width="600" height="1160" style="width: 100%; max-width: 600px; border-radius: 0; box-shadow: none;" />
 
 图画出来后才发现，当时从未真正把它们当成两条流程。Target 会先经过 Validator 与 Resolver，再被翻译成旧的 `WICompressOptions`；无法翻译的 `fill`、`exactCanvas`、placement 等能力，又继续塞进 `WIWritePlan`。最后两条路都要穿过同一个 `WritePlanResolver` 与 `ImageEncoder`。
 
@@ -105,7 +105,7 @@ iPhone 拍摄的图片通常已经是压缩效率很高的 HEIC。如果业务�
 
 ## 只是移动了位置
 
-![WICompress 2.0 施工期：新模块出现了，旧执行所有者仍然存在](/images/wicompress-transition-pipeline.svg)
+<img src="/images/wicompress-transition-pipeline.svg" alt="WICompress 2.0 施工期：新模块出现了，旧执行所有者仍然存在" width="600" height="1260" style="width: 100%; max-width: 600px; border-radius: 0; box-shadow: none;" />
 
 这张图取自请求级 `ImagePipeline` 刚刚出现的中间阶段。当时已经有新的 `WIImageIO` 与 `WIImageRaster`，也已经开始谈 Domain 与 Pipeline，但执行流程仍然需要 `ProcessResolver`、`TargetResolver`、`OutputResolver`、`ExecutionPlan` 与 `CompressionSolver` 接力。
 
@@ -188,7 +188,7 @@ Rendering 则暂时保持 package-only。它已经能够稳定完成单张图片
 
 ## 只留一个编排者
 
-![WICompress 2.0：能力仍然完整，但执行流程只剩一个编排者](/images/wicompress-v2-pipeline.svg)
+<img src="/images/wicompress-v2-pipeline.svg" alt="WICompress 2.0：能力仍然完整，但执行流程只剩一个编排者" width="600" height="1190" style="width: 100%; max-width: 600px; border-radius: 0; box-shadow: none;" />
 
 最终的结构反而很朴素。
 

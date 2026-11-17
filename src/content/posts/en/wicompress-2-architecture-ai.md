@@ -80,7 +80,7 @@ The second was Target. The caller only knew that the final file had to be smalle
 
 Once those two intentions were drawn back onto the existing code, the first architecture diagram finally appeared.
 
-![WICompress 1.4: Process and Target forced through the same policy pipeline](/images/wicompress-v1-pipeline.svg)
+<img src="/images/wicompress-v1-pipeline.svg" alt="WICompress 1.4: Process and Target forced through the same policy pipeline" width="600" height="1160" style="width: 100%; max-width: 600px; border-radius: 0; box-shadow: none;" />
 
 The diagram made the problem visible. We had never really treated them as separate flows. Target passed through a validator and resolver, then was translated back into the old `WICompressOptions`. Capabilities that could not be expressed there—such as `fill`, `exactCanvas`, and placement—were pushed into `WIWritePlan`. Both roads eventually had to pass through the same `WritePlanResolver` and `ImageEncoder`.
 
@@ -104,7 +104,7 @@ Recognizing the problem did not mean we had found the solution. The first refact
 
 ## We Only Moved Things Around
 
-![WICompress 2.0 under construction: new modules appeared while the old execution owners remained](/images/wicompress-transition-pipeline.svg)
+<img src="/images/wicompress-transition-pipeline.svg" alt="WICompress 2.0 under construction: new modules appeared while the old execution owners remained" width="600" height="1260" style="width: 100%; max-width: 600px; border-radius: 0; box-shadow: none;" />
 
 This diagram comes from the point where the request-scoped `ImagePipeline` had just appeared. There was a new `WIImageIO`, a new `WIImageRaster`, and early discussion of Domain and Pipeline boundaries. Yet execution still required `ProcessResolver`, `TargetResolver`, `OutputResolver`, `ExecutionPlan`, and `CompressionSolver` to hand work from one to another.
 
@@ -187,7 +187,7 @@ But `3,880` was not the finish line. We then established the shared Domain, publ
 
 ## Keeping One Orchestrator
 
-![WICompress 2.0: the capabilities remain, but execution has one orchestrator](/images/wicompress-v2-pipeline.svg)
+<img src="/images/wicompress-v2-pipeline.svg" alt="WICompress 2.0: the capabilities remain, but execution has one orchestrator" width="600" height="1190" style="width: 100%; max-width: 600px; border-radius: 0; box-shadow: none;" />
 
 The final structure is surprisingly plain.
 

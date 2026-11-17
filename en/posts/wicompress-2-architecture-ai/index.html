@@ -64,7 +64,7 @@
 <p>The first was Process. The caller already knew what they wanted: whether to crop, the target dimensions, compression quality, output format, metadata, and color space. The library only needed to execute those explicit requirements.</p>
 <p>The second was Target. The caller only knew that the final file had to be smaller than 500 KB. How far to lower quality, how much to reduce dimensions, and how many attempts to make all had to be searched internally.</p>
 <p>Once those two intentions were drawn back onto the existing code, the first architecture diagram finally appeared.</p>
-<p><img src="/images/wicompress-v1-pipeline.svg" alt="WICompress 1.4: Process and Target forced through the same policy pipeline"></p>
+<img src="/images/wicompress-v1-pipeline.svg" alt="WICompress 1.4: Process and Target forced through the same policy pipeline" width="600" height="1160" style="width: 100%; max-width: 600px; border-radius: 0; box-shadow: none;" />
 <p>The diagram made the problem visible. We had never really treated them as separate flows. Target passed through a validator and resolver, then was translated back into the old <code>WICompressOptions</code>. Capabilities that could not be expressed there—such as <code>fill</code>, <code>exactCanvas</code>, and placement—were pushed into <code>WIWritePlan</code>. Both roads eventually had to pass through the same <code>WritePlanResolver</code> and <code>ImageEncoder</code>.</p>
 <p>Several files kept absorbing responsibilities that did not belong to them:</p>
 <div class="prose-table" tabindex="0"><table>
@@ -95,7 +95,7 @@
 <p>The diagram still did not tell me what 2.0 should look like, but it completed the first restart. After the analysis, the capability table, and repeated attempts to classify things, we could finally name the problem: two different roads had been forced into one answer.</p>
 <p>Recognizing the problem did not mean we had found the solution. The first refactor only moved code into more targets and folders. ImageIO was extracted. Raster was extracted. Process got its own type. But none of the old resolvers, plans, solvers, or encoders truly disappeared.</p>
 <h2 id="we-only-moved-things-around">We Only Moved Things Around</h2>
-<p><img src="/images/wicompress-transition-pipeline.svg" alt="WICompress 2.0 under construction: new modules appeared while the old execution owners remained"></p>
+<img src="/images/wicompress-transition-pipeline.svg" alt="WICompress 2.0 under construction: new modules appeared while the old execution owners remained" width="600" height="1260" style="width: 100%; max-width: 600px; border-radius: 0; box-shadow: none;" />
 <p>This diagram comes from the point where the request-scoped <code>ImagePipeline</code> had just appeared. There was a new <code>WIImageIO</code>, a new <code>WIImageRaster</code>, and early discussion of Domain and Pipeline boundaries. Yet execution still required <code>ProcessResolver</code>, <code>TargetResolver</code>, <code>OutputResolver</code>, <code>ExecutionPlan</code>, and <code>CompressionSolver</code> to hand work from one to another.</p>
 <p>The new Pipeline had not replaced the old owners. It had merely joined them.</p>
 <p>At this point the production code contained 41 files and 4,056 physical lines. <code>WIImageIO.Source</code> had 589 lines, <code>ImagePipeline</code> had 430, and <code>CompressionSolver</code> had 431. During construction, production code peaked at 4,856 lines and 49 files.</p>
@@ -168,7 +168,7 @@
 <p>The commit that removed the old policy pipeline marked the construction phase’s temporary low point: production code fell from a peak of 4,856 lines to 3,880, a reduction of 976. Those lines did not disappear because large files were mechanically split. They disappeared because old paths and duplicate execution owners were actually removed.</p>
 <p>But <code>3,880</code> was not the finish line. We then established the shared Domain, published the <code>WIImageIO</code> Reader and Frame API, completed selective metadata handling, rebuilt Rendering, separated TargetSearch, and added Luban 2 and async terminals. Production code grew again as real capabilities took their final shape.</p>
 <h2 id="keeping-one-orchestrator">Keeping One Orchestrator</h2>
-<p><img src="/images/wicompress-v2-pipeline.svg" alt="WICompress 2.0: the capabilities remain, but execution has one orchestrator"></p>
+<img src="/images/wicompress-v2-pipeline.svg" alt="WICompress 2.0: the capabilities remain, but execution has one orchestrator" width="600" height="1190" style="width: 100%; max-width: 600px; border-radius: 0; box-shadow: none;" />
 <p>The final structure is surprisingly plain.</p>
 <p><code>WIImageProcess</code> and <code>WICompressionTarget</code> describe two public intentions. Once a request enters <code>ImagePipeline</code>, the original input, descriptor, working image, and candidate search state exist only for that request. The Pipeline is the only component that understands the complete flow.</p>
 <p>ImageIO provides inspection, decode, transcode, and encode. Rendering performs pixel drawing. <code>TargetSearch</code> only maintains feedback for candidate search. Each receives the inputs it actually needs and returns a definite result. None knows about an outer container or tries to understand the complete compression business.</p>

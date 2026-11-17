@@ -1,115 +1,76 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
-  <title id="title">WICompress 1.4 execution pipeline</title>
-  <desc id="desc">Process and Target follow different paths but are forced through the same options, write plan resolver, and encoder.</desc>
-  <style>
-    .bg { fill: #F6F8FA; }
-    .edge-label { fill: #59636E; font: 400 14px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
-    .node text { font: 650 16px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; text-anchor: middle; dominant-baseline: middle; }
-    .node .detail { font-size: 13px; font-weight: 450; }
-    .request rect { fill: #F1EDFF; stroke: #6750A4; }
-    .request text { fill: #2D1B4E; }
-    .decision rect { fill: #FFF1ED; stroke: #C2410C; }
-    .decision text { fill: #5F1D0B; }
-    .capability rect { fill: #EAF5FF; stroke: #1769AA; }
-    .capability text { fill: #103B5D; }
-    .value rect { fill: #EAF8F2; stroke: #147D64; }
-    .value text { fill: #0B4437; }
-    .node rect { stroke-width: 1.7; }
-    .arrow { fill: none; stroke: #57606A; stroke-width: 1.8; marker-end: url(#arrow); }
-    .arrow-fill { fill: #57606A; }
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="1160" viewBox="0 0 600 1160" role="img" aria-labelledby="title desc">
+<!-- Created by weixi on 2026/11/17. -->
+<title id="title">WICompress 1.4: two intentions, one policy pipeline</title>
+<desc id="desc">Process enters WICompressOptions. Target passes through TargetValidator and TargetResolver and is translated back into the same options. Options and CompressionSolver converge on WritePlanResolver, WIWritePlan and WIImageEncoder. CompressionSolver also reaches the encoder. A separate input-support panel shows WIImageSource and WIImageInfo; their dependencies on planning and encoding are omitted from the main execution diagram.</desc>
+<style>
+:root { --ink:#343a40; --muted:#686f77; --paper:#fafaf8; --box:#fff; --connector:#686f77; }
+@media (prefers-color-scheme:dark) { :root { --ink:#e7eff8; --muted:#a9bad1; --paper:#101c32; --box:#203550; --connector:#a9bad1; } }
+@font-face { font-family:PipelineHand; src:url(data:font/woff2;base64,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) format('woff2'); }
+text { font-family:PipelineHand,serif; font-size:23px; fill:var(--ink); }
+.small { font-size:18px; fill:var(--muted); }
+.line { stroke:var(--ink); stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+.retrace { fill:none; opacity:.3; stroke-width:1; }
+.arrow { fill:none; stroke:var(--connector); stroke-width:1.3; }
+.feedback { stroke:var(--connector); stroke-dasharray:6 5; }
+</style>
 
-    @media (prefers-color-scheme: dark) {
-      .bg { fill: #0D1117; }
-      .edge-label { fill: #8B949E; }
-      .request rect { fill: #251C3D; stroke: #A78BFA; }
-      .request text { fill: #EDE9FE; }
-      .decision rect { fill: #3A211B; stroke: #FB923C; }
-      .decision text { fill: #FFEDD5; }
-      .capability rect { fill: #10283B; stroke: #60A5FA; }
-      .capability text { fill: #DBEAFE; }
-      .value rect { fill: #102E29; stroke: #34D399; }
-      .value text { fill: #D1FAE5; }
-      .arrow { stroke: #8B949E; }
-      .arrow-fill { fill: #8B949E; }
-    }
-  </style>
-  <defs>
-    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-      <path class="arrow-fill" d="M 0 0 L 10 5 L 0 10 z"/>
-    </marker>
-  </defs>
-
-  <rect class="bg" width="1200" height="760" rx="16"/>
-  <g transform="translate(0 -70)">
-
-  <path class="arrow" d="M215 174 V220"/>
-  <path class="arrow" d="M985 174 V190"/>
-  <path class="arrow" d="M985 258 V280"/>
-  <path class="arrow" d="M865 314 H760 V255 H330"/>
-  <text class="edge-label" x="594" y="244" text-anchor="middle">translated back</text>
-  <path class="arrow" d="M985 348 V390"/>
-  <path class="arrow" d="M215 288 V424 H520 V470"/>
-  <path class="arrow" d="M215 448 V480"/>
-  <path class="arrow" d="M330 514 H450"/>
-  <path class="arrow" d="M865 424 H750 V514"/>
-  <path class="arrow" d="M600 558 V600"/>
-  <path class="arrow" d="M600 668 V700"/>
-  <path class="arrow" d="M750 734 H870"/>
-  <path class="arrow" d="M95 414 H54 V734 H450"/>
-  <path class="arrow" d="M985 458 V734 H750"/>
-
-  <g class="node request">
-    <rect x="95" y="106" width="240" height="68" rx="12"/>
-    <text x="215" y="140">Process</text>
-  </g>
-  <g class="node request">
-    <rect x="865" y="106" width="240" height="68" rx="12"/>
-    <text x="985" y="140">WICompressionTarget</text>
-  </g>
-  <g class="node request">
-    <rect x="95" y="220" width="240" height="68" rx="12"/>
-    <text x="215" y="246">WICompressOptions</text>
-    <text class="detail" x="215" y="270">8 Policies</text>
-  </g>
-  <g class="node decision">
-    <rect x="865" y="190" width="240" height="68" rx="12"/>
-    <text x="985" y="224">TargetValidator</text>
-  </g>
-  <g class="node decision">
-    <rect x="865" y="280" width="240" height="68" rx="12"/>
-    <text x="985" y="314">TargetResolver</text>
-  </g>
-  <g class="node decision">
-    <rect x="865" y="390" width="240" height="68" rx="12"/>
-    <text x="985" y="424">CompressionSolver</text>
-  </g>
-  <g class="node capability">
-    <rect x="95" y="380" width="240" height="68" rx="12"/>
-    <text x="215" y="414">WIImageSource</text>
-  </g>
-  <g class="node value">
-    <rect x="95" y="480" width="240" height="68" rx="12"/>
-    <text x="215" y="514">WIImageInfo</text>
-  </g>
-  <g class="node decision">
-    <rect x="450" y="470" width="300" height="88" rx="12"/>
-    <text x="600" y="504">WritePlanResolver</text>
-    <text class="detail" x="600" y="530">interprets policies and search results</text>
-  </g>
-  <g class="node decision">
-    <rect x="450" y="600" width="300" height="68" rx="12"/>
-    <text x="600" y="634">WIWritePlan</text>
-  </g>
-  <g class="node capability">
-    <rect x="450" y="700" width="300" height="68" rx="12"/>
-    <text x="600" y="726">WIImageEncoder</text>
-    <text class="detail" x="600" y="750">decode · crop · render · encode</text>
-  </g>
-  <g class="node value">
-    <rect x="870" y="700" width="250" height="68" rx="12"/>
-    <text x="995" y="726">Data</text>
-    <text class="detail" x="995" y="750">CompressionResult</text>
-  </g>
-  </g>
+<path class="line arrow" d="M 152 87 Q 150.20 107.00 152 127"/><path class="line arrow" d="M 148.00 118.00 Q 151.00 126.00 152 127 L 156.00 118.00"/>
+<path class="line arrow" d="M 448 87 Q 449.80 107.00 448 127"/><path class="line arrow" d="M 444.00 118.00 Q 447.00 126.00 448 127 L 452.00 118.00"/>
+<path class="line arrow" d="M 448 201 Q 446.11 222.00 448 243"/><path class="line arrow" d="M 444.00 234.00 Q 447.00 242.00 448 243 L 452.00 234.00"/>
+<path class="line arrow" d="M 317 280 Q 268.50 283.00 220 280 Q 222.29 254.50 220 229"/><path class="line arrow" d="M 224.00 238.00 Q 219.00 228.00 220 229 L 216.00 238.00"/>
+<rect x="140.75" y="320" width="158.5" height="25" rx="5" fill="var(--paper)"/>
+<text x="220" y="338" text-anchor="middle" class="small">translated back</text>
+<path class="line arrow" d="M 448 317 Q 446.11 338.00 448 359"/><path class="line arrow" d="M 444.00 350.00 Q 447.00 358.00 448 359 L 452.00 350.00"/>
+<path class="line arrow" d="M 100 225 Q 103.00 367.50 100 510 Q 170.00 513.00 240 510 Q 241.49 526.50 240 543"/><path class="line arrow" d="M 236.00 534.00 Q 239.00 542.00 240 543 L 244.00 534.00"/>
+<rect x="54" y="432" width="92" height="25" rx="5" fill="var(--paper)"/>
+<text x="100" y="450" text-anchor="middle" class="small">policies</text>
+<path class="line arrow" d="M 448 457 Q 445.62 483.50 448 510 Q 404.00 513.00 360 510 Q 358.51 526.50 360 543"/><path class="line arrow" d="M 356.00 534.00 Q 359.00 542.00 360 543 L 364.00 534.00"/>
+<rect x="373.5" y="472" width="149" height="25" rx="5" fill="var(--paper)"/>
+<text x="448" y="490" text-anchor="middle" class="small">search results</text>
+<path class="line arrow" d="M 300 641 Q 301.44 657.00 300 673"/><path class="line arrow" d="M 296.00 664.00 Q 299.00 672.00 300 673 L 304.00 664.00"/>
+<path class="line arrow" d="M 300 747 Q 298.38 765.00 300 783"/><path class="line arrow" d="M 296.00 774.00 Q 299.00 782.00 300 783 L 304.00 774.00"/>
+<path class="line arrow" d="M 574.8 408 Q 580.40 407.50 586 408 Q 583.00 620.00 586 832 Q 525.50 835.00 465 832"/><path class="line arrow" d="M 474.00 828.00 Q 464.00 831.00 465 832 L 474.00 836.00"/>
+<rect x="438.25" y="750" width="139.5" height="25" rx="5" fill="var(--paper)"/>
+<text x="508" y="768" text-anchor="middle" class="small">also executes</text>
+<path class="line arrow" d="M 300 881 Q 297.80 905.50 300 930"/><path class="line arrow" d="M 296.00 921.00 Q 299.00 929.00 300 930 L 304.00 921.00"/>
+<path class="line" fill="var(--box)" d="M 41 21 C 102.39999999999999 23 199.11999999999998 16 263 19 Q 278 19 276 34 C 273 45.2 278 63.199999999999996 275 68 Q 277 82 262 80 C 181.76 83 102.39999999999999 77 40 81 Q 26 80 28 67 C 31 59 26 38 29 32 Q 28 19 41 21 Z"/>
+<path class="line retrace" d="M 39 23 C 112.32000000000001 22 201.6 21 266 22 M 277 35 Q 274 59 277 67 M 40 79 Q 164.4 77 262 78"/>
+<text x="152" y="57" text-anchor="middle" class="">Process</text>
+<path class="line" fill="var(--box)" d="M 337 21 C 398.4 17 495.12 24 559 19 Q 574 19 572 34 C 569 45.2 574 63.199999999999996 571 68 Q 573 82 558 80 C 477.76 77 398.4 83 336 81 Q 322 80 324 67 C 327 59 322 38 325 32 Q 324 19 337 21 Z"/>
+<path class="line retrace" d="M 335 23 C 408.32 18 497.6 21 562 22 M 573 35 Q 570 59 573 67 M 336 79 Q 460.4 83 558 78"/>
+<text x="448" y="57" text-anchor="middle" class="">WICompressionTarget</text>
+<path class="line" fill="var(--box)" d="M 41 135 C 102.39999999999999 137 199.11999999999998 130 263 133 Q 278 133 276 148 C 273 169.28 278 194.48 275 206 Q 277 220 262 218 C 181.76 221 102.39999999999999 215 40 219 Q 26 218 28 205 C 31 188.6 26 159.2 29 146 Q 28 133 41 135 Z"/>
+<path class="line retrace" d="M 39 137 C 112.32000000000001 136 201.6 135 266 136 M 277 149 Q 274 188.6 277 205 M 40 217 Q 164.4 215 262 216"/>
+<text x="152" y="164" text-anchor="middle" class="">WICompressOptions</text>
+<text x="152" y="189" text-anchor="middle" class="small">8 Policies</text>
+<path class="line" fill="var(--box)" d="M 337 135 C 398.4 131 495.12 138 559 133 Q 574 133 572 148 C 569 159.2 574 177.2 571 182 Q 573 196 558 194 C 477.76 191 398.4 197 336 195 Q 322 194 324 181 C 327 173 322 152 325 146 Q 324 133 337 135 Z"/>
+<path class="line retrace" d="M 335 137 C 408.32 132 497.6 135 562 136 M 573 149 Q 570 173 573 181 M 336 193 Q 460.4 197 558 192"/>
+<text x="448" y="171" text-anchor="middle" class="">TargetValidator</text>
+<path class="line" fill="var(--box)" d="M 337 251 C 398.4 253 495.12 246 559 249 Q 574 249 572 264 C 569 275.2 574 293.2 571 298 Q 573 312 558 310 C 477.76 313 398.4 307 336 311 Q 322 310 324 297 C 327 289 322 268 325 262 Q 324 249 337 251 Z"/>
+<path class="line retrace" d="M 335 253 C 408.32 252 497.6 251 562 252 M 573 265 Q 570 289 573 297 M 336 309 Q 460.4 307 558 308"/>
+<text x="448" y="287" text-anchor="middle" class="">TargetResolver</text>
+<path class="line" fill="var(--box)" d="M 337 367 C 398.4 363 495.12 370 559 365 Q 574 365 572 380 C 569 401.28 574 426.48 571 438 Q 573 452 558 450 C 477.76 447 398.4 453 336 451 Q 322 450 324 437 C 327 420.6 322 391.2 325 378 Q 324 365 337 367 Z"/>
+<path class="line retrace" d="M 335 369 C 408.32 364 497.6 367 562 368 M 573 381 Q 570 420.6 573 437 M 336 449 Q 460.4 453 558 448"/>
+<text x="448" y="396" text-anchor="middle" class="">CompressionSolver</text>
+<text x="448" y="421" text-anchor="middle" class="small">quality / size search</text>
+<path class="line" fill="var(--box)" d="M 155 551 C 236.8 553 360.03999999999996 546 445 549 Q 460 549 458 564 C 455 585.28 460 610.48 457 622 Q 459 636 444 634 C 337.91999999999996 637 236.8 631 154 635 Q 140 634 142 621 C 145 604.6 140 575.2 143 562 Q 142 549 155 551 Z"/>
+<path class="line retrace" d="M 153 553 C 249.44 552 363.2 551 448 552 M 459 565 Q 456 604.6 459 621 M 154 633 Q 315.8 631 444 632"/>
+<text x="300" y="580" text-anchor="middle" class="">WritePlanResolver</text>
+<text x="300" y="605" text-anchor="middle" class="small">policies + search results</text>
+<path class="line" fill="var(--box)" d="M 155 681 C 236.8 677 360.03999999999996 684 445 679 Q 460 679 458 694 C 455 705.2 460 723.2 457 728 Q 459 742 444 740 C 337.91999999999996 737 236.8 743 154 741 Q 140 740 142 727 C 145 719 140 698 143 692 Q 142 679 155 681 Z"/>
+<path class="line retrace" d="M 153 683 C 249.44 678 363.2 681 448 682 M 459 695 Q 456 719 459 727 M 154 739 Q 315.8 743 444 738"/>
+<text x="300" y="717" text-anchor="middle" class="">WIWritePlan</text>
+<path class="line" fill="var(--box)" d="M 155 791 C 236.8 793 360.03999999999996 786 445 789 Q 460 789 458 804 C 455 825.28 460 850.48 457 862 Q 459 876 444 874 C 337.91999999999996 877 236.8 871 154 875 Q 140 874 142 861 C 145 844.6 140 815.2 143 802 Q 142 789 155 791 Z"/>
+<path class="line retrace" d="M 153 793 C 249.44 792 363.2 791 448 792 M 459 805 Q 456 844.6 459 861 M 154 873 Q 315.8 871 444 872"/>
+<text x="300" y="820" text-anchor="middle" class="">WIImageEncoder</text>
+<text x="300" y="845" text-anchor="middle" class="small">decode / crop / render / encode</text>
+<text x="300" y="960" text-anchor="middle" class="">Data / CompressionResult</text>
+<text x="300" y="1020" text-anchor="middle" class="small">Input support · used in planning and encoding</text>
+<path class="line arrow" d="M 283 1090 Q 298.00 1088.65 313 1090"/><path class="line arrow" d="M 304.00 1094.00 Q 312.00 1089.00 313 1090 L 304.00 1086.00"/>
+<path class="line" fill="var(--box)" d="M 41 1055 C 102.39999999999999 1051 199.11999999999998 1058 263 1053 Q 278 1053 276 1068 C 273 1084.24 278 1105.84 275 1114 Q 277 1128 262 1126 C 181.76 1123 102.39999999999999 1129 40 1127 Q 26 1126 28 1113 C 31 1100.8 26 1075.6 29 1066 Q 28 1053 41 1055 Z"/>
+<path class="line retrace" d="M 39 1057 C 112.32000000000001 1052 201.6 1055 266 1056 M 277 1069 Q 274 1100.8 277 1113 M 40 1125 Q 164.4 1129 262 1124"/>
+<text x="152" y="1097" text-anchor="middle" class="">WIImageSource</text>
+<path class="line" fill="var(--box)" d="M 337 1055 C 398.4 1057 495.12 1050 559 1053 Q 574 1053 572 1068 C 569 1084.24 574 1105.84 571 1114 Q 573 1128 558 1126 C 477.76 1129 398.4 1123 336 1127 Q 322 1126 324 1113 C 327 1100.8 322 1075.6 325 1066 Q 324 1053 337 1055 Z"/>
+<path class="line retrace" d="M 335 1057 C 408.32 1056 497.6 1055 562 1056 M 573 1069 Q 570 1100.8 573 1113 M 336 1125 Q 460.4 1123 558 1124"/>
+<text x="448" y="1097" text-anchor="middle" class="">WIImageInfo</text>
 </svg>

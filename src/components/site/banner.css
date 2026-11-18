@@ -206,8 +206,12 @@
     background-position: right top;
   }
 
+  [data-image-layout="illustration"] {
+    --banner-illustration-height: min(280px, 66.67vw);
+  }
+
   [data-image-layout="illustration"] .site-banner__inner {
-    padding-bottom: 300px;
+    padding-bottom: calc(var(--banner-illustration-height) + 20px);
   }
 
   [data-image-layout="illustration"] .site-banner__scene {
@@ -215,7 +219,7 @@
     bottom: 0;
     right: 0;
     width: 100%;
-    height: 280px;
+    height: var(--banner-illustration-height);
     max-height: none;
     background-size: cover;
     background-position: right center;

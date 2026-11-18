@@ -1,1 +1,15 @@
-[]
+[
+  {
+    "slug": "year-after-year",
+    "title": "年复一年",
+    "intro": "一个人，要走多远的距离才能在时光的尽头，追回最初的自己？",
+    "prominence": "large",
+    "cover": "/images/year-after-year.webp",
+    "articles": [
+      "year-2021-afterword",
+      "year-2022-afterword",
+      "developer-journey-year-3",
+      "developer-journey-year-4"
+    ]
+  }
+]

@@ -14,6 +14,7 @@ const requiredRoutes = [
   '/about/',
   '/about/timeline/',
   '/archive/',
+  '/columns/',
   '/fonts/',
   ...legacyPaginationRoutes,
   translatedPostRoute,
@@ -264,7 +265,7 @@ if (!existsSync(distRoot)) {
       fail(`expected one shared React header in ${htmlPage}`);
     }
     const navigationLinks = Array.from(header?.querySelectorAll('nav[aria-label="主导航"] a') ?? [], (link) => link.getAttribute('href'));
-    if (navigationLinks.join(',') !== '/,/archive/,/about/') {
+    if (navigationLinks.join(',') !== '/,/columns/,/archive/,/about/') {
       fail(`shared header navigation is incomplete in ${htmlPage}`);
     }
     const footers = document.querySelectorAll('footer.site-footer');

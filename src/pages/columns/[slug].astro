@@ -1,0 +1,31 @@
+---
+// Created by weixi on 2026/11/18.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SiteBanner from '../../components/site/SiteBanner';
+import ColumnReadingList from '../../features/columns/ColumnReadingList';
+import { getPublishedColumns } from '../../features/columns/published-columns';
+import { getPublishedPosts } from '../../lib/content/posts';
+import { countWordsInPosts } from '../../lib/content/post-word-count';
+import '../../features/columns/columns.css';
+
+export async function getStaticPaths() {
+  const posts = await getPublishedPosts();
+  const columns = await getPublishedColumns(posts);
+  return Promise.all(columns.map(async column => {
+    const members = new Set(column.articles.map(article => article.slug));
+    const totalWords = await countWordsInPosts(posts.filter(post => members.has(post.data.slug)));
+    return { params: { slug: column.slug }, props: { column, totalWords } };
+  }));
+}
+const { column, totalWords } = Astro.props;
+---
+<BaseLayout title={column.title} description={column.intro} image={column.cover}>
+  <div class="column-detail">
+    <SiteBanner title={column.title} summary={column.intro} image={column.cover} imageLayout="illustration">
+      <p class="column-reading-count">{column.articles.length} 篇文章 · 共 {totalWords.toLocaleString('zh-CN')} 字</p>
+    </SiteBanner>
+    <div class="column-content">
+      <ColumnReadingList articles={column.articles} client:load />
+    </div>
+  </div>
+</BaseLayout>

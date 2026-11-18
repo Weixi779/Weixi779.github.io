@@ -3,6 +3,7 @@
 import { createMarkdownProcessor, type RemarkPlugin } from '@astrojs/markdown-remark';
 
 import { mdxProse } from './mdx-prose';
+import type { PostEntry } from './posts';
 
 interface ProseNode {
   type: string;
@@ -39,4 +40,11 @@ export async function countPostWords(body: string, format: 'md' | 'mdx' = 'md'):
   const count: unknown = result.metadata.frontmatter.proseWordCount;
   if (typeof count !== 'number') throw new Error('Missing prose word count');
   return count;
+}
+
+export async function countWordsInPosts(posts: readonly Pick<PostEntry, 'body' | 'filePath'>[]): Promise<number> {
+  const counts = await Promise.all(posts.map(post =>
+    countPostWords(post.body ?? '', post.filePath?.endsWith('.mdx') ? 'mdx' : 'md'),
+  ));
+  return counts.reduce((total, count) => total + count, 0);
 }

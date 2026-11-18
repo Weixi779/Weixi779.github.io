@@ -161,7 +161,7 @@ describe('SiteHeader title handoff', () => {
   });
 
   it.each([
-    ['/', '首页'], ['/page/2/', '首页'], ['/archive/', '归档'], ['/about/', '关于'], ['/aboutness/', null], ['/posts/example/', null],
+    ['/', '首页'], ['/page/2/', '首页'], ['/columns/', '专栏'], ['/columns/a-column/', '专栏'], ['/archive/', '归档'], ['/about/', '关于'], ['/aboutness/', null], ['/posts/example/', null],
   ])('marks the correct link on %s', (path, selected) => {
     const { container } = mount(path, false);
     expect(container.querySelector('[aria-current="page"]')?.textContent ?? null).toBe(selected);

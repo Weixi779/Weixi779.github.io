@@ -1,0 +1,24 @@
+---
+// Created by weixi on 2026/11/18.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ColumnCatalog, { COLUMN_BANNER } from '../../features/columns/ColumnCatalog';
+import { getPublishedColumns } from '../../features/columns/published-columns';
+
+const columns = await getPublishedColumns();
+---
+<BaseLayout title="专栏" description="兜兜转转，每一次重逢都给出新的答案。" image={COLUMN_BANNER}>
+  <ColumnCatalog columns={columns} />
+</BaseLayout>
+
+<script>
+  import { bindColumnBrowsing } from '../../features/columns/catalog-interactions';
+
+  const catalog = document.querySelector<HTMLElement>('.column-catalog');
+  if (catalog?.querySelector('.column-card')) {
+    let dispose = bindColumnBrowsing(catalog);
+    window.addEventListener('pagehide', () => dispose());
+    window.addEventListener('pageshow', event => {
+      if (event.persisted) dispose = bindColumnBrowsing(catalog);
+    });
+  }
+</script>

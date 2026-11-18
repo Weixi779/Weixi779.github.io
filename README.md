@@ -70,7 +70,7 @@ npm run dev
 npm run validate
 ```
 
-`validate` 会依次执行类型检查、自动化测试、站点构建、构建产物校验、MDX 检查和开发路由检查。
+`validate` 会依次执行类型检查、自动化测试、站点构建、构建产物校验、MDX 检查、开发路由检查和专栏阅读链路验证。
 测试使用 Vitest；`tests/archive/archive.test.ts` 覆盖纯筛选规则，
 `tests/archive/ArchiveBrowser.test.tsx` 使用 React Testing Library 和 jsdom 验证组件交互。
 jsdom 不执行真实页面布局或 View Transition 动画，视觉效果仍需在浏览器中检查。
@@ -83,6 +83,27 @@ npm run test:watch # 开发时随修改重新执行
 `npm run verify:dev` 在临时开发服务上逐页核对已构建页面的状态码、标题、主题入口和重定向，
 结束后关闭临时服务。也可以用 `npm run verify:dev -- http://127.0.0.1:4321` 检查正在使用的服务；
 目录或构建配置调整后，旧进程可能仍持有原来的路径，需要重启，构建通过不能替代这项检查。
+
+## 添加专栏
+
+编辑 [columns.json](src/features/columns/columns.json)。空数组也可以构建，主导航的「专栏」会展示空状态。每增加一项，Astro 就生成一个 `/columns/<slug>/` 阅读列表，例如：
+
+```json
+[
+  {
+    "slug": "wicompress",
+    "title": "WICompress 演进史",
+    "intro": "从图片压缩的原理，到 WICompress 2.0 的解构与重组。",
+    "prominence": "medium",
+    "cover": "/images/wicompress-2-architecture.webp",
+    "articles": ["image-compression-fundamentals", "ios-image-compression", "wicompress-2-architecture-ai"]
+  }
+]
+```
+
+`articles` 填已发布中文文章的 frontmatter `slug`。专栏详情按原文的 `publishedAt` 从旧到新展示，点击文章列表上方的「发布时间」即可切换方向。发布时间相同时保留数组顺序。
+
+文章标题和摘要取自原文，篇数和正文链接由站点生成。同一篇文章可收录进多个专栏。`prominence` 可选 `large`、`medium`、`small`，默认 `medium`。同档按配置顺序展示。`cover` 可省略，届时沿阅读顺序使用第一张可用的文章头图。累计十个专栏后可以切换纯文字目录。
 
 ## 内容
 

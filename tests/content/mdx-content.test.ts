@@ -2,7 +2,7 @@
 import { expect, it, vi } from 'vitest';
 vi.mock('astro:content', () => ({ getCollection: vi.fn() }));
 import { getPostExcerpt, type PostEntry } from '../../src/lib/content/posts';
-import { countPostWords } from '../../src/lib/content/post-word-count';
+import { countPostWords, countWordsInPosts } from '../../src/lib/content/post-word-count';
 const body = `import {
   Chart
 } from './Chart';
@@ -21,6 +21,14 @@ it('excludes MDX modules, attributes and expressions from excerpts while keeping
 });
 it('counts only authored MDX prose, without evaluating expressions', async () => {
   expect(await countPostWords(body, 'mdx')).toBe(4);
+});
+
+it('totals the selected Markdown and MDX entries using their own formats', async () => {
+  expect(await countWordsInPosts([
+    { body: 'import Chart', filePath: 'first.md' },
+    { body, filePath: 'second.mdx' },
+  ])).toBe(6);
+  expect(await countWordsInPosts([])).toBe(0);
 });
 
 it('preserves ordinary Markdown text that resembles JavaScript', async () => {

@@ -6,6 +6,7 @@ import './header.css';
 
 const navigation = [
   { href: '/', label: '首页' },
+  { href: '/columns/', label: '专栏' },
   { href: '/archive/', label: '归档' },
   { href: '/about/', label: '关于' },
 ];

@@ -11,5 +11,18 @@
       "developer-journey-year-3",
       "developer-journey-year-4"
     ]
+  },
+  {
+    "slug": "within-reach",
+    "title": "当一切变得轻而易举",
+    "intro": "AI 越来越擅长给出答案，人却要在一次次跃迁里，重新寻找自己的位置。",
+    "prominence": "large",
+    "cover": "/images/within-reach.webp",
+    "articles": [
+      "developer-journey-year-4",
+      "observer",
+      "wicompress-2-architecture-ai",
+      "after-deleting-ai-skills"
+    ]
   }
 ]

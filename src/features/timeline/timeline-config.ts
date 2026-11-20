@@ -2,18 +2,23 @@
 // Build-time validation; no schema library is shipped to the timeline island.
 import { z } from 'astro/zod';
 import config from './timeline.json';
+import { storyContent } from './curation';
 import { entries, type TimelineEntry } from './data';
 import type { TimelineArticle } from './layout';
 
 const slug = z.string().trim().min(1);
-const choice = z.object({
+const common = {
   id: slug,
   level: z.enum(['large', 'medium', 'small']),
-  intro: z.string().trim().min(1),
+  related: z.array(slug).optional(),
+};
+const manual = z.object({
+  ...common,
+  intro: slug,
   title: slug.optional(),
   members: z.array(slug).min(2).optional(),
-  related: z.array(slug).optional(),
 }).strict().refine(value => !value.members || Boolean(value.title), { message: '系列必须填写 title' });
+const choice = z.union([manual, z.object({ ...common, column: slug }).strict()]);
 const schema = z.object({ $schema: z.string().optional(), stories: z.array(choice) }).strict();
 
 export function validateTimelineConfig(input: unknown, articles: TimelineArticle[]) {
@@ -28,7 +33,7 @@ export function validateTimelineConfig(input: unknown, articles: TimelineArticle
   for (const story of parsed.stories) {
     if (ids.has(story.id)) throw new Error(`timeline.json: 节点 id 重复：${story.id}`);
     ids.add(story.id);
-    for (const member of story.members ?? [story.id]) {
+    for (const member of storyContent(story)?.members ?? []) {
       if (!published.has(member)) throw new Error(`timeline.json: ${story.id} 引用了不存在或未发布的文章：${member}`);
       if (included.has(member)) throw new Error(`timeline.json: 文章重复收录：${member}`);
       included.add(member);

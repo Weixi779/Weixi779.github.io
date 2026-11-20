@@ -61,6 +61,7 @@ it('opens an event, returns to the canvas, and releases its observer on unmount'
   expect(screen.getByRole('dialog')).toBeVisible();
   expect(screen.getByRole('dialog').querySelectorAll('details')).toHaveLength(4);
   expect(within(screen.getByRole('dialog')).getByText('7850 · Unity2D')).toBeInTheDocument();
+  expect(screen.getByRole('dialog').querySelector('.reader-project a[href="/columns/sandbox-building/"]')).toHaveTextContent('沙盒建造手记');
   fireEvent.wheel(screen.getByRole('dialog'), { deltaY: 120 });
   expect(screen.getByRole('dialog')).toBeVisible();
   expect(within(screen.getByRole('dialog')).getByRole('link', { name: /三年阶段总结/ })).toHaveAttribute('href', '/posts/developer-journey-year-3/');
@@ -174,10 +175,11 @@ it('offers zoom controls and keeps all series members directly reachable', () =>
   ]} />);
   fireEvent.click(screen.getByRole('button', { name: '跳转到 2024 年' }));
   act(() => { frames.shift()?.(0); });
-  fireEvent.click(screen.getByRole('button', { name: '选中《沙盒建造游戏设计》' }));
+  fireEvent.click(screen.getByRole('button', { name: '选中《沙盒建造手记》' }));
   act(() => { frames.shift()?.(0); });
   expect(screen.queryByRole('link', { name: /相机控制/ })).toBeNull();
-  fireEvent.click(screen.getByRole('button', { name: '沙盒建造游戏设计 2 篇' }));
+  fireEvent.click(screen.getByRole('button', { name: '沙盒建造手记 2 篇' }));
+  expect(screen.getByRole('link', { name: '阅读完整专栏 →' })).toHaveAttribute('href', '/columns/sandbox-building/');
   expect(screen.getByRole('link', { name: /相机控制/ })).toHaveAttribute('href', '/posts/unity-sandbox-building-camera-control/');
   expect(screen.getByRole('link', { name: /命令模式/ })).toHaveAttribute('href', '/posts/unity-sandbox-building-command-pattern/');
   const before = screen.getByLabelText('可见时间跨度').textContent;
@@ -346,7 +348,7 @@ it('replays on refresh even when a previous document already played', () => {
 });
 
 it.each([
-  ['unity-series', '沙盒建造游戏设计', 2024, [
+  ['unity-series', '沙盒建造手记', 2024, [
     ['unity-sandbox-building-camera-control', '相机控制'],
     ['unity-sandbox-building-command-pattern', '命令模式'],
     ['unity-sandbox-building-state-pattern', '状态模式'],
@@ -372,7 +374,7 @@ it.each([
   expect(screen.queryByRole('link')).toBeNull();
   fireEvent.pointerEnter(trigger);
   const directory = screen.getByRole('region', { name: `${title}系列目录` });
-  expect(directory.querySelectorAll('a')).toHaveLength(members.length);
+  expect(within(directory).getByRole('navigation', { name: '系列文章' }).querySelectorAll('a')).toHaveLength(members.length);
   for (const [slug, name] of members) {
     const link = screen.getByRole('link', { name: new RegExp(name) });
     expect(link).toHaveAttribute('href', `/posts/${slug}/`);

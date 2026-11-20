@@ -17,8 +17,7 @@
         "additionalProperties": false,
         "required": [
           "id",
-          "level",
-          "intro"
+          "level"
         ],
         "properties": {
           "id": {
@@ -57,13 +56,53 @@
               "type": "string",
               "minLength": 1
             }
+          },
+          "column": {
+            "type": "string",
+            "minLength": 1
           }
         },
         "dependentRequired": {
           "members": [
             "title"
           ]
-        }
+        },
+        "oneOf": [
+          {
+            "required": [
+              "intro"
+            ],
+            "not": {
+              "required": [
+                "column"
+              ]
+            }
+          },
+          {
+            "required": [
+              "column"
+            ],
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "intro"
+                  ]
+                },
+                {
+                  "required": [
+                    "title"
+                  ]
+                },
+                {
+                  "required": [
+                    "members"
+                  ]
+                }
+              ]
+            }
+          }
+        ]
       }
     }
   }

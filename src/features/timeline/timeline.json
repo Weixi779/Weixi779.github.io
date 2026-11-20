@@ -53,15 +53,8 @@
     },
     {
       "id": "unity-series",
-      "title": "沙盒建造游戏设计",
       "level": "medium",
-      "intro": "一个 Unity 沙盒建造功能的开发记录，从相机控制、撤销操作，到状态管理与复制搜索。",
-      "members": [
-        "unity-sandbox-building-camera-control",
-        "unity-sandbox-building-command-pattern",
-        "unity-sandbox-building-state-pattern",
-        "unity-sandbox-building-search-algorithms"
-      ]
+      "column": "sandbox-building"
     },
     {
       "id": "developer-journey-year-3",

@@ -95,7 +95,7 @@ export default function ArticlePreview({ story, anchor, onDismiss, focusOnOpen =
     if (focusOnOpen && position) link.current?.querySelector<HTMLElement>('a')?.focus({ preventScroll: true });
   }, [focusOnOpen, position !== null]);
 
-  const series = story.articles.length > 1;
+  const series = Boolean(story.column) || story.articles.length > 1;
   const article = story.articles[0];
   const content = <>
     <svg viewBox="0 0 480 300" preserveAspectRatio="none" aria-hidden="true">
@@ -109,6 +109,7 @@ export default function ArticlePreview({ story, anchor, onDismiss, focusOnOpen =
         <span>{member.title.split(' - ').at(-1)}</span><span className="chapter-arrow" aria-hidden="true">↗</span>
       </a>)}
     </nav>}
+    {story.column && <a className="timeline-column-link" href={`/columns/${story.column}/`}>阅读完整专栏 →</a>}
   </>;
   const style = { ...position, visibility: position ? 'visible' as const : 'hidden' as const };
   return createPortal(series

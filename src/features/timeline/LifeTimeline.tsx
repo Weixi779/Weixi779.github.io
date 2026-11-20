@@ -4,7 +4,7 @@ import { timelineToday, useTimelineDate } from './date';
 import ArticlePreview from './ArticlePreview';
 import { entries, periods } from './data';
 import { buildTimelineLayout, zoomAround, buildRulerTicks, storyVisibility, smooth, type TimelineArticle } from './layout';
-import { buildTimelineStories, type TimelineStory } from './curation';
+import { buildTimelineStories, findTimelineColumn, type TimelineStory } from './curation';
 import './life-timeline.css';
 
 const ENTRANCE_KEY = 'life-timeline:entered-v2';
@@ -73,7 +73,7 @@ export default function LifeTimeline({ articles, initialDate = timelineToday() }
   const [preview, setPreview] = useState<{ story: TimelineStory; anchor: HTMLElement; focusOnOpen?: boolean } | null>(null);
   const dismissPreview = useCallback(() => setPreview(null), []);
   function showPreview(story: TimelineStory, anchor: HTMLElement, focusOnOpen = false) {
-    if (selected || (story.articles.length === 1 && !story.articles[0].excerpt) || dragging || frame.current || entrancePlaying.current) return;
+    if (selected || (!story.column && story.articles.length === 1 && !story.articles[0].excerpt) || dragging || frame.current || entrancePlaying.current) return;
     const label = layout.labels.find(label => label.story.id === story.id);
     if (!label || storyVisibility(label, scaleRef.current, viewBounds.current.minScale).title <= .7) return;
     if (focusOnOpen && preview?.story.id === story.id) {
@@ -332,6 +332,8 @@ export default function LifeTimeline({ articles, initialDate = timelineToday() }
     </g>;
   });
   const entry = selected ? entries[selected] : null;
+  const column = findTimelineColumn(entry?.column);
+  const entryLinks = entry?.links.filter(([, slug]) => !column?.articles.includes(slug)) ?? [];
   const projects = [...new Set(periods.filter(period => period.parent === selected).map(period => period.entry))];
   return <section className={`life-timeline${entering ? ' entering' : ''}`} aria-label="一路走来" inert={entering} aria-busy={entering}
     style={{ '--entrance-axis': `${axis}px` } as CSSProperties}>
@@ -423,7 +425,7 @@ export default function LifeTimeline({ articles, initialDate = timelineToday() }
             onClickCapture={event => { if (!readable) { event.preventDefault(); event.stopPropagation(); selectStory(story.id); } }}
             onPointerEnter={() => setHover(left)} onFocus={() => setActiveArticle(story.id)}>
             <span className="date">{story.date.replaceAll('-', '.')}{story.articles.length > 1 && ` — ${story.endDate.replaceAll('-', '.')}`}</span>
-            {story.articles.length === 1 ? <h2><a tabIndex={readable && labelInView ? 0 : -1} href={`/posts/${story.articles[0].slug}/`}
+            {!story.column && story.articles.length === 1 ? <h2><a tabIndex={readable && labelInView ? 0 : -1} href={`/posts/${story.articles[0].slug}/`}
               onPointerEnter={event => { if (event.pointerType !== 'touch') showPreview(story, event.currentTarget); }}
               onFocus={event => showPreview(story, event.currentTarget)}>{story.title} <span className="read-arrow">↗</span></a></h2>
               : <h2><button className="series-trigger" tabIndex={readable && labelInView ? 0 : -1} aria-controls={preview?.story.id === story.id ? "timeline-preview" : undefined} aria-expanded={preview?.story.id === story.id}
@@ -460,7 +462,7 @@ export default function LifeTimeline({ articles, initialDate = timelineToday() }
         <path className="echo" d="M27 16 Q145 7 290 12 M850 411 Q866 544 818 557 L693 560" />
       </svg>
       <div className="reader-heading"><p className="date">{entry.date}</p><h2 id="reading-title">{entry.title}</h2><p className="kind">{entry.kind}</p></div>
-      <div className={`reader-grid${entry.links.length || entry.resources?.length || projects.length ? '' : ' reader-prose-only'}`}>
+      <div className={`reader-grid${entryLinks.length || column || entry.resources?.length || projects.length ? '' : ' reader-prose-only'}`}>
         <div className="reader-prose" tabIndex={0} aria-label="阶段正文">{entry.body.split('\n\n').map((paragraph, index) => {
           const lines = paragraph.split('\n');
           if (lines.every(line => line.startsWith('- '))) return <ul className="bodycopy reader-list" key={index}>{lines.map((line, itemIndex) => {
@@ -470,17 +472,21 @@ export default function LifeTimeline({ articles, initialDate = timelineToday() }
           })}</ul>;
           return <p className="bodycopy" key={index}>{paragraph}</p>;
         })}</div>
-        {(entry.links.length > 0 || Boolean(entry.resources?.length) || projects.length > 0) && <aside>
+        {(entryLinks.length > 0 || column || Boolean(entry.resources?.length) || projects.length > 0) && <aside>
           {projects.length > 0 && <div className="reader-projects"><h3>参与的项目</h3>{projects.map(id => {
             const project = entries[id];
+            const projectColumn = findTimelineColumn(project.column);
+            const links = project.links.filter(([, slug]) => !projectColumn?.articles.includes(slug));
             return <details key={id} className="reader-project">
               <summary><span>{project.title}</span><small>{project.date}</small></summary>
               <div className="project-content"><p>{project.body}</p>
-                {project.links.length > 0 && <div className="links">{project.links.map(([label, slug]) => <a key={slug} href={`/posts/${slug}/`}>{label} ↗</a>)}</div>}
+                {projectColumn && <div className="links"><a href={`/columns/${projectColumn.slug}/`}>专栏 · {projectColumn.title} →</a></div>}
+                {links.length > 0 && <div className="links">{links.map(([label, slug]) => <a key={slug} href={`/posts/${slug}/`}>{label} ↗</a>)}</div>}
               </div>
             </details>;
           })}</div>}
-          {entry.links.length > 0 && <><h3>当时留下的文字</h3><div className="links">{entry.links.map(([label, slug, status]) => status === 'pending' && !articles.some(article => article.slug === slug) ? <span key={slug} className="pending-article">{label} · 待发布</span> : <a key={slug} href={`/posts/${slug}/`}>{label} ↗</a>)}</div></>}
+          {column && <><h3>相关专栏</h3><div className="links"><a href={`/columns/${column.slug}/`}>{column.title} →</a></div></>}
+          {entryLinks.length > 0 && <><h3>当时留下的文字</h3><div className="links">{entryLinks.map(([label, slug, status]) => status === 'pending' && !articles.some(article => article.slug === slug) ? <span key={slug} className="pending-article">{label} · 待发布</span> : <a key={slug} href={`/posts/${slug}/`}>{label} ↗</a>)}</div></>}
           {entry.resources && <div className="resources"><h3>做过的东西</h3><div className="links">{entry.resources.map(([label, href]) => <a key={href} href={href}>{label} ↗</a>)}</div></div>}
         </aside>}
       </div>

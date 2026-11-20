@@ -232,3 +232,17 @@
 
 /* A visible, fading label can reveal its story; it cannot navigate yet. */
 .life-timeline .story-label:not([inert]) { pointer-events: auto; }
+
+.timeline-column-link {
+  position: relative;
+  display: block;
+  width: fit-content;
+  padding: 7px 0;
+  margin-top: 8px;
+  color: var(--color-accent-primary);
+  font: 14px/1.6 'Weixi Sans', sans-serif;
+  text-decoration: none;
+}
+.timeline-column-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+.timeline-column-link:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+.life-timeline .reader aside > .links + h3 { margin-top: 18px; }

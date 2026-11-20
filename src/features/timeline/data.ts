@@ -4,6 +4,7 @@ export interface TimelineEntry {
   kind: string;
   title: string;
   body: string;
+  column?: string;
   links: [string, string, 'pending'?][];
   resources?: [string, string][];
 }
@@ -89,6 +90,7 @@ AI 的持续发展，也让我重新思考程序员与 AI 的关系：这个职�
     body: `一个用于调整图片尺寸、转换格式和控制文件大小的 Swift 工具库，从真实业务里的图片压缩问题中逐渐整理而来。
 
 从早期探索到后来的几次重构，几年间一直关注着这个问题。项目和文章留下了不同阶段的理解，也记录了 AI 参与之后，重新审视与选择答案的过程。`,
+    column: 'wicompress',
     links: [['浅谈图片压缩', 'image-compression-fundamentals'], ['谈谈 iOS 图片压缩', 'ios-image-compression'], ['旁观者', 'observer'], ['解构与重组：AI 时代下的 WICompress 2.0', 'wicompress-2-architecture-ai']],
     resources: [['WICompress · GitHub', 'https://github.com/Weixi779/WICompress']],
   },
@@ -113,7 +115,7 @@ AudioHelm：协调播放、录音等功能对音频会话的使用，处理切�
     resources: [['Moira · GitHub', 'https://github.com/Weixi779/Moira'], ['Latte · GitHub', 'https://github.com/Weixi779/Latte'], ['AudioHelm · GitHub', 'https://github.com/Weixi779/AudioHelm']],
   },
   flutter: { date: '2021.11 — 2022.02', kind: '云账户 · 项目 1 / 4', title: 'Flutter 音视频', body: '第一份工作最初参与的音视频项目，使用 Flutter 与 Dart。', links: [] },
-  unity: { date: '2022.03 — 2022.11 / 2023.12 — 2024.06', kind: '云账户 · 项目 2 / 4', title: '7850 · Unity2D', body: '使用 Unity2D 与 Lua。先后在两个时间段参与，是同一个项目，中间转去参与 iOS 原生项目。', links: [['沙盒建造：相机控制', 'unity-sandbox-building-camera-control'], ['沙盒建造：命令模式', 'unity-sandbox-building-command-pattern'], ['沙盒建造：状态模式', 'unity-sandbox-building-state-pattern'], ['沙盒建造：搜索算法', 'unity-sandbox-building-search-algorithms']] },
+  unity: { column: 'sandbox-building', date: '2022.03 — 2022.11 / 2023.12 — 2024.06', kind: '云账户 · 项目 2 / 4', title: '7850 · Unity2D', body: '使用 Unity2D 与 Lua。先后在两个时间段参与，是同一个项目，中间转去参与 iOS 原生项目。', links: [['沙盒建造：相机控制', 'unity-sandbox-building-camera-control'], ['沙盒建造：命令模式', 'unity-sandbox-building-command-pattern'], ['沙盒建造：状态模式', 'unity-sandbox-building-state-pattern'], ['沙盒建造：搜索算法', 'unity-sandbox-building-search-algorithms']] },
   ios13: { date: '2022.11 — 2023.11', kind: '云账户 · 项目 3 / 4', title: '碰爪 · iOS13', body: '参与既有 iOS 客户端开发，以及 Objective-C 工程的 Swift 迁移。', links: [] },
   ios17: { date: '2024.06 — 2024.11', kind: '云账户 · 项目 4 / 4', title: '碰爪 · iOS17', body: '参与新的 iOS 客户端建设，使用 Swift、SwiftUI 与 UIKit，并接入 Unity。', links: [] },
 };

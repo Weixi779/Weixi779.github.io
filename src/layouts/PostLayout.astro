@@ -1,4 +1,6 @@
 ---
+import PostColumns from '../features/post/PostColumns.astro';
+import { getPublishedColumns } from '../features/columns/published-columns';
 import type { PostEntry } from '../lib/content/posts';
 import GiscusComments from '../features/post/GiscusComments.astro';
 import TableOfContents from '../features/post/TableOfContents.astro';
@@ -29,6 +31,9 @@ const isEnglish = language === 'en';
 const chapters = post.data.toc ? groupTocHeadings(headings) : [];
 const hasToc = chapters.length > 0;
 const chinesePost = language === 'zh-CN' ? post : translation;
+const columns = chinesePost && !post.data.draft
+  ? (await getPublishedColumns()).filter(column => column.articles.some(article => article.slug === chinesePost.data.slug))
+  : [];
 const englishPost = language === 'en' ? post : translation;
 const alternates = [
   ...(chinesePost ? [{ language: 'zh-CN' as const, href: getPostPath(chinesePost) }] : []),
@@ -62,6 +67,7 @@ const alternates = [
     {hasToc && <TableOfContents chapters={chapters} language={language} />}
     <article class="prose prose--article">
       <slot />
+      {columns.length > 0 && <PostColumns columns={columns} isEnglish={isEnglish} />}
       <nav class="post-navigation" aria-label={isEnglish ? 'Adjacent posts' : '相邻文章'}>
         {newerPost ? (
           <a href={getPostPath(newerPost)}>

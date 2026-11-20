@@ -3,6 +3,7 @@
     "slug": "death-of-the-author",
     "title": "作者之死",
     "intro": "时间会带走一切，唯独把曾经存在过的证据留在了这里。",
+    "summaryPhrases": ["写创作，", "也写作品", "无人回应时的日子。"],
     "prominence": "large",
     "cover": "/images/death-of-the-author.webp",
     "articles": [
@@ -14,6 +15,7 @@
     "slug": "year-after-year",
     "title": "路的尽头还是路",
     "intro": "一个人，要走多远，才能追回最初的自己？",
+    "summaryPhrases": ["一个程序员每一年的", "工作与选择。"],
     "prominence": "medium",
     "cover": "/images/year-after-year.webp",
     "articles": [
@@ -27,6 +29,7 @@
     "slug": "wheels-grow-old",
     "title": "所有的轮子都会变旧",
     "intro": "写下的代码会腐烂，但当年留在设计里的思考不会。",
+    "summaryPhrases": ["回看那些年做过的", " iOS 工程设计。"],
     "prominence": "medium",
     "cover": "/images/wheels-grow-old.webp",
     "articles": [
@@ -40,6 +43,7 @@
     "slug": "within-reach",
     "title": "当一切变得轻而易举",
     "intro": "AI 越来越擅长给出答案，人却要在一次次跃迁里，重新寻找自己的位置。",
+    "summaryPhrases": ["AI 怎样改变我写代码、", "做作品的方式。"],
     "prominence": "medium",
     "cover": "/images/within-reach.webp",
     "articles": [
@@ -53,6 +57,7 @@
     "slug": "wicompress",
     "title": "WICompress 演进实录",
     "intro": "一张照片从手机到服务端的旅程，也是少年梦开始的地方。",
+    "summaryPhrases": ["从第一次研究图片压缩，", "到重写 WICompress。"],
     "prominence": "medium",
     "cover": "/images/wicompress.webp",
     "articles": [
@@ -65,6 +70,7 @@
     "slug": "sandbox-building",
     "title": "沙盒建造手记",
     "intro": "在 27 × 27 的方格里，给下一间小屋找个位置。",
+    "summaryPhrases": ["用 Unity 实现", "沙盒游戏里的建造功能。"],
     "prominence": "small",
     "cover": "/images/sandbox-building.webp",
     "articles": [

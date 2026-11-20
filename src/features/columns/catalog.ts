@@ -8,6 +8,7 @@ const definition = z.object({
   slug,
   title: text,
   intro: text,
+  summaryPhrases: z.array(z.string().min(1)).min(1).optional(),
   cover: text.optional(),
   prominence: z.enum(['large', 'medium', 'small']).default('medium'),
   articles: z.array(slug),

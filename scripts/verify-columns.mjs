@@ -57,6 +57,9 @@ try {
   for (const link of articles) {
     const post = await readPage(link.getAttribute('href'));
     assert.ok(post.querySelector('article.prose')?.textContent.trim(), 'Missing article body');
+    const membership = post.querySelector('.post-columns');
+    assert.equal(membership?.querySelector('a')?.getAttribute('href'), card.getAttribute('href'));
+    assert.equal(membership?.nextElementSibling?.className, 'post-navigation');
   }
   console.log('Verified the static navigation → catalog → column → published articles reading path.');
 } finally {

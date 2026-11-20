@@ -13,7 +13,8 @@
 
 .home-sections::before {
   position: absolute;
-  inset-block: 12px;
+  grid-area: 1 / 1 / 2 / -1;
+  inset-block: 0;
   /* Center the divider in the 64px gutter after the 60% content column. */
   left: calc((100% - 64px) * .6 + 32px);
   width: 1px;
@@ -39,6 +40,8 @@
   font: normal 400 24px/1.5 'LXGW WenKai Mono GB', 'PingFang SC', sans-serif;
   font-synthesis: none;
 }
+
+.home-sections > :is(.home-notes, .home-sections__placeholder) { grid-area: 1 / 2; }
 
 .home-sections__placeholder { color: var(--color-text-secondary); }
 .home-sections__placeholder p {
@@ -133,6 +136,7 @@
 @media (max-width: 900px) {
   .home-sections { grid-template-columns: minmax(0, 1fr); }
   .home-sections::before { display: none; }
+  .home-sections > :is(.home-notes, .home-sections__placeholder) { grid-area: auto; }
 }
 
 @media (max-width: 700px) {

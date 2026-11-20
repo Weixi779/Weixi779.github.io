@@ -1,4 +1,6 @@
 ---
+import HomeColumns from '../features/home/HomeColumns.astro';
+import { getPublishedColumns } from '../features/columns/published-columns';
 import HomeHero from '../features/home/HomeHero.astro';
 import HomeNotes from '../features/home/HomeNotes.astro';
 import HomeRecentPosts from '../features/home/HomeRecentPosts';
@@ -6,6 +8,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import { getPostDate, getPostExcerpt, getPostPath, getPublishedPosts } from '../lib/content/posts';
 
 const posts = await getPublishedPosts();
+const columns = await getPublishedColumns(posts);
+const featuredColumns = ['death-of-the-author', 'wheels-grow-old', 'year-after-year']
+  .flatMap(slug => columns.filter(column => column.slug === slug));
 const articles = posts.filter((post) => post.data.category !== '碎碎念');
 const notes = posts.filter((post) => post.data.category === '碎碎念');
 
@@ -31,6 +36,7 @@ const recentNotes = notes.slice(0, 4).map(post => ({
   <HomeHero />
   <div class="home-sections">
     <HomeRecentPosts posts={recentPosts} />
+    {featuredColumns.length > 0 && <HomeColumns columns={featuredColumns} />}
     {recentNotes.length > 0 ? (
       <HomeNotes notes={recentNotes} />
     ) : (

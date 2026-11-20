@@ -31,7 +31,7 @@ export default function ColumnCatalog({ columns }: { columns: Column[] }) {
               <ul key={row[0].slug} className="column-row" data-tier={prominence} data-tracks={tracks} role="list">
                 {row.map(column => (
                   <li key={column.slug}>
-                    <a className="column-card" href={`/columns/${column.slug}/`}>
+                    <a className="column-card column-link" href={`/columns/${column.slug}/`}>
                       {column.cover && <img className="column-card__cover" src={column.cover} alt="" loading="lazy" decoding="async" />}
                       <div className="column-card__copy">
                         <h2>{column.title}</h2>

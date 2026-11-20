@@ -31,7 +31,7 @@ export default function ColumnReadingList({ articles }: { articles: readonly Col
         const date = article.publishedAt.slice(0, 10);
         return (
           <li key={article.slug}>
-            <a href={article.href}>
+            <a className="column-link" href={article.href}>
               <h2><PostTitle title={article.title} recommended={article.recommended} /></h2>
               <time dateTime={date}>{date.replaceAll('-', ' / ')}</time>
               {article.summary && <p>{article.summary}</p>}

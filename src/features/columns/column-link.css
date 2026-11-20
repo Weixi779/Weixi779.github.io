@@ -1,0 +1,46 @@
+/* Created by weixi on 2026/11/20. */
+
+.column-link {
+  position: relative;
+  isolation: isolate;
+  -webkit-tap-highlight-color: var(--color-post-pressed);
+}
+
+.column-link::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  border-radius: inherit;
+  background: var(--color-post-pressed);
+  opacity: var(--column-link-highlight, 0);
+}
+
+.column-link > img { filter: var(--column-link-image, none); }
+.column-link :is(h2, h3, strong) { color: var(--column-link-title, inherit); }
+
+@media (hover: hover) and (pointer: fine) {
+  .column-link:hover {
+    --column-link-highlight: .75;
+    --column-link-image: brightness(1.07) contrast(1.025);
+    --column-link-title: var(--color-accent-primary);
+  }
+}
+
+.column-link:focus-visible {
+  --column-link-highlight: .75;
+  --column-link-title: var(--color-accent-primary);
+  outline: 2px solid var(--color-accent-primary);
+  outline-offset: 2px;
+}
+
+.column-link:active, .column-link[data-pressed] {
+  --column-link-highlight: 1;
+  --column-link-image: brightness(.96);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .column-link::before { transition: opacity 140ms ease-out; }
+  .column-link > img { transition: filter 140ms ease-out; }
+}

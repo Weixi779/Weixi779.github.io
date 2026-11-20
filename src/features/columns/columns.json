@@ -1,9 +1,20 @@
 [
   {
-    "slug": "year-after-year",
-    "title": "年复一年",
-    "intro": "一个人，要走多远的距离才能在时光的尽头，追回最初的自己？",
+    "slug": "death-of-the-author",
+    "title": "作者之死",
+    "intro": "时间会带走一切，唯独把曾经存在过的证据留在了这里。",
     "prominence": "large",
+    "cover": "/images/death-of-the-author.webp",
+    "articles": [
+      "why-i-still-create",
+      "the-echo-that-never-came"
+    ]
+  },
+  {
+    "slug": "year-after-year",
+    "title": "路的尽头还是路",
+    "intro": "一个人，要走多远，才能追回最初的自己？",
+    "prominence": "medium",
     "cover": "/images/year-after-year.webp",
     "articles": [
       "year-2021-afterword",
@@ -13,16 +24,54 @@
     ]
   },
   {
+    "slug": "wheels-grow-old",
+    "title": "所有的轮子都会变旧",
+    "intro": "写下的代码会腐烂，但当年留在设计里的思考不会。",
+    "prominence": "medium",
+    "cover": "/images/wheels-grow-old.webp",
+    "articles": [
+      "ios-ctmediator-notes",
+      "swift-model-decoding",
+      "ios-network-layer-evolution",
+      "ios-network-image-survey"
+    ]
+  },
+  {
     "slug": "within-reach",
     "title": "当一切变得轻而易举",
     "intro": "AI 越来越擅长给出答案，人却要在一次次跃迁里，重新寻找自己的位置。",
-    "prominence": "large",
+    "prominence": "medium",
     "cover": "/images/within-reach.webp",
     "articles": [
       "developer-journey-year-4",
       "observer",
       "wicompress-2-architecture-ai",
       "after-deleting-ai-skills"
+    ]
+  },
+  {
+    "slug": "wicompress",
+    "title": "WICompress 演进实录",
+    "intro": "一张照片从手机到服务端的旅程，也是少年梦开始的地方。",
+    "prominence": "medium",
+    "cover": "/images/wicompress.webp",
+    "articles": [
+      "image-compression-fundamentals",
+      "ios-image-compression",
+      "wicompress-2-architecture-ai"
+    ]
+  },
+  {
+    "slug": "sandbox-building",
+    "title": "沙盒建造手记",
+    "intro": "在 27 × 27 的方格里，给下一间小屋找个位置。",
+    "prominence": "small",
+    "cover": "/images/sandbox-building.webp",
+    "articles": [
+      "unity-sandbox-building-camera-control",
+      "unity-sandbox-building-command-pattern",
+      "unity-sandbox-building-state-pattern",
+      "unity-sandbox-building-search-algorithms"
     ]
   }
 ]

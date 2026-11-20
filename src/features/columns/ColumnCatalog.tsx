@@ -6,11 +6,12 @@ import { arrangeColumnRows, DIRECTORY_THRESHOLD } from './catalog-layout';
 import './columns.css';
 
 export const COLUMN_BANNER = '/images/columns-cottage.webp';
+export const COLUMN_DESCRIPTION = '同一个课题，在不同岁月里，留下的演进与答案。';
 
 export default function ColumnCatalog({ columns }: { columns: Column[] }) {
   return (
     <div className="column-catalog">
-      <SiteBanner title="专栏" summary={'兜兜转转，\n每一次重逢都给出新的答案。'} image={COLUMN_BANNER} imageLayout="illustration" />
+      <SiteBanner title="专栏" summary={COLUMN_DESCRIPTION} image={COLUMN_BANNER} imageLayout="illustration" />
       <div className="column-content">
         {columns.length >= DIRECTORY_THRESHOLD && (
           <div className="column-toolbar">

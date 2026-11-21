@@ -106,6 +106,7 @@
     "intro": "遗憾？惆怅？当最后一行致谢从屏幕顶端消失，真正留给观众的思考才刚刚开始。",
     "summaryPhrases": ["当最后一行致谢消失，", "真正的思考才刚刚开始。"],
     "prominence": "small",
+    "cover": "/images/curtain-call.webp",
     "articles": [
       "nier-automata",
       "cyberpunk-2077"

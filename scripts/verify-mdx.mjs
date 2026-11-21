@@ -11,7 +11,7 @@ try {
   for (const { slug, draft } of [
     { slug: 'ios-performance-unnecessary-work', draft: false },
     { slug: 'mdx-playground', draft: true },
-    { slug: 'parade-third-answer', draft: false },
+    { slug: 'parade-third-answer', draft: true },
   ]) {
     if (existsSync('dist')) {
       assert.equal(existsSync(`dist/posts/${slug}/index.html`), !draft, `${slug}: incorrect publication state`);

@@ -79,5 +79,36 @@
       "unity-sandbox-building-state-pattern",
       "unity-sandbox-building-search-algorithms"
     ]
+  },
+  {
+    "slug": "swift-model-decoding",
+    "title": "Swift 模型解析",
+    "intro": "从数据到模型，我们应该擦除什么，又应该留下什么？",
+    "prominence": "small",
+    "articles": [
+      "swift-model-decoding",
+      "storing-json-with-codable"
+    ]
+  },
+  {
+    "slug": "network-images-and-caching",
+    "title": "网络图片与缓存",
+    "intro": "一张图片抵达屏幕之前，在网络、内存与磁盘之间走过的路。",
+    "prominence": "small",
+    "articles": [
+      "caffeine-moka-cache-notes",
+      "ios-network-image-survey"
+    ]
+  },
+  {
+    "slug": "curtain-call",
+    "title": "谢幕",
+    "intro": "遗憾？惆怅？当最后一行致谢从屏幕顶端消失，真正留给观众的思考才刚刚开始。",
+    "summaryPhrases": ["当最后一行致谢消失，", "真正的思考才刚刚开始。"],
+    "prominence": "small",
+    "articles": [
+      "nier-automata",
+      "cyberpunk-2077"
+    ]
   }
 ]

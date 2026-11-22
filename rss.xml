@@ -5,8 +5,18 @@
     <link>https://weixi779.github.io/</link>
     <description>个人博客记录成长</description>
     <language>zh-CN</language>
-    <lastBuildDate>Thu, 05 Nov 2026 07:50:47 GMT</lastBuildDate>
+    <lastBuildDate>Thu, 12 Nov 2026 06:37:26 GMT</lastBuildDate>
     <atom:link href="https://weixi779.github.io/rss.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>AI 与爱</title>
+      <link>https://weixi779.github.io/posts/ai-and-love/</link>
+      <guid isPermaLink="true">https://weixi779.github.io/posts/ai-and-love/</guid>
+      <pubDate>Thu, 12 Nov 2026 06:37:26 GMT</pubDate>
+      <description>从人类文明的瓶颈出发，回到显存里的第一个 Token，追问热爱、负责与未来的署名权。</description>
+      <category>碎碎念</category>
+      <category>AI</category>
+      <category>哲学</category>
+    </item>
     <item>
       <title>只是想暂存一段 JSON</title>
       <link>https://weixi779.github.io/posts/storing-json-with-codable/</link>

@@ -5,8 +5,18 @@
     <link>https://weixi779.github.io/</link>
     <description>个人博客记录成长</description>
     <language>zh-CN</language>
-    <lastBuildDate>Thu, 12 Nov 2026 06:37:26 GMT</lastBuildDate>
+    <lastBuildDate>Sun, 22 Nov 2026 12:30:00 GMT</lastBuildDate>
     <atom:link href="https://weixi779.github.io/rss.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>新的大版本号：第五年的后日谈</title>
+      <link>https://weixi779.github.io/posts/developer-journey-year-5/</link>
+      <guid isPermaLink="true">https://weixi779.github.io/posts/developer-journey-year-5/</guid>
+      <pubDate>Sun, 22 Nov 2026 12:30:00 GMT</pubDate>
+      <description>不再急着向世界证明什么，只管带着热爱，认真走下去。</description>
+      <category>后日谈</category>
+      <category>代码人生</category>
+      <category>人生</category>
+    </item>
     <item>
       <title>AI 与爱</title>
       <link>https://weixi779.github.io/posts/ai-and-love/</link>

@@ -1,0 +1,71 @@
+---
+// Created by weixi on 2026/11/24.
+import dragon from './illustrations/little-dragon.svg?url';
+import gemini from './illustrations/little-gemini.svg?url';
+
+interface Props { character: 'dragon' | 'gemini' }
+const { character } = Astro.props;
+const isDragon = character === 'dragon';
+const ink = `${character}-portrait`;
+// The bare asset is a two-pose sheet. Reference only the resting artwork in local coordinates.
+const portrait = `${isDragon ? dragon : gemini}#reading-portrait`;
+// The openings follow the underside of the painted lashes in the 450-unit portrait.
+const eyes = isDragon ? [
+  {
+    opening: 'M166 233Q167 221 187 220.5Q203 221 210 235Q214 248 199 251Q181 255 169 242Z',
+    lid: 'M153 228Q160 225 164 218Q184 208 202 220Q214 227 212 245Q206 255 185 253Q169 250 164 238Z',
+    lash: 'M157 237Q178 250 206 242Q200 248 186 248.6Q167 247.5 157 237Z',
+    baseline: 245,
+  },
+  {
+    opening: 'M245 227Q251 210 270 213Q285 211 291 219Q293 238 278 245Q255 251 247 238Z',
+    lid: 'M244 218Q255 201 276 205Q289 204 301 215L294 225Q293 243 277 248Q250 253 243 236Z',
+    lash: 'M246 235.4Q270 241 292.7 223.8Q286 236.5 269 238.5Q255 240 246 235.4Z',
+    baseline: 236,
+  },
+] : [
+  { opening: 'M189 247Q194 236 209 235Q224 235 228 246Q231 255 216 258Q198 262 190 253Z' },
+  { opening: 'M260.8 222Q268 214 278 214Q288 211 302 219Q302 236.5 287 241.5Q263.6 246 262 231Z' },
+];
+// Cut along the lock of hair in front of the near ear. The hinge stays under that lock.
+const earCut = 'M57 113L181 66Q150 93 138 126Q129 149 121 177Q109 175 96 162L59 155Z';
+---
+<svg class="companion__portrait" viewBox="0 0 450 450" aria-hidden="true" focusable="false">
+  <defs>
+    <use id={ink} href={portrait} />
+    <linearGradient id={`${ink}-sclera`} x2="0" y2="1">
+      <stop stop-color={isDragon ? '#e1cedb' : '#e4c9d4'} />
+      <stop offset=".55" stop-color={isDragon ? '#f7e9ee' : '#fae7e6'} />
+      <stop offset="1" stop-color={isDragon ? '#f9e2de' : '#faded8'} />
+    </linearGradient>
+    {eyes.map((eye, i) => <>
+      <clipPath id={`${ink}-opening-${i}`}><path d={eye.opening} /></clipPath>
+      {'lid' in eye && <clipPath id={`${ink}-lid-${i}`}><path d={eye.lid} /></clipPath>}
+    </>)}
+    {!isDragon && <>
+      <clipPath id="gemini-ear"><path d="M55 110L184 64Q162 92 143 130L124 180Q109 176 94 162L57 154Z" /></clipPath>
+      <clipPath id="gemini-head"><path clip-rule="evenodd" d={`M0 0H450V450H0Z ${earCut}`} /></clipPath>
+    </>}
+  </defs>
+  {!isDragon && <>
+    <path d="M98 157Q111 166 135 143L122 180Q108 179 98 167Z" fill="#8068ad" />
+    <g class="companion__ear"><use href={`#${ink}`} clip-path="url(#gemini-ear)" /></g>
+  </>}
+  <use href={`#${ink}`} clip-path={isDragon ? undefined : 'url(#gemini-head)'} />
+  <g class={isDragon ? 'companion__blinking-eyes' : undefined}>
+    {eyes.map((eye, i) => <>
+      {'lid' in eye && <path d={eye.lid} fill="#f9e2de" />}
+      <g class={'lid' in eye ? 'companion__blink' : undefined}
+        style={'baseline' in eye ? `transform-origin: 0 ${eye.baseline}px` : undefined}>
+        {'lid' in eye && <use href={`#${ink}`} clip-path={`url(#${ink}-lid-${i})`} />}
+        <g clip-path={`url(#${ink}-opening-${i})`}>
+          <path d={eye.opening} fill={`url(#${ink}-sclera)`} />
+          <g class="companion__gaze">
+            <use href={`#${ink}`} clip-path={`url(#${ink}-opening-${i})`} />
+          </g>
+        </g>
+      </g>
+      {'lash' in eye && <path class="companion__lash" d={eye.lash} fill="#654354" />}
+    </>)}
+  </g>
+</svg>

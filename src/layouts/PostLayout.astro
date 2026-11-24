@@ -64,7 +64,7 @@ const alternates = [
       { href: getPostPath(englishPost), language: 'en', label: 'English', current: isEnglish },
     ] : []}
   />
-  <PostReadingArea hasToc={hasToc}>
+  <PostReadingArea hasToc={hasToc} language={language}>
     {hasToc && <TableOfContents chapters={chapters} language={language} />}
     <article class="prose prose--article">
       <slot />

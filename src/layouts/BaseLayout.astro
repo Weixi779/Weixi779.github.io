@@ -70,7 +70,7 @@ if (!lightThemeColor || !darkThemeColor) throw new Error('theme.css must define 
   </head>
   <body>
     <SiteHeader pathname={Astro.url.pathname} client:load />
-    <main>
+    <main id="page-top" tabindex="-1">
       <slot />
     </main>
     <SiteFooter year={new Date().getFullYear()} client:load />

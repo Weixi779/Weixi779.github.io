@@ -10,81 +10,156 @@
   --companion-size: clamp(112px, calc(var(--outer-margin) - 16px), 182px);
 }
 
-/* Clip the fixed illustration at the boundaries of the reading area. */
+/* The sticky corner travels only within the article's right margin. */
 .post-margin {
+  --companion-bottom-gap: 24px;
   position: absolute;
-  inset: 0;
-  clip-path: inset(0);
-  z-index: -1;
+  inset: 8px 8px var(--companion-bottom-gap) auto;
+  width: var(--companion-size);
+  z-index: 1;
   pointer-events: none;
   user-select: none;
 }
 
 .post-margin__corner {
-  position: fixed;
-  right: 8px;
-  bottom: 12px;
-  width: var(--companion-size);
+  --ground-shadow: rgb(99 78 64 / 11%);
+  --attentive: 0;
+  position: sticky;
+  top: calc(100dvh - var(--companion-size) - var(--companion-bottom-gap));
+  display: none;
+}
+
+:root[data-color-mode='dark'] .post-margin__corner { --ground-shadow: rgb(2 8 25 / 50%); }
+
+.post-margin__corner::before {
+  content: '';
+  position: absolute;
+  inset: 92% 7% 0;
+  background: radial-gradient(ellipse closest-side, var(--ground-shadow), transparent);
 }
 
 .post-margin .companion {
   position: relative;
   aspect-ratio: 1;
   display: none;
-  background: radial-gradient(ellipse 44% 3.5% at 50% 96%, var(--ground-shadow), transparent);
 }
 
 .little-dragon {
-  --drawing: url('./illustrations/little-dragon.webp');
-  --ground-shadow: rgb(99 78 64 / 10%);
+  --flight-height: -42px;
+  --flight-duration: 650ms;
   opacity: .86;
 }
 
 .little-gemini {
-  --drawing: url('./illustrations/little-gemini.webp');
-  --ground-shadow: rgb(2 8 25 / 50%);
+  --flight-height: -46px;
+  --flight-duration: 700ms;
   opacity: .8;
 }
 
-.post-margin .companion::before,
-.post-margin .companion::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: var(--drawing) left / 200% 100% no-repeat;
+.companion__portrait {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
-.post-margin .companion::before { opacity: 0; }
-.post-margin .companion::after { background-position: right; }
+.companion__gaze {
+  transform: translate(calc(-4px * var(--attentive)), calc(-5px * var(--attentive)));
+}
+
+@property --companion-blink {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+
+.companion__blink { transform: scaleY(calc(1 - var(--companion-blink, 0))); }
+.companion__lash { opacity: clamp(0, calc(4 * var(--companion-blink, 0) - 2.8), 1); }
+
+.companion__gift {
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  top: 68%;
+  width: 16%;
+  opacity: 0;
+  translate: -50% -50%;
+}
+
+.little-gemini .companion__gift {
+  left: 48%;
+  top: 72%;
+  filter: drop-shadow(0 0 1.5px #ffd88888);
+}
+
+.post-margin__to-top:not([hidden]) {
+  position: absolute;
+  inset: 16px;
+  border-radius: 35%;
+  pointer-events: auto;
+}
+
+.post-margin__to-top:focus-visible {
+  outline: 2px solid var(--color-accent-primary);
+  outline-offset: 2px;
+}
+.post-margin__corner:has(.post-margin__to-top:focus-visible),
+.post-margin__corner[data-returning] { --attentive: 1; }
+@media (hover: hover) {
+  .post-margin__corner:not([data-interrupted]):has(.post-margin__to-top:hover) { --attentive: 1; }
+}
 
 @media screen and (min-width: 960px) and (min-height: 480px) {
   .post-reading-area[data-with-toc] .toc {
     margin-right: max(0px, calc(var(--companion-size) + 16px - var(--outer-margin)));
   }
 
+  .post-margin__corner { display: block; }
   .post-margin .little-dragon { display: block; }
   :root[data-color-mode='dark'] .post-margin .little-dragon { display: none; }
   :root[data-color-mode='dark'] .post-margin .little-gemini { display: block; }
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .post-margin .companion::before,
-  .post-margin .companion::after {
-    transition: opacity 220ms ease-in-out;
+  /* Keep the moving pieces on their own layers throughout the gesture. */
+  .companion__ear, .companion__gaze { will-change: transform; }
+
+  .post-margin__corner::before {
+    transition: transform 200ms ease-out, opacity 200ms ease-out;
+  }
+  .post-margin__corner[data-returning]::before { transform: scaleX(.88); opacity: .75; }
+  .post-margin .companion {
+    transition: transform 200ms ease-out;
+  }
+  .companion__ear {
+    transform-origin: 144px 133px;
+    transform: rotate(calc(5deg * var(--attentive)));
+    transition: transform 150ms ease-out;
+  }
+  .companion__gaze {
+    transition: transform 160ms ease-in-out;
+    transition-delay: calc(65ms * var(--attentive));
   }
 
-  .post-reading-area:not([data-reading-end]) .companion::before {
-    animation: companion-rest 180ms 950ms ease-in-out backwards;
+  .post-margin__corner[data-returning] .companion {
+    transform: translateY(-7px);
+    animation: companion-sendoff 350ms;
   }
-  .post-reading-area:not([data-reading-end]) .companion::after {
-    animation: companion-rest 180ms 950ms ease-in-out reverse backwards;
+  .post-margin__corner[data-gift] .companion__gift {
+    animation: companion-gift var(--flight-duration) linear;
   }
-
-  .post-reading-area[data-reading-end] .companion::before { opacity: 1; }
-  .post-reading-area[data-reading-end] .companion::after { opacity: 0; }
 }
 
-@keyframes companion-rest {
-  from { opacity: 1; }
-  to { opacity: 0; }
+@keyframes companion-sendoff {
+  0% { transform: translateY(0); animation-timing-function: ease-in; }
+  25.7% { transform: translateY(1px); animation-timing-function: ease-out; }
+  100% { transform: translateY(-7px); }
+}
+
+/* The gift skirts the left cheek; the character stays seated. */
+@keyframes companion-gift {
+  0% { opacity: 0; transform: translate(0, 0) rotate(5deg) scale(.62); }
+  26% { opacity: .85; transform: translate(-110%, -6px) rotate(-6deg) scale(.9); }
+  58% { opacity: .95; transform: translate(-230%, -21px) rotate(-10deg); }
+  80% { opacity: .65; transform: translate(-255%, calc(var(--flight-height) + 9px)) rotate(-5deg); }
+  100% { opacity: 0; transform: translate(-245%, var(--flight-height)); }
 }

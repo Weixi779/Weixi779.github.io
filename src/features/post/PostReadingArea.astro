@@ -1,32 +1,52 @@
 ---
 // Created by weixi on 2026/11/24.
 import './post-reading-area.css';
+import CompanionPortrait from './CompanionPortrait.astro';
 
-interface Props { hasToc: boolean }
-const { hasToc } = Astro.props;
+interface Props { hasToc: boolean; language: 'zh-CN' | 'en' }
+const { hasToc, language } = Astro.props;
+const toTopLabel = language === 'en' ? 'Back to top' : '回到顶部';
 ---
 
 <div class="post-reading-area" data-with-toc={hasToc || undefined}>
-  <div class="post-margin" aria-hidden="true">
-    <div class="post-margin__corner">
-      <div class="companion little-dragon"></div>
-      <div class="companion little-gemini"></div>
-    </div>
-  </div>
   <div class:list={['post-shell', { 'post-shell--without-toc': !hasToc }]}>
     <slot />
+  </div>
+  <div class="post-margin">
+    <div class="post-margin__corner">
+      <div class="companion little-dragon" aria-hidden="true">
+        <CompanionPortrait character="dragon" />
+        <svg class="companion__gift" viewBox="0 0 32 28" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <g stroke="#927e77" stroke-width="1.15">
+            <path fill="#f7ecdc" d="m3.4 9.4 7.3 1.3 5.2-6.1 5.3 6.4 7.3-2.7-6.4 9.2-12.1.2Z"/>
+            <path d="m3.8 9.7 11.7 4.6 12.4-5.4m-17.2 1.8 4.8 3.6.4-9.1"/>
+          </g>
+          <path stroke="#a4aebb" stroke-width=".9" d="M10.5 20.3q1.3 3 5.4 4.2m1.2-4.4q1.5 2 4 2.8"/>
+        </svg>
+      </div>
+      <div class="companion little-gemini" aria-hidden="true">
+        <CompanionPortrait character="gemini" />
+        <svg class="companion__gift" viewBox="0 0 32 28" fill="#ffe4a6">
+          <path d="M12 2.2q.9 7.5 7.1 8.4-6.1 1.1-7.3 8.4-1.2-7.2-7.3-8.3Q11 9.5 12 2.2Z"/>
+          <circle cx="20.6" cy="18.4" r="1.35" opacity=".8"/>
+          <circle cx="25.5" cy="24" r=".85" opacity=".55"/>
+        </svg>
+      </div>
+      <a class="post-margin__to-top" href="#page-top" aria-label={toTopLabel} hidden></a>
+    </div>
   </div>
 </div>
 
 <script>
-  const readingArea = document.querySelector('.post-reading-area');
-  const afterText = readingArea?.querySelector('.prose--article > :is(.post-columns, .post-navigation)');
-  if (readingArea && afterText && 'IntersectionObserver' in window) {
-    const observer = new IntersectionObserver(([entry]) => {
-      if (!entry.isIntersecting) return;
-      readingArea.setAttribute('data-reading-end', '');
-      observer.disconnect();
+  import { bindReadingCompanion } from './reading-companion';
+
+  const corner = document.querySelector<HTMLElement>('.post-margin__corner');
+  const link = corner?.querySelector<HTMLAnchorElement>('.post-margin__to-top');
+  if (corner && link) {
+    let dispose = bindReadingCompanion(corner, link);
+    window.addEventListener('pagehide', () => dispose());
+    window.addEventListener('pageshow', event => {
+      if (event.persisted) dispose = bindReadingCompanion(corner, link);
     });
-    observer.observe(afterText);
   }
 </script>

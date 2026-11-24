@@ -1,0 +1,32 @@
+---
+// Created by weixi on 2026/11/24.
+import './post-reading-area.css';
+
+interface Props { hasToc: boolean }
+const { hasToc } = Astro.props;
+---
+
+<div class="post-reading-area" data-with-toc={hasToc || undefined}>
+  <div class="post-margin" aria-hidden="true">
+    <div class="post-margin__corner">
+      <div class="companion little-dragon"></div>
+      <div class="companion little-gemini"></div>
+    </div>
+  </div>
+  <div class:list={['post-shell', { 'post-shell--without-toc': !hasToc }]}>
+    <slot />
+  </div>
+</div>
+
+<script>
+  const readingArea = document.querySelector('.post-reading-area');
+  const afterText = readingArea?.querySelector('.prose--article > :is(.post-columns, .post-navigation)');
+  if (readingArea && afterText && 'IntersectionObserver' in window) {
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return;
+      readingArea.setAttribute('data-reading-end', '');
+      observer.disconnect();
+    });
+    observer.observe(afterText);
+  }
+</script>

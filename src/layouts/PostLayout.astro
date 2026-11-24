@@ -4,6 +4,7 @@ import { getPublishedColumns } from '../features/columns/published-columns';
 import type { PostEntry } from '../lib/content/posts';
 import GiscusComments from '../features/post/GiscusComments.astro';
 import TableOfContents from '../features/post/TableOfContents.astro';
+import PostReadingArea from '../features/post/PostReadingArea.astro';
 import SiteBanner from '../components/site/SiteBanner';
 import BaseLayout from './BaseLayout.astro';
 import '../styles/prose.css';
@@ -63,7 +64,7 @@ const alternates = [
       { href: getPostPath(englishPost), language: 'en', label: 'English', current: isEnglish },
     ] : []}
   />
-  <div class:list={['post-shell', { 'post-shell--without-toc': !hasToc }]}>
+  <PostReadingArea hasToc={hasToc}>
     {hasToc && <TableOfContents chapters={chapters} language={language} />}
     <article class="prose prose--article">
       <slot />
@@ -84,5 +85,5 @@ const alternates = [
       </nav>
       {!post.data.draft && <GiscusComments language={language} />}
     </article>
-  </div>
+  </PostReadingArea>
 </BaseLayout>

@@ -1,0 +1,90 @@
+.post-reading-area {
+  --outer-margin: calc((100vw - 760px) / 2);
+  --companion-size: clamp(0px, calc(var(--outer-margin) - 16px), 182px);
+  position: relative;
+  isolation: isolate;
+}
+
+.post-reading-area[data-with-toc] {
+  --outer-margin: max(24px, calc((100vw - 1120px) / 2));
+  --companion-size: clamp(112px, calc(var(--outer-margin) - 16px), 182px);
+}
+
+/* Clip the fixed illustration at the boundaries of the reading area. */
+.post-margin {
+  position: absolute;
+  inset: 0;
+  clip-path: inset(0);
+  z-index: -1;
+  pointer-events: none;
+  user-select: none;
+}
+
+.post-margin__corner {
+  position: fixed;
+  right: 8px;
+  bottom: 12px;
+  width: var(--companion-size);
+}
+
+.post-margin .companion {
+  position: relative;
+  aspect-ratio: 1;
+  display: none;
+  background: radial-gradient(ellipse 44% 3.5% at 50% 96%, var(--ground-shadow), transparent);
+}
+
+.little-dragon {
+  --drawing: url('./illustrations/little-dragon.webp');
+  --ground-shadow: rgb(99 78 64 / 10%);
+  opacity: .86;
+}
+
+.little-gemini {
+  --drawing: url('./illustrations/little-gemini.webp');
+  --ground-shadow: rgb(2 8 25 / 50%);
+  opacity: .8;
+}
+
+.post-margin .companion::before,
+.post-margin .companion::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--drawing) left / 200% 100% no-repeat;
+}
+
+.post-margin .companion::before { opacity: 0; }
+.post-margin .companion::after { background-position: right; }
+
+@media screen and (min-width: 960px) and (min-height: 480px) {
+  .post-reading-area[data-with-toc] .toc {
+    margin-right: max(0px, calc(var(--companion-size) + 16px - var(--outer-margin)));
+  }
+
+  .post-margin .little-dragon { display: block; }
+  :root[data-color-mode='dark'] .post-margin .little-dragon { display: none; }
+  :root[data-color-mode='dark'] .post-margin .little-gemini { display: block; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .post-margin .companion::before,
+  .post-margin .companion::after {
+    transition: opacity 220ms ease-in-out;
+  }
+
+  .post-reading-area:not([data-reading-end]) .companion::before {
+    animation: companion-rest 180ms 950ms ease-in-out backwards;
+  }
+  .post-reading-area:not([data-reading-end]) .companion::after {
+    animation: companion-rest 180ms 950ms ease-in-out reverse backwards;
+  }
+
+  .post-reading-area[data-reading-end] .companion::before { opacity: 1; }
+  .post-reading-area[data-reading-end] .companion::after { opacity: 0; }
+}
+
+@keyframes companion-rest {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}

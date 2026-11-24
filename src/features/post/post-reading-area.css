@@ -53,7 +53,7 @@
 .little-gemini {
   --flight-height: -46px;
   --flight-duration: 700ms;
-  opacity: .8;
+  opacity: .86;
 }
 
 .companion__portrait {
@@ -63,7 +63,10 @@
 }
 
 .companion__gaze {
-  transform: translate(calc(-4px * var(--attentive)), calc(-5px * var(--attentive)));
+  transform: translate(
+    calc(var(--gaze-x, -4px) * var(--attentive)),
+    calc(var(--gaze-y, -5px) * var(--attentive))
+  );
 }
 
 @property --companion-blink {

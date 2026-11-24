@@ -3,7 +3,7 @@ export function bindReadingCompanion(corner: HTMLElement, link: HTMLAnchorElemen
   const lifetime = new AbortController();
   const { signal } = lifetime;
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-  const eyes = corner.querySelector<SVGGElement>('.companion__blinking-eyes');
+  const eyeGroups = [...corner.querySelectorAll<SVGGElement>('.companion__blinking-eyes')];
   let currentBlink: Animation | undefined;
   let arrivalTimer: number | undefined;
   let giftTimer: number | undefined;
@@ -36,7 +36,8 @@ export function bindReadingCompanion(corner: HTMLElement, link: HTMLAnchorElemen
 
   function blink() {
     if (link.hidden || reducedMotion.matches || !link.matches(':hover, :focus-visible')) return;
-    if (!eyes?.getClientRects().length || currentBlink?.playState === 'running') return;
+    const eyes = eyeGroups.find(group => group.getClientRects().length > 0);
+    if (!eyes || currentBlink?.playState === 'running') return;
     // Let one blink finish even if the pointer leaves midway.
     currentBlink = eyes.animate([
       { '--companion-blink': '0', easing: 'ease-in' },

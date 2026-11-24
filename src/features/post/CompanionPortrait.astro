@@ -24,9 +24,23 @@ const eyes = isDragon ? [
     baseline: 236,
   },
 ] : [
-  { opening: 'M189 247Q194 236 209 235Q224 235 228 246Q231 255 216 258Q198 262 190 253Z' },
-  { opening: 'M260.8 222Q268 214 278 214Q288 211 302 219Q302 236.5 287 241.5Q263.6 246 262 231Z' },
+  {
+    opening: 'M189 247Q194 236 209 235Q224 235 228 246Q231 255 216 258Q198 262 190 253Z',
+    lid: 'M182 251Q184 237 195 230Q211 226 226 237Q232 246 227 254Q216 261 197 262Q185 258 182 251Z',
+    lash: 'M182 249Q204 258 227 251Q206 261.5 182 249Z',
+    baseline: 253,
+    gaze: [-2.5, -4] as const,
+  },
+  {
+    opening: 'M260.8 222Q268 214 278 214Q288 211 302 219Q302 236.5 287 241.5Q263.6 246 262 231Z',
+    lid: 'M258 224Q264 211 283 207Q296 205 305 212L305 228Q302 239 287 243Q263 247 259 232Z',
+    lash: 'M260 236Q282 241 304 229Q286 244.5 260 236Z',
+    baseline: 236,
+    gaze: [-0.5, -4.5] as const,
+  },
 ];
+const lidFill = isDragon ? '#f9e2de' : '#fae0da';
+const lashFill = isDragon ? '#654354' : '#5d3c47';
 // Cut along the lock of hair in front of the near ear. The hinge stays under that lock.
 const earCut = 'M57 113L181 66Q150 93 138 126Q129 149 121 177Q109 175 96 162L59 155Z';
 ---
@@ -40,7 +54,7 @@ const earCut = 'M57 113L181 66Q150 93 138 126Q129 149 121 177Q109 175 96 162L59 
     </linearGradient>
     {eyes.map((eye, i) => <>
       <clipPath id={`${ink}-opening-${i}`}><path d={eye.opening} /></clipPath>
-      {'lid' in eye && <clipPath id={`${ink}-lid-${i}`}><path d={eye.lid} /></clipPath>}
+      <clipPath id={`${ink}-lid-${i}`}><path d={eye.lid} /></clipPath>
     </>)}
     {!isDragon && <>
       <clipPath id="gemini-ear"><path d="M55 110L184 64Q162 92 143 130L124 180Q109 176 94 162L57 154Z" /></clipPath>
@@ -52,20 +66,20 @@ const earCut = 'M57 113L181 66Q150 93 138 126Q129 149 121 177Q109 175 96 162L59 
     <g class="companion__ear"><use href={`#${ink}`} clip-path="url(#gemini-ear)" /></g>
   </>}
   <use href={`#${ink}`} clip-path={isDragon ? undefined : 'url(#gemini-head)'} />
-  <g class={isDragon ? 'companion__blinking-eyes' : undefined}>
+  <g class="companion__blinking-eyes">
     {eyes.map((eye, i) => <>
-      {'lid' in eye && <path d={eye.lid} fill="#f9e2de" />}
-      <g class={'lid' in eye ? 'companion__blink' : undefined}
-        style={'baseline' in eye ? `transform-origin: 0 ${eye.baseline}px` : undefined}>
-        {'lid' in eye && <use href={`#${ink}`} clip-path={`url(#${ink}-lid-${i})`} />}
+      <path d={eye.lid} fill={lidFill} />
+      <g class="companion__blink" style={`transform-origin: 0 ${eye.baseline}px`}>
+        <use href={`#${ink}`} clip-path={`url(#${ink}-lid-${i})`} />
         <g clip-path={`url(#${ink}-opening-${i})`}>
           <path d={eye.opening} fill={`url(#${ink}-sclera)`} />
-          <g class="companion__gaze">
+          <g class="companion__gaze"
+            style={'gaze' in eye ? `--gaze-x: ${eye.gaze[0]}px; --gaze-y: ${eye.gaze[1]}px` : undefined}>
             <use href={`#${ink}`} clip-path={`url(#${ink}-opening-${i})`} />
           </g>
         </g>
       </g>
-      {'lash' in eye && <path class="companion__lash" d={eye.lash} fill="#654354" />}
+      <path class="companion__lash" d={eye.lash} fill={lashFill} />
     </>)}
   </g>
 </svg>

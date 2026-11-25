@@ -1,67 +1,117 @@
 ---
 // Created by weixi on 2026/11/20.
 import type { Column } from '../columns/catalog';
-import '../columns/column-link.css';
+import ColumnTextLink from '../columns/ColumnTextLink.astro';
 
-interface Props { columns: Column[] }
-const { columns } = Astro.props;
+interface Props { columns: Column[]; total: number }
+const { columns, total } = Astro.props;
 ---
 
 <section class="home-columns" aria-labelledby="home-columns-heading">
+  <svg class="divider" viewBox="0 0 1120 10" preserveAspectRatio="none" fill="none" aria-hidden="true">
+    <path d="M2 5.4Q260 3.2 560 5.6T1118 4.8" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" />
+  </svg>
   <header>
     <h2 id="home-columns-heading">精选专栏</h2>
-    <a href="/columns/">全部专栏</a>
+    <span class="hint mouse-hint">悬停左侧预览，点击进入专栏或单篇文章</span>
+    <span class="hint touch-hint">轻点预览，再点进入专栏</span>
+    <a href="/columns/">全部 {total} 个专栏</a>
   </header>
-  <div class="cards">
-    {columns.map(column => (
-      <a class="card column-link" href={`/columns/${column.slug}/`}>
-        {column.cover && <img src={column.cover} alt="" loading="lazy" decoding="async" />}
-        <div>
-          <h3>{column.title}<small>{column.articles.length} 篇</small></h3>
-          <p>{column.intro}</p>
+  <div class="shelf" style={`--rows: ${columns.length}`}>
+    <span class="indicator" aria-hidden="true"></span>
+    {columns.map((column, index) => (
+      <div class="edition" data-active={index === 0 || undefined} style={`--row: ${index + 1}`}>
+        <a class="row" href={`/columns/${column.slug}/`}>
+          {column.cover && <img class="strip" src={column.cover} alt="" loading="lazy" decoding="async" />}
+          <div class="copy">
+            <div class="row-head"><h3>{column.title}</h3><small>{column.articles.length} 篇</small></div>
+            <p>{column.summaryPhrases?.join('') ?? column.intro}</p>
+          </div>
+        </a>
+        <div class="preview" role="group" aria-label={`《${column.title}》篇目`}>
+          {column.cover && <a class="cover" href={`/columns/${column.slug}/`} aria-label={column.title} tabindex="-1">
+            <img src={column.cover} alt="" loading="lazy" decoding="async" />
+          </a>}
+          {column.articles.length > 0 && <div class="contents">
+            {column.articles.map((article, i) => <>
+              {i > 0 && <span class="separator" aria-hidden="true">·</span>}
+              <ColumnTextLink href={article.href} arrow>{article.title}</ColumnTextLink>
+            </>)}
+          </div>}
         </div>
-      </a>
+      </div>
     ))}
   </div>
 </section>
 
+<script>
+  import { bindFeaturedColumns } from './featured-columns';
+  const shelf = document.querySelector<HTMLElement>('.home-columns .shelf');
+  if (shelf) {
+    let dispose = bindFeaturedColumns(shelf);
+    window.addEventListener('pagehide', () => dispose());
+    window.addEventListener('pageshow', event => {
+      if (event.persisted) dispose = bindFeaturedColumns(shelf);
+    });
+  }
+</script>
+
 <style>
-  .home-columns { grid-column: 1 / -1; position: relative; min-width: 0; }
-  .home-columns::before {
-    content: ''; position: absolute; inset-block: 0; left: -24px; width: 1.5px;
-    background: linear-gradient(var(--color-accent-primary), color-mix(in srgb, var(--color-accent-primary) 43%, transparent) 34%, transparent);
-  }
-  header { display: flex; align-items: baseline; justify-content: space-between; gap: 20px; margin-bottom: 14px; }
-  h2, h3 { margin: 0; font-family: 'LXGW WenKai Mono GB', 'PingFang SC', sans-serif; font-weight: 400; }
-  h2 { font-size: 24px; }
-  header a { display: inline-flex; align-items: center; min-height: 44px; color: var(--color-accent-primary); font-size: 14px; }
-  a { text-decoration: none; }
+  .home-columns { min-width: 0; grid-column: 1 / -1; padding-top: 12px; margin-bottom: 24px; }
+  .divider { display: block; width: 100%; height: 10px; margin-bottom: 28px; color: var(--color-border-secondary); }
+  header { display: flex; align-items: baseline; gap: 8px 16px; margin-bottom: 22px; }
+  h2, h3 { margin: 0; font: 400 24px/1.38 'LXGW WenKai Mono GB', 'PingFang SC', sans-serif; }
+  header a { display: inline-flex; align-items: center; min-height: 44px; margin-left: auto; color: var(--color-accent-primary); text-decoration: none; font-size: 14px; }
   header a:hover { text-decoration: underline; text-underline-offset: 4px; }
-  header a:focus-visible { outline: 2px solid var(--color-accent-primary); outline-offset: 4px; }
-  .cards { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 24px 64px; align-items: center; }
-  .card { --card-padding: 6px; display: grid; grid-template-columns: 86px minmax(0, 1fr); gap: 17px; align-items: center; margin: calc(-1 * var(--card-padding)); padding: var(--card-padding); border-radius: 5px; color: inherit; }
-  .card:first-child { grid-row: 1 / span 2; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 24px; }
-  .card:not(:has(img)) { grid-template-columns: 1fr; }
-  img { display: block; width: 100%; align-self: stretch; height: 100%; min-height: 78px; contain: size; object-fit: cover; }
-  .card:first-child img { min-height: 220px; }
-  h3 { font-size: 21px; line-height: 1.45; }
-  .card:first-child h3 { font-size: 30px; }
-  small { display: inline-block; margin-left: 10px; font: 12px/1.7 'Weixi Sans', sans-serif; color: var(--color-text-secondary); }
-  p { margin: 4px 0 0; color: var(--color-text-secondary); font: 14px/1.85 'Weixi Sans', sans-serif; }
-  .card:first-child p { margin-top: 9px; font-size: 15px; }
-  @media (max-width: 1200px) { .home-columns::before { left: -14px; } }
-  @media (max-width: 900px) {
-    .cards { grid-template-columns: minmax(0, 1fr); gap: 16px; }
-    .card:first-child { grid-row: auto; }
-    .card { grid-template-columns: 76px minmax(0, 1fr); }
-    img { min-height: 63px; }
-    .card:first-child img { min-height: clamp(130px, 24vw, 230px); }
+  a:focus-visible { outline: 2px solid var(--color-accent-primary); outline-offset: 3px; }
+  .hint, small, p { color: var(--color-text-secondary); font-family: 'Weixi Sans', sans-serif; }
+  .hint { display: none; font-size: 13px; }
+  @media (min-width: 761px) and (hover: hover) and (scripting: enabled) { .mouse-hint { display: inline; } }
+  @media (min-width: 761px) and (hover: none) and (scripting: enabled) { .touch-hint { display: inline; } }
+  .shelf { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.18fr); grid-template-rows: repeat(var(--rows), max-content) 1fr; column-gap: clamp(28px, 4vw, 52px); }
+  .edition { display: contents; }
+  .row { grid-area: var(--row) / 1; position: relative; display: block; padding: 10px 0 18px 22px; color: inherit; text-decoration: none; }
+  :where(.edition ~ .edition) .row { padding-top: 18px; border-top: 1px solid var(--color-border-secondary); }
+  .row-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+  small { font-size: 12px; white-space: nowrap; }
+  p { margin: 6px 0 0; font-size: 14px; line-height: 1.72; }
+  .edition[data-active] h3 { color: var(--color-accent-primary); }
+  .indicator { position: absolute; left: 0; top: 0; z-index: 1; width: 2.5px; height: var(--rail-height, 0px); transform: translateY(var(--rail-top, 0px)); border-radius: 2px; background: linear-gradient(transparent, var(--color-accent-primary) 18% 82%, transparent); pointer-events: none; }
+  .strip { display: none; }
+  .preview { grid-area: 1 / 2 / -1 / 3; align-self: start; min-width: 0; visibility: hidden; }
+  .edition[data-active] .preview { visibility: visible; z-index: 1; }
+  .shelf[data-interactive] .preview { visibility: visible; }
+  .edition:not([data-active]) .preview { pointer-events: none; -webkit-user-select: none; user-select: none; }
+  .edition:not([data-active]) :is(.cover, .contents) { opacity: 0; }
+  .cover { display: block; overflow: hidden; border-radius: 16px; background: var(--color-background-secondary); }
+  .cover img { display: block; width: 100%; aspect-ratio: 1.92; object-fit: cover; }
+  .contents { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px; margin-top: 16px; padding-inline: 2px; font: 400 15px/1.5 'LXGW WenKai Mono GB', sans-serif; }
+  .separator { color: var(--color-border-primary); font: 13px 'Weixi Sans', sans-serif; }
+  @media (prefers-reduced-motion: no-preference) {
+    .shelf[data-animate-rail] .indicator { transition: transform 260ms ease-out, height 260ms ease-out; }
+    h3 { transition: color 180ms ease; }
+    .cover { transition: opacity 240ms ease-out; }
+    .edition[data-active]:not(:focus-within) .contents { transition: opacity 140ms ease-out; }
+    .cover img { transition: transform 320ms ease-out; }
+    @media (hover: hover) { .cover:hover img { transform: scale(1.028); } }
   }
-  @media (max-width: 520px) {
-    .card:first-child { display: block; }
-    .card:first-child img { height: auto; min-height: 0; aspect-ratio: 2.35; margin-bottom: var(--card-padding); }
-    .card:first-child h3 { font-size: 25px; }
-    h3 { font-size: 19px; }
+  @media (max-width: 760px) {
+    .home-columns { padding-top: 0; margin-bottom: 0; }
+    .divider { margin-bottom: 16px; }
+    header { margin-bottom: 8px; }
+    .shelf { display: block; }
+    .preview, .indicator { display: none; }
+    .edition .row { display: flex; align-items: center; padding: 16px 0; min-height: 112px; isolation: isolate; }
+    .strip { display: block; position: absolute; z-index: -1; inset: 8px 0 8px auto; width: 56%; height: calc(100% - 16px); object-fit: cover; opacity: .56;
+      mask-image: linear-gradient(90deg, transparent, #0008 44%, #000 90%), linear-gradient(180deg, transparent, #000 18% 82%, transparent);
+      mask-composite: intersect;
+    }
+    :global([data-color-mode='dark']) .strip { opacity: .62; }
+    .row:has(.strip) .copy { max-width: 72%; }
+    .row-head { justify-content: flex-start; gap: 8px; }
+    .edition h3, .edition[data-active] h3 { font-size: 20px; color: var(--color-text-primary); }
+    .edition .row:active h3 { color: var(--color-accent-primary); }
+    small { font-size: 11.5px; }
+    p { margin-top: 5px; font-size: 12.5px; line-height: 1.58; }
   }
-  @media (max-width: 359px) { .home-columns::before { left: -8px; } }
 </style>

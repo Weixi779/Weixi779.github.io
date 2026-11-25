@@ -36,7 +36,7 @@ const recentNotes = notes.slice(0, 4).map(post => ({
   <HomeHero />
   <div class="home-sections">
     <HomeRecentPosts posts={recentPosts} />
-    {featuredColumns.length > 0 && <HomeColumns columns={featuredColumns} />}
+    {featuredColumns.length > 0 && <HomeColumns columns={featuredColumns} total={columns.length} />}
     {recentNotes.length > 0 ? (
       <HomeNotes notes={recentNotes} />
     ) : (

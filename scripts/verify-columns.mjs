@@ -11,7 +11,7 @@ import { JSDOM } from 'jsdom';
 // Exercise the production static routes even when the author's catalog is empty.
 const configPath = fileURLToPath(new URL('../src/features/columns/columns.json', import.meta.url));
 const fixture = {
-  slug: 'compression-test', title: '压缩阅读顺序', intro: '两篇文章',
+  slug: 'death-of-the-author', title: '压缩阅读顺序', intro: '两篇文章',
   cover: '/images/wicompress-2-architecture.webp',
   articles: ['ios-image-compression', 'image-compression-fundamentals'],
 };
@@ -54,6 +54,12 @@ try {
     '/posts/image-compression-fundamentals/',
     '/posts/ios-image-compression/',
   ]);
+  const featured = home.querySelector('.home-columns');
+  const sections = home.querySelectorAll('.home-sections > :is(.home-recent-posts, .home-columns, .home-notes)');
+  assert.deepEqual([...sections].map(section => section.className), ['home-recent-posts', 'home-columns', 'home-notes']);
+  assert.equal(featured.querySelector('.row').getAttribute('href'), card.getAttribute('href'));
+  assert.deepEqual([...featured.querySelectorAll('.contents a')].map(a => a.getAttribute('href')),
+    articles.map(a => a.getAttribute('href')));
   for (const link of articles) {
     const post = await readPage(link.getAttribute('href'));
     assert.ok(post.querySelector('article.prose')?.textContent.trim(), 'Missing article body');

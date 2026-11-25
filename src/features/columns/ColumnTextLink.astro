@@ -1,0 +1,25 @@
+---
+// Created by weixi on 2026/11/25.
+interface Props { href: string; lang?: string; arrow?: boolean }
+const { href, lang, arrow } = Astro.props;
+---
+
+<a class="ink-link" href={href} lang={lang}>
+  <slot />{arrow && <span class="arrow" aria-hidden="true">↗</span>}
+  <svg viewBox="0 0 120 6" preserveAspectRatio="none" fill="none" aria-hidden="true">
+    <path d="M1 3.8Q15 1.4 30 3.7T60 3.5T90 3.8T119 3.3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+  </svg>
+</a>
+
+<style>
+  a.ink-link { position: relative; display: inline-block; padding-block: 2px 5px; max-width: 100%; color: var(--color-text-primary); font: inherit; text-decoration: none; overflow-wrap: anywhere; }
+  svg { position: absolute; inset: auto 0 0; width: 100%; height: 5px; color: var(--color-accent-primary); opacity: .48; pointer-events: none; }
+  .arrow { margin-inline-start: 4px; color: var(--color-accent-primary); font-size: .74em; }
+  a:is(:hover, :focus-visible) { color: var(--color-accent-primary); }
+  a:is(:hover, :focus-visible) svg { opacity: 1; }
+  a:focus-visible { outline: 2px solid var(--color-accent-primary); outline-offset: 3px; }
+  @media (prefers-reduced-motion: no-preference) {
+    a.ink-link { transition: color 180ms ease; }
+    svg { transition: opacity 180ms ease; }
+  }
+</style>

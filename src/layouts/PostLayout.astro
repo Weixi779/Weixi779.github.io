@@ -1,5 +1,5 @@
 ---
-import PostColumns from '../features/post/PostColumns.astro';
+import PostFooter from '../features/post/PostFooter.astro';
 import { getPublishedColumns } from '../features/columns/published-columns';
 import type { PostEntry } from '../lib/content/posts';
 import GiscusComments from '../features/post/GiscusComments.astro';
@@ -54,7 +54,6 @@ const alternates = [
     title={post.data.title}
     summary={post.data.summary}
     category={post.data.category}
-    publishedAt={post.data.publishedAt.slice(0, 10)}
     image={post.data.hero}
     nightImage={post.data.heroNight}
     imageLayout={post.data.heroLayout}
@@ -68,21 +67,7 @@ const alternates = [
     {hasToc && <TableOfContents chapters={chapters} language={language} />}
     <article class="prose prose--article">
       <slot />
-      {columns.length > 0 && <PostColumns columns={columns} isEnglish={isEnglish} />}
-      <nav class="post-navigation" aria-label={isEnglish ? 'Adjacent posts' : '相邻文章'}>
-        {newerPost ? (
-          <a href={getPostPath(newerPost)}>
-            <span>{isEnglish ? '← Newer post' : '← 更新文章'}</span>
-            <strong>{newerPost.data.title}</strong>
-          </a>
-        ) : <span></span>}
-        {olderPost ? (
-          <a href={getPostPath(olderPost)}>
-            <span>{isEnglish ? 'Older post →' : '更早文章 →'}</span>
-            <strong>{olderPost.data.title}</strong>
-          </a>
-        ) : <span></span>}
-      </nav>
+      <PostFooter {post} {columns} {newerPost} {olderPost} />
       {!post.data.draft && <GiscusComments language={language} />}
     </article>
   </PostReadingArea>

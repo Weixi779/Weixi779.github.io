@@ -343,38 +343,6 @@
   text-decoration: none;
 }
 
-.post-navigation {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
-  margin-top: 64px;
-  padding-top: 24px;
-  border-top: 1px solid var(--markdown-color-border);
-}
-
-.post-navigation a {
-  display: grid;
-  gap: 4px;
-  padding: 14px;
-  border: 1px solid var(--markdown-color-border-soft);
-  border-radius: 10px;
-  text-decoration: none;
-}
-
-.post-navigation a:last-child {
-  text-align: right;
-}
-
-.post-navigation span {
-  color: var(--markdown-color-muted);
-  font-size: 0.76rem;
-}
-
-.post-navigation strong {
-  color: var(--markdown-color-text);
-  font-size: 0.84rem;
-}
-
 .comments {
   min-height: 180px;
   margin-top: 48px;
@@ -387,13 +355,5 @@
 
   .prose :where(h1, h2, h3, h4, h5, h6) {
     letter-spacing: -0.015em;
-  }
-
-  .post-navigation {
-    grid-template-columns: 1fr;
-  }
-
-  .post-navigation a:last-child {
-    text-align: left;
   }
 }

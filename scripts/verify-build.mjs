@@ -177,7 +177,7 @@ if (!existsSync(distRoot)) {
       fail(`post summary is missing from the banner in ${postPage}`);
     }
     if (!html.includes('data-mapping="pathname"')) fail(`Giscus is missing from ${postPage}`);
-    if (!html.includes('class="post-navigation"')) fail(`post navigation is missing from ${postPage}`);
+    if (postPages.length > 1 && !html.includes('class="post-navigation"')) fail(`post navigation is missing from ${postPage}`);
   }
 
   const translatedPostPath = routeOutputPath(translatedPostRoute);
@@ -242,8 +242,10 @@ if (!existsSync(distRoot)) {
         fail(`banner repeats its category in the heading in ${htmlPage}`);
       }
       if (postPages.includes(htmlPage) || htmlPage === translatedPostPath) {
-        if (!category || !banner.querySelector('time[datetime]')) {
-          fail(`article banner lost its category or date in ${htmlPage}`);
+        if (!category || banner.querySelector('time')) fail(`article banner must show its category without the date in ${htmlPage}`);
+        const date = document.querySelector('article footer .colophon time[datetime]');
+        if (!date || date.textContent !== date.dateTime.replaceAll('-', ' / ')) {
+          fail(`article footer must show the publication date in ${htmlPage}`);
         }
       }
       const scene = banner.querySelector('.site-banner__scene');

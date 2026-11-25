@@ -1,0 +1,92 @@
+---
+// Created by weixi on 2026/11/25.
+import { getPostDate, getPostPath, type PostEntry } from '../../lib/content/posts';
+import type { Column } from '../columns/catalog';
+import ColumnTextLink from '../columns/ColumnTextLink.astro';
+
+interface Props {
+  post: PostEntry;
+  columns: Column[];
+  newerPost?: PostEntry;
+  olderPost?: PostEntry;
+}
+
+const { post, columns, newerPost, olderPost } = Astro.props;
+const english = post.data.lang === 'en';
+const date = getPostDate(post);
+const neighbors = [
+  { post: newerPost, label: english ? 'Newer post' : '更新文章', direction: 'newer' },
+  { post: olderPost, label: english ? 'Older post' : '更早文章', direction: 'older' },
+];
+---
+
+<footer>
+  <div class="colophon">
+    <svg class="end-stroke" viewBox="0 0 38 8" aria-hidden="true">
+      <path d="M2.2 4.7C7.4 5.1 10.1 5.9 15.4 5.2C22.2 4.3 27.6 2.2 35.8 2.8C36.5 2.9 36.4 3.4 35.7 3.5C28.1 3.5 23.4 6.1 15.6 6.8C9.8 7.3 5.6 6.2 2.2 5.7C1.3 5.5 1.3 4.6 2.2 4.7Z" fill="currentColor" />
+    </svg>
+    <span>{english ? 'Written on' : '写于'} <time datetime={date}>{date.replaceAll('-', ' / ')}</time></span>
+    {columns.length > 0 && <nav class="post-columns" aria-label={english ? 'In these columns (in Chinese)' : '所属专栏'}>
+      <svg class="book" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.45" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M3.2 4.6Q6.4 3.5 9.8 5.2V15.6Q6.5 14.1 3.2 15.2ZM16.8 4.6Q13.6 3.5 10.2 5.2V15.6Q13.5 14.1 16.8 15.2Z" />
+        <path d="M13.2 4.3V8.7L14.4 7.7L15.5 8.7V4.4" stroke-width="1.2" />
+      </svg>
+      {columns.map((column, i) => <>
+        {i > 0 && <span class="separator" aria-hidden="true">·</span>}
+        <ColumnTextLink href={`/columns/${column.slug}/`} lang="zh-CN">{column.title}</ColumnTextLink>
+      </>)}
+    </nav>}
+  </div>
+  {(newerPost || olderPost) && <nav class="post-navigation" aria-label={english ? 'Adjacent posts' : '相邻文章'}>
+    {neighbors.map(({ post: neighbor, label, direction }) => neighbor && (
+      <a class={direction} href={getPostPath(neighbor)}>
+        <span class="kicker">
+          <svg viewBox="0 0 20 12" fill="none" aria-hidden="true">
+            <path d="M1.5 6.4Q9.5 5.2 17.5 6.1M13.4 2.4Q16.1 4.4 18 6.1Q15.8 7.9 13.1 9.6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          {label}
+        </span>
+        <span class="title">{neighbor.data.title}</span>
+      </a>
+    ))}
+  </nav>}
+</footer>
+
+<style>
+  footer { --hand: 'LXGW WenKai Mono GB', 'PingFang SC', sans-serif; }
+  .colophon { display: flex; flex-direction: column; align-items: center; gap: 10px; margin: 44px 0 42px; text-align: center; color: var(--markdown-color-muted); font: 400 14px/1.5 var(--hand); }
+  .colophon time { letter-spacing: 1px; }
+  .end-stroke { width: 46px; height: 9px; color: var(--markdown-color-accent); opacity: .72; }
+  .post-columns { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 6px 11px; margin-top: 4px; font: 400 15px/1.5 var(--hand); }
+  .book { flex: none; width: 17px; height: 17px; color: var(--markdown-color-accent); }
+  .separator { color: var(--color-border-primary); }
+  .post-navigation { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 26px 0 10px; border-top: 1px solid var(--markdown-color-border-soft); }
+  .post-navigation a { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; color: var(--markdown-color-text); text-decoration: none; }
+  .newer { padding-right: 28px; }
+  .post-navigation .older { grid-column: 2; padding-left: 28px; align-items: flex-end; text-align: right; }
+  .newer + .older { border-left: 1px dashed var(--markdown-color-border-soft); }
+  .kicker { display: inline-flex; align-items: center; gap: 6px; color: var(--markdown-color-muted); font: 12.5px/1.4 'Weixi Sans', sans-serif; }
+  .kicker svg { width: 17px; height: 10px; color: var(--markdown-color-accent); }
+  .newer svg { transform: scaleX(-1); }
+  .older .kicker { flex-direction: row-reverse; }
+  .title { font: 400 19.5px/1.45 var(--hand); }
+  .post-navigation a:is(:hover, :focus-visible), .post-navigation a:is(:hover, :focus-visible) .kicker { color: var(--markdown-color-accent); }
+  a:focus-visible { outline: 2px solid var(--markdown-color-accent); outline-offset: 4px; }
+  @media (prefers-reduced-motion: no-preference) {
+    .post-navigation a, .kicker { transition: color 180ms ease; }
+    .kicker svg { transition: translate 180ms ease-out; }
+    @media (hover: hover) and (pointer: fine) {
+      .newer:hover svg { translate: -3px 0; }
+      .older:hover svg { translate: 3px 0; }
+    }
+  }
+  @media (max-width: 760px) {
+    .colophon { margin: 34px 0 32px; gap: 9px; }
+    .post-columns { font-size: 14px; }
+    .post-navigation { grid-template-columns: 1fr; padding: 20px 0 6px; }
+    .newer { padding: 0; }
+    .post-navigation .older { grid-column: 1; padding: 0; align-items: flex-start; text-align: left; }
+    .newer + .older { margin-top: 18px; padding-top: 18px; border-left: 0; border-top: 1px dashed var(--markdown-color-border-soft); }
+    .title { font-size: 17.5px; }
+  }
+</style>

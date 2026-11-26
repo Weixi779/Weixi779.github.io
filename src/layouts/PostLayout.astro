@@ -1,4 +1,5 @@
 ---
+import ArticleReadingTools from '../features/post/ArticleReadingTools.astro';
 import PostFooter from '../features/post/PostFooter.astro';
 import { getPublishedColumns } from '../features/columns/published-columns';
 import type { PostEntry } from '../lib/content/posts';
@@ -71,4 +72,5 @@ const alternates = [
       {!post.data.draft && <GiscusComments language={language} />}
     </article>
   </PostReadingArea>
+  <ArticleReadingTools {language} />
 </BaseLayout>

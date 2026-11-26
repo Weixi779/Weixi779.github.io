@@ -1,0 +1,32 @@
+---
+// Created by weixi on 2026/11/25.
+import './article-reading-tools.css';
+
+interface Props { language: 'zh-CN' | 'en' }
+const english = Astro.props.language === 'en';
+const copy = english ? 'Copy code' : '复制代码';
+const copied = english ? 'Copied' : '已复制';
+---
+
+<div data-article-tools>
+  <template class="copy-template">
+    <button type="button" class="copy-code" title={copy} aria-label={copy} data-copied-label={copied}>
+      <svg class="copy-glyph" viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="13" rx="2"/><path d="M15 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg>
+      <svg class="check-glyph" viewBox="0 0 24 24" aria-hidden="true"><path d="m4 12 5 5L20 6"/></svg>
+    </button>
+  </template>
+  <span class="copy-status" role="status" data-manual={english ? 'Code selected. Use your device’s Copy command.' : '代码已选中，可用系统的复制操作。'}></span>
+</div>
+
+<script>
+  import { bindCodeCopy } from './code-copy';
+
+  const tools = document.querySelector<HTMLElement>('[data-article-tools]');
+  const article = document.querySelector<HTMLElement>('article.prose--article');
+  if (tools && article) {
+    const bind = () => bindCodeCopy(article, tools);
+    let dispose = bind();
+    window.addEventListener('pagehide', () => dispose());
+    window.addEventListener('pageshow', event => { if (event.persisted) dispose = bind(); });
+  }
+</script>

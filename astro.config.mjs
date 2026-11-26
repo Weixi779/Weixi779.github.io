@@ -4,6 +4,7 @@ import react from '@astrojs/react';
 import mdx from '@astrojs/mdx';
 import { unified } from '@astrojs/markdown-remark';
 import githubDark from '@shikijs/themes/github-dark';
+import { codeLanguage } from './scripts/build/code-language.mjs';
 import { themeBootstrapPlugin } from './scripts/build/theme-bootstrap-plugin.mjs';
 
 import { satteriProseTables, rehypeProseTables } from './scripts/build/prose-tables.mjs';
@@ -25,6 +26,7 @@ export default defineConfig({
   markdown: {
     processor: satteri({ hastPlugins: [satteriProseTables] }),
     shikiConfig: {
+      transformers: [codeLanguage],
       themes: {
         light: 'github-light',
         dark: {

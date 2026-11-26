@@ -1,0 +1,25 @@
+/* Created by weixi on 2026/11/25. */
+.prose .article-code {
+  min-width: 0;
+  margin-block: 1em;
+  overflow: hidden;
+  border: 1px solid var(--markdown-color-border);
+  border-radius: 8px;
+  background: var(--markdown-color-surface);
+}
+.article-code__bar { display: flex; align-items: center; justify-content: space-between; min-height: 44px; padding-inline: 1em 3px; }
+.code-language { display: inline-flex; align-items: center; gap: 6px; color: var(--markdown-color-muted); font: 400 12.5px/1.4 var(--font-code); letter-spacing: .015em; }
+.prose .code-language img { display: block; width: 16px; height: 16px; object-fit: contain; margin: 0; border-radius: 0; box-shadow: none; }
+:root[data-color-mode='dark'] .code-language__monochrome { filter: invert(.92); }
+.prose .article-code pre { margin: 0; padding-top: 0; border: 0; border-radius: 0; }
+.copy-code {
+  display: inline-grid; place-items: center; width: 44px; height: 44px; padding: 0;
+  border: 0; border-radius: 4px; background: transparent; color: var(--color-text-secondary); cursor: pointer;
+}
+.copy-code svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.copy-code .check-glyph, .copy-code[data-copied] .copy-glyph { display: none; }
+.copy-code[data-copied] .check-glyph { display: block; }
+.copy-code:is(:hover, [data-copied]) { color: var(--color-accent-primary); }
+.copy-code:focus-visible { outline: 2px solid var(--color-accent-primary); outline-offset: -2px; }
+.copy-status { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+.copy-help { padding: 0 1em .5em; font-size: 13px; color: var(--color-text-secondary); }

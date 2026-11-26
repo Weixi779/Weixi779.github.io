@@ -24,7 +24,7 @@ export default function ThemePicker() {
     if (!open) return;
     const picker = pickerRef.current;
     picker?.querySelector<HTMLInputElement>('input:checked')?.focus({ preventScroll: true });
-    function dismissOutside(event: PointerEvent) {
+    function dismissOutside(event: Event) {
       if (event.target instanceof Node && !picker?.contains(event.target)) setOpen(false);
     }
     function dismissEscape(event: KeyboardEvent) {
@@ -34,9 +34,11 @@ export default function ThemePicker() {
       toggleRef.current?.focus({ preventScroll: true });
     }
     document.addEventListener('pointerdown', dismissOutside);
+    document.addEventListener('focusin', dismissOutside);
     document.addEventListener('keydown', dismissEscape);
     return () => {
       document.removeEventListener('pointerdown', dismissOutside);
+      document.removeEventListener('focusin', dismissOutside);
       document.removeEventListener('keydown', dismissEscape);
     };
   }, [open]);

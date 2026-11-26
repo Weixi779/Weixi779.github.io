@@ -1,6 +1,7 @@
 // Created by weixi on 2026/10/25.
 
 import { useLayoutEffect, useRef, useState, type CSSProperties } from 'react';
+import SiteSearch from '../../features/search/SiteSearch';
 import ThemePicker from './ThemePicker';
 import './header.css';
 
@@ -89,8 +90,10 @@ export default function SiteHeader({ pathname }: { pathname: string }) {
             </a>
           ))}
         </nav>
-        <span className="site-header__divider" aria-hidden="true" />
-        <ThemePicker />
+        <div className="site-header__tools">
+          <SiteSearch />
+          <ThemePicker />
+        </div>
       </div>
     </header>
   );

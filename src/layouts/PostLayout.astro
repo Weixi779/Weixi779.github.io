@@ -74,3 +74,16 @@ const alternates = [
   </PostReadingArea>
   <ArticleReadingTools {language} />
 </BaseLayout>
+
+<script>
+  import '../features/search/article-target';
+</script>
+
+<style is:global>
+  .prose--article .search-passage {
+    scroll-margin-top: 88px;
+    border-inline-start: 2px solid var(--color-accent-primary);
+    padding-inline-start: 12px;
+  }
+  ::highlight(search-match) { background-color: var(--color-accent-secondary); color: var(--color-accent-primary); }
+</style>

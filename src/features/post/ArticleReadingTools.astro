@@ -6,6 +6,8 @@ interface Props { language: 'zh-CN' | 'en' }
 const english = Astro.props.language === 'en';
 const copy = english ? 'Copy code' : '复制代码';
 const copied = english ? 'Copied' : '已复制';
+const close = english ? 'Close and return to article' : '关闭并回到原文';
+const fit = english ? 'Show full image' : '看全图';
 ---
 
 <div data-article-tools>
@@ -16,15 +18,43 @@ const copied = english ? 'Copied' : '已复制';
     </button>
   </template>
   <span class="copy-status" role="status" data-manual={english ? 'Code selected. Use your device’s Copy command.' : '代码已选中，可用系统的复制操作。'}></span>
+  <dialog class="image-viewer" aria-labelledby="reading-image-title"
+    data-open-label={english ? 'Enlarge image' : '放大图片'} data-image-label={english ? 'Article image' : '文章图片'}>
+    <div class="image-viewer__shell">
+      <header>
+        <span id="reading-image-title"></span>
+        <button type="button" class="viewer-close" title={close} aria-label={close} autofocus>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>
+        </button>
+      </header>
+      <div class="viewer-stage" tabindex="0" role="region" aria-label={english ? 'Image, use arrow keys to pan' : '图片，可用方向键移动'}>
+        <div class="viewer-plane"></div>
+      </div>
+      <footer>
+        <button type="button" class="viewer-minus" aria-label={english ? 'Zoom out' : '缩小'} title={english ? 'Zoom out' : '缩小'}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button>
+        <span class="viewer-scale"></span>
+        <button type="button" class="viewer-plus" aria-label={english ? 'Zoom in' : '放大'} title={english ? 'Zoom in' : '放大'}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M12 5v14"/></svg></button>
+        <button type="button" class="viewer-fit" aria-label={fit} title={fit} data-fit-label={fit} data-detail-label={english ? 'Return to detail' : '回到上次看的细节'}>
+          <svg class="fit-glyph" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3.5H3.5V8m12.5-4.5h4.5V8m0 8v4.5H16m-8 0H3.5V16"/><rect x="8.6" y="6.5" width="6.8" height="11" rx="1"/></svg>
+          <svg class="detail-glyph" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="10" r="6.6"/><rect x="7.3" y="8.3" width="5.4" height="3.4" rx=".65"/><path d="m15 15 5.5 5.5"/></svg>
+        </button>
+      </footer>
+    </div>
+  </dialog>
 </div>
 
 <script>
   import { bindCodeCopy } from './code-copy';
+  import { bindImageViewer } from './image-viewer';
 
   const tools = document.querySelector<HTMLElement>('[data-article-tools]');
   const article = document.querySelector<HTMLElement>('article.prose--article');
   if (tools && article) {
-    const bind = () => bindCodeCopy(article, tools);
+    const bind = () => {
+      const unbindCopy = bindCodeCopy(article, tools);
+      const unbindViewer = bindImageViewer(article, tools.querySelector('dialog')!);
+      return () => { unbindCopy(); unbindViewer(); };
+    };
     let dispose = bind();
     window.addEventListener('pagehide', () => dispose());
     window.addEventListener('pageshow', event => { if (event.persisted) dispose = bind(); });

@@ -1,0 +1,1 @@
+function e(e){return e.normalize(`NFKC`).trim().toLocaleLowerCase(`zh-CN`)}function t(t,n){let r=e(n.query);return t.filter(e=>(n.category===``||e.category===n.category)&&e.searchText.includes(r))}export{e as n,t};

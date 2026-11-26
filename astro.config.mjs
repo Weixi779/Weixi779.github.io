@@ -5,6 +5,7 @@ import mdx from '@astrojs/mdx';
 import { unified } from '@astrojs/markdown-remark';
 import githubDark from '@shikijs/themes/github-dark';
 import { codeLanguage } from './scripts/build/code-language.mjs';
+import { siteSearchIndex } from './scripts/build/site-search-index.mjs';
 import { themeBootstrapPlugin } from './scripts/build/theme-bootstrap-plugin.mjs';
 
 import { satteriProseTables, rehypeProseTables } from './scripts/build/prose-tables.mjs';
@@ -12,7 +13,7 @@ import { satteriProseTables, rehypeProseTables } from './scripts/build/prose-tab
 export default defineConfig({
   site: 'https://weixi779.github.io',
   output: 'static',
-  integrations: [react(), mdx({ processor: unified({ rehypePlugins: [rehypeProseTables] }) })],
+  integrations: [siteSearchIndex(), react(), mdx({ processor: unified({ rehypePlugins: [rehypeProseTables] }) })],
   vite: { plugins: [themeBootstrapPlugin()] },
   trailingSlash: 'always',
   // Preserve published pagination URLs after moving the full list to the archive.
